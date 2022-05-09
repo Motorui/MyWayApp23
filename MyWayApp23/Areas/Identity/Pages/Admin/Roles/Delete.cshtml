@@ -1,0 +1,37 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity;
+@attribute [IgnoreAntiforgeryToken]
+@inject RoleManager<IdentityRole> _roleManager;
+@functions {
+    [TempData]
+    public string ToastType { get; set; } = string.Empty;
+    [TempData]
+    public string ToastMessage { get; set; } = string.Empty;
+
+    public async Task<IActionResult> OnGet(string id)
+    {
+        var role = await _roleManager.FindByIdAsync(id);
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        role = await _roleManager.FindByIdAsync(id);
+
+        if (role != null)
+        {
+            var removeRoleResult = await _roleManager.DeleteAsync(role);
+
+            if (removeRoleResult.Succeeded)
+            {
+                // valores possíveis: primary, secondary, success, danger, warning, info,
+                // light, dark, body, white, transparent
+                ToastType = "success";
+                ToastMessage = "Função apagada com sucesso!";
+                return RedirectToPage("./Index");
+            }
+        }
+
+        return Page();
+    }
+}

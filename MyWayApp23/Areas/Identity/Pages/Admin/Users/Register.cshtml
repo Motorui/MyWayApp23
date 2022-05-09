@@ -1,0 +1,63 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Registrar";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Utilizadores</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a asp-page="./Index" role="button" class="btn btn-sm btn-outline-secondary">
+                <span class="btn-label"><i class="fa fa-rotate-left"></i></span> Voltar
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<h2>Registar novo utilizador</h2>
+<hr />
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <form id="accout" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-floating" style="margin:10px">
+                    <input asp-for="Input.Username" class="form-control" autocomplete="Username" aria-required="true" />
+                    <label asp-for="Input.Username" class="form-label"></label>
+                    <span asp-validation-for="Input.Username" class="text-danger"></span>
+                </div>
+                <div class="form-floating" style="margin:10px">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="Email" aria-required="true" />
+                    <label asp-for="Input.Email" class="form-label"></label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-floating" style="margin:10px">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="Password" aria-required="true" />
+                    <label asp-for="Input.Password" class="form-label"></label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating" style="margin:10px">
+                    <p>Roles:</p>
+                    @for (int i = 0; i < Model.UserRoles.Count; i++)
+                    {
+                        <div class="form-check m-1">
+                            <input type="hidden" asp-for="@Model.UserRoles[i].RoleId" />
+                            <input type="hidden" asp-for="@Model.UserRoles[i].RoleName" />
+                            <input asp-for="@Model.UserRoles[i].Selected" class="form-check-input" />
+                            <label class="form-check-label" asp-for="@Model.UserRoles[i].Selected">
+                                @Model.UserRoles[i].RoleName
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                <div style="margin:10px">
+                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Gravar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

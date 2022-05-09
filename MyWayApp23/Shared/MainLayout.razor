@@ -1,0 +1,97 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
+
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="5">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit"
+                       Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+        <MudSpacer />
+        @if (_isDarkMode == true)
+        {
+            <MudIcon Icon="@Icons.Rounded.DarkMode" Color="Color.Error" />
+        }
+        else
+        {
+            <MudIcon Icon="@Icons.Rounded.WbSunny" Color="Color.Warning" />
+        }
+        <MudSwitch @bind-Checked="@_isDarkMode" Color="Color.Error"
+                   UnCheckedColor="Color.Warning" Class="ma-2" T="bool" />
+
+        <MudMenu Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Edge="Edge.End">
+            <AuthorizeView>
+                <Authorized>
+                    <MudMenuItem>
+                        <MudNavLink Href="/Identity/Account/Logout">Logout</MudNavLink>
+                    </MudMenuItem>
+                </Authorized>
+                <NotAuthorized>
+                    <MudMenuItem>
+                        <MudNavLink Href="/Identity/Account/Login">Login</MudNavLink>
+                    </MudMenuItem>
+                </NotAuthorized>
+            </AuthorizeView>
+        </MudMenu>
+
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="p-5">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private MudTheme _theme = new();
+    private bool _isDarkMode;
+    private MudThemeProvider? _mudThemeProvider;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider!.GetSystemPreference();
+            StateHasChanged();
+        }
+    }
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    //private MudTheme _theme = new()
+    //    {
+    //        Palette = new Palette()
+    //        {
+    //            Primary = Colors.Blue.Default,
+    //            Secondary = Colors.Green.Accent4,
+    //            AppbarBackground = Colors.Red.Default,
+    //        },
+    //        PaletteDark = new Palette()
+    //        {
+    //            Primary = Colors.Green.Accent4
+    //    },
+
+    //    LayoutProperties = new LayoutProperties()
+    //    {
+    //        DrawerWidthLeft = "260px",
+    //        DrawerWidthRight = "300px"
+    //    },
+    //    Typography = new Typography()
+    //    {
+    //        Default = new Default()
+    //        {
+    //            FontFamily = new[] { "Poppins", "Helvetica", "Arial", "sans-serif" }
+    //        }
+    //    }
+    //};
+}

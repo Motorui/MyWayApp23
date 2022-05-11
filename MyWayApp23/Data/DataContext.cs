@@ -19,6 +19,9 @@ public class DataContext : IdentityDbContext<IdentityUser, IdentityRole, string,
 
     #region set DbSet
 
+    public DbSet<Assistencia>? Assistencias { get; set; }
+    public DbSet<HistoricoAssistencia>? HistoricoAssistencias { get; set; }
+
     #endregion
 
     protected override void OnModelCreating(ModelBuilder builder)

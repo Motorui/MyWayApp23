@@ -3,42 +3,25 @@
 <PageTitle>Weather forecast</PageTitle>
 
 @using MyWayApp23.Data
-@inject WeatherForecastService ForecastService
+@inject AssistenciaService assistenciaService
 
 <AuthorizeView Policy="lisOnly">
     <Authorized>
-        <h1>Weather forecast</h1>
+        <h1>Assistências</h1>
 
-        <p>This component demonstrates fetching data from a service.</p>
+        @if (assistencias != null)
+        {
+            <MudDataGrid Items="@assistencias.Take(4)">
+                <Columns>
+                    <Column T="Assistencia" Field="Aeroporto" Title="UH" />
+                    <Column T="Assistencia" Field="Msg" />
+                    <Column T="Assistencia" Field="Notif" />
+                    <Column T="Assistencia" Field="Data" />
+                    <Column T="Assistencia" Field="Voo" Title="Voo" />
+                </Columns>
+            </MudDataGrid>
+        }
 
-        @if (forecasts == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Temp. (C)</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var forecast in forecasts)
-                    {
-                        <tr>
-                            <td>@forecast.Date.ToShortDateString()</td>
-                            <td>@forecast.TemperatureC</td>
-                            <td>@forecast.TemperatureF</td>
-                            <td>@forecast.Summary</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
     </Authorized>
     <NotAuthorized>
         <p>Não pertences a LIS</p>
@@ -47,10 +30,10 @@
 
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private IEnumerable<Assistencia> assistencias = new List<Assistencia>();
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        assistencias = assistenciaService.GetAll();
     }
 }

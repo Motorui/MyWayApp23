@@ -3,7 +3,7 @@
 <PageTitle>Upload Excel</PageTitle>
 
 @inject ISnackbar Snackbar
-@inject UploadService uploadService
+@inject ReadExcelService readService
 
 <AuthorizeView>
     <Authorized>
@@ -29,16 +29,48 @@
 
     private async void UploadFiles(InputFileChangeEventArgs e)
     {
-        var entries = e.File;
-        await uploadService.ImportFileAsync(entries);
+        var excelFile = e.File;
+
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+
+        var dt = await readService.ReadExcelAsync(excelFile);
+
+        List<string> columns = dt.Columns.Cast<System.Data.DataColumn>()
+                                 .Select(x => x.ColumnName)
+                                 .ToList();
+
+        List<string> assistencias = new()
+        {
+            "Aeroporto", "Msg", "Notif", "Data", "Voo", "Mov", "Orig Dest", "Pax", "SSR", "AC", "Stand", "Exit", "Ck In", "Gate", "Transferencia"
+        };
+
+        List<string> historico = new()
+        {
+            "Tipo Msg", "Aeroporto", "Notif", "Data Voo", "Hora Voo", "Data Contacto", "Hora Contacto", "Data Calcos", "Hora Calcos",
+            "Data Inicio Assistencia", "Hora Inicio Assistencia", "Data Fim Assistencia", "Hora Fim Assistencia", "Voo", "Mov", "Orig Dest",
+            "Pax", "SSR", "AC", "Stand", "Exit", "Ck In", "Gate", "Transferencia", "Equipamentos", "Justificacao Incumprimento"
+        };
+
+        if (columns.SequenceEqual(assistencias))
+        {
+            Snackbar.Add($"Listagem de assistências, com {dt.Rows.Count} records", Severity.Info);
+        }
+        else if (columns.SequenceEqual(historico))
+        {
+            Snackbar.Add($"Listagem de histórico, com {dt.Rows.Count} records", Severity.Info);
+        }
+        else
+        {
+            Snackbar.Add($"Ficheiro errado!!!", Severity.Error);
+        }
 
         //Do your validations here
-        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+
         //Snackbar.Add($"Files with {entries!.FirstOrDefault().Size} bytes size are not allowed", Severity.Error);
         //Snackbar.Add($"Files starting with letter {entries!.FirstOrDefault().Name.Substring(0, 1)} are not recommended", Severity.Warning);
         //Snackbar.Add($"This file has the extension {entries!.FirstOrDefault().Name.Split(".").Last()}", Severity.Info);
 
         //TODO upload the files to the server
-        
+
     }
 }

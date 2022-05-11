@@ -70,7 +70,8 @@ builder.Services.AddScoped<AuthenticationStateProvider,
 builder.Services.AddMudServices();
 
 builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddTransient<UploadService>();
+builder.Services.AddSingleton<ReadExcelService>();
+builder.Services.AddTransient<AssistenciaService>();
 
 var app = builder.Build();
 

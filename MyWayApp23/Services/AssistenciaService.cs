@@ -1,10 +1,10 @@
-﻿namespace MyWayApp23.Services;
+﻿using System.Diagnostics;
 
-public class AssistenciaService
+namespace MyWayApp23.Services;
+
+public class AssistenciaService : IAssistenciaService
 {
     private readonly DataContext _context;
-    public List<Assistencia> Assistencias { get; set; } = new();
-    public string Message { get; set; } = string.Empty;
 
     public AssistenciaService(DataContext context)
     {
@@ -13,31 +13,133 @@ public class AssistenciaService
 
     public List<Assistencia> GetAll()
     {
+        List<Assistencia> assistencias;
         try
         {
-            Assistencias = _context.Assistencias!.ToList();
+            assistencias = _context.Assistencias!.ToList();
         }
         catch (Exception ex)
         {
-            Message = ex.Message;
-        }
-
-        return Assistencias;
-    }
-
-    public async Task<string> Insert(Assistencia assistencia)
-    {
-        try
-        {
-            _ = _context.AddAsync(assistencia);
-        }
-        catch (Exception ex)
-        {
-            Message = ex.Message;
+            Debug.WriteLine(ex.Message);
             throw;
         }
 
-        return Message;
+        return assistencias;
     }
 
+    public async Task<Assistencia> GetByIdAsync(Guid id)
+    {
+        Assistencia assistencia;
+        try
+        {
+            assistencia = await _context.Assistencias!.FirstAsync(a => a.Id == id);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            throw;
+        }
+
+        return assistencia;
+    }
+
+    public async Task<bool> CreateAsync(Assistencia assistencia)
+    {
+        int result;
+        try
+        {
+            if (assistencia == null)
+                return false;
+
+            await _context.AddAsync(assistencia);
+            result = await _context.SaveChangesAsync();
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            throw;
+        }
+
+        return result > 0;
+    }
+
+    public async Task<bool> UpdateAsync(Assistencia assistencia)
+    {
+        int result;
+        try
+        {
+            if (assistencia == null)
+                return false;
+
+            _context.Update(assistencia);
+            result = await _context.SaveChangesAsync();
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            throw;
+        }
+
+        return result > 0;
+    }
+
+    public async Task<bool> CreateOrUpdateAsync(Assistencia assistencia)
+    {
+        int result;
+
+        try
+        {
+            if (assistencia == null)
+                return false;
+
+            var exists = await _context.Assistencias!.FirstAsync(a =>
+                a.Data.Date == assistencia.Data.Date &&
+                a.Voo == assistencia.Voo &&
+                a.Mov == assistencia.Mov &&
+                a.Pax == assistencia.Pax
+            );
+
+            if (exists == null)
+            {
+                await _context.AddAsync(assistencia);
+            }
+            else
+            {
+                _context.Update(assistencia);
+            }
+
+            result = await _context.SaveChangesAsync();
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            throw;
+        }
+
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteAsync(Assistencia assistencia)
+    {
+        int result;
+        try
+        {
+            if (assistencia == null)
+                return false;
+
+            _context.Remove(assistencia);
+            result = await _context.SaveChangesAsync();
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            throw;
+        }
+
+        return result > 0;
+    }
 }

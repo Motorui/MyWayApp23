@@ -2,30 +2,61 @@
 
 <PageTitle>Upload Excel</PageTitle>
 
+@implements IDisposable
 @inject ISnackbar Snackbar
 @inject ReadExcelService readService
+@inject IAssistenciaService assistenciaService
 
 <AuthorizeView>
     <Authorized>
-        <h1>Upload Excel</h1>
-        <InputFile id="fileInput112" OnChange="UploadFiles" hidden accept=".xls, .xlsx" />
 
-        <MudButton HtmlTag="label"
-                   Variant="Variant.Filled"
-                   Color="Color.Dark"
-                   StartIcon="@Icons.Filled.UploadFile"
-                   for="fileInput112">
-            Upload ficheiros de assistências
-        </MudButton>
+        <MudGrid>
+            <MudItem xs="12" sm="12" lg="12" md="12" xl="12" xxl="12">
+                <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
+            </MudItem>
+            <MudItem xs="12" sm="12" lg="12" md="12" xl="12" xxl="12">
+                <InputFile id="fileInput112" OnChange="UploadFiles" hidden accept=".xls, .xlsx" />
+
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Dark"
+                           StartIcon="@Icons.Filled.UploadFile"
+                           for="fileInput112">
+                    Upload ficheiros de assistências
+                </MudButton>
+
+            </MudItem>
+            <MudItem xs="12" sm="12" lg="12" md="12" xl="12" xxl="12">
+                @if (Value > 0)
+                {
+                    <MudProgressLinear Color="Color.Success" Value="@Value" Size="Size.Large" Class="my-5">
+                        <MudText Typo="Typo.subtitle1" Color="Color.Default">
+                            <b>@((int)Value)%</b>
+                        </MudText>
+                    </MudProgressLinear>
+                    <MudText>@ProgressMessage</MudText>
+                }
+
+            </MudItem>
+        </MudGrid>
+
 
     </Authorized>
     <NotAuthorized>
-        <p>Não tem acesso a esta página, por favor contacte com o administrador!</p>
+        <_403 />
     </NotAuthorized>
 </AuthorizeView>
 
 
 @code {
+    public double Value { get; set; } = 0;
+    public string? ProgressMessage { get; set; } = string.Empty;
+
+    private List<BreadcrumbItem> _breads = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Home", href: "#"),
+        new BreadcrumbItem("Upload", href: null, disabled: true)
+    };
 
     private async void UploadFiles(InputFileChangeEventArgs e)
     {
@@ -51,9 +82,35 @@
             "Pax", "SSR", "AC", "Stand", "Exit", "Ck In", "Gate", "Transferencia", "Equipamentos", "Justificacao Incumprimento"
         };
 
+        var total = dt.Rows.Count;
+
         if (columns.SequenceEqual(assistencias))
         {
-            Snackbar.Add($"Listagem de assistências, com {dt.Rows.Count} records", Severity.Info);
+            double step = (100 / ((double)dt.Rows.Count));
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    ProgressCount(step, (i + 1));
+            //}
+            Value = 0;
+            int row = 1;
+            do
+            {
+                if (_disposed)
+                {
+                    return;
+                }
+                foreach (var item in dt.Rows)
+                {
+                    row++;
+                    Value += step;
+                    ProgressMessage = $"Processadas {row} linhas!";
+                    StateHasChanged();
+                    await Task.Delay(100);
+                }
+
+            } while (Value < 100);
+
+            //Snackbar.Add($"Listagem de assistências, com {dt.Rows.Count} records", Severity.Info);
         }
         else if (columns.SequenceEqual(historico))
         {
@@ -64,13 +121,29 @@
             Snackbar.Add($"Ficheiro errado!!!", Severity.Error);
         }
 
-        //Do your validations here
+    }
 
-        //Snackbar.Add($"Files with {entries!.FirstOrDefault().Size} bytes size are not allowed", Severity.Error);
-        //Snackbar.Add($"Files starting with letter {entries!.FirstOrDefault().Name.Substring(0, 1)} are not recommended", Severity.Warning);
-        //Snackbar.Add($"This file has the extension {entries!.FirstOrDefault().Name.Split(".").Last()}", Severity.Info);
+    public async void ProgressCount(double step)
+    {
+        Value = 0;
+        int row = 1;
+        do
+        {
+            if (_disposed)
+            {
+                return;
+            }
 
-        //TODO upload the files to the server
+            row += 1;
+            Value += step;
+            ProgressMessage = $"Processadas {row} linhas!";
+
+            StateHasChanged();
+            await Task.Delay(100);
+        } while (Value < 100);
 
     }
+
+    bool _disposed;
+    public void Dispose() => _disposed = true;
 }

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using MyWayApp23.Areas.Identity.Services;
 
@@ -71,7 +70,7 @@ builder.Services.AddMudServices();
 
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<ReadExcelService>();
-builder.Services.AddTransient<AssistenciaService>();
+builder.Services.AddTransient<IAssistenciaService, AssistenciaService>();
 
 var app = builder.Build();
 

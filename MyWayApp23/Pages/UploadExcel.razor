@@ -82,33 +82,29 @@
             "Pax", "SSR", "AC", "Stand", "Exit", "Ck In", "Gate", "Transferencia", "Equipamentos", "Justificacao Incumprimento"
         };
 
-        var total = dt.Rows.Count;
-
         if (columns.SequenceEqual(assistencias))
         {
-            double step = (100 / ((double)dt.Rows.Count));
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //{
-            //    ProgressCount(step, (i + 1));
-            //}
-            Value = 0;
-            int row = 1;
-            do
-            {
-                if (_disposed)
-                {
-                    return;
-                }
-                foreach (var item in dt.Rows)
-                {
-                    row++;
-                    Value += step;
-                    ProgressMessage = $"Processadas {row} linhas!";
-                    StateHasChanged();
-                    await Task.Delay(100);
-                }
-
-            } while (Value < 100);
+            List<Assistencia> lista = new();
+            lista = (from DataRow dr in dt.Rows
+                     select new Assistencia()
+                         {
+                             Id = Guid.NewGuid(),
+                             Aeroporto = dr["Aeroporto"].ToString(),
+                             Msg = dr["Msg"].ToString(),
+                             Notif = dr["Notif"].ToString(),
+                             Data = DateTime.Parse(dr["Data"].ToString()),
+                             Voo = dr["Voo"].ToString(),
+                             Mov = dr["Mov"].ToString(),
+                             OrigDest = dr["Orig Dest"].ToString(),
+                             Pax = dr["Pax"].ToString(),
+                             SSR = dr["SSR"].ToString(),
+                             AC = dr["AC"].ToString(),
+                             Stand = dr["Stand"].ToString(),
+                             Exit = dr["Exit"].ToString(),
+                             CkIn = dr["Ck In"].ToString(),
+                             Gate = dr["Gate"].ToString(),
+                             Transferencia = dr["Transferencia"].ToString(),
+                         }).ToList();
 
             //Snackbar.Add($"Listagem de assistências, com {dt.Rows.Count} records", Severity.Info);
         }
@@ -123,10 +119,9 @@
 
     }
 
-    public async void ProgressCount(double step)
+    public async void ProgressCount(double step, int row)
     {
         Value = 0;
-        int row = 1;
         do
         {
             if (_disposed)
@@ -142,6 +137,7 @@
             await Task.Delay(100);
         } while (Value < 100);
 
+        ProgressCount(step, row);
     }
 
     bool _disposed;

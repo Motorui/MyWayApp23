@@ -8,4 +8,5 @@ public interface IAssistenciaService
     List<Assistencia> GetAll();
     Task<Assistencia> GetByIdAsync(Guid id);
     Task<bool> UpdateAsync(Assistencia assistencia);
+    Task<bool> ExistsAsync(Assistencia assistencia);
 }

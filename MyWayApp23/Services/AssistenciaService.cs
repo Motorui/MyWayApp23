@@ -94,7 +94,7 @@ public class AssistenciaService : IAssistenciaService
             if (assistencia == null)
                 return false;
 
-            var exists = await _context.Assistencias!.FirstAsync(a =>
+            var exists = await _context.Assistencias!.AsNoTracking().SingleOrDefaultAsync(a =>
                 a.Data.Date == assistencia.Data.Date &&
                 a.Voo == assistencia.Voo &&
                 a.Mov == assistencia.Mov &&
@@ -107,6 +107,7 @@ public class AssistenciaService : IAssistenciaService
             }
             else
             {
+                assistencia.Id = exists.Id;
                 _context.Update(assistencia);
             }
 
@@ -141,5 +142,17 @@ public class AssistenciaService : IAssistenciaService
         }
 
         return result > 0;
+    }
+
+    public async Task<bool> ExistsAsync(Assistencia assistencia)
+    {
+        var exists = await _context.Assistencias!.AsNoTracking().SingleOrDefaultAsync(a =>
+                a.Data.Date == assistencia.Data.Date &&
+                a.Voo == assistencia.Voo &&
+                a.Mov == assistencia.Mov &&
+                a.Pax == assistencia.Pax
+            );
+
+        return exists != null;
     }
 }

@@ -2,9 +2,9 @@
 
 <PageTitle>Upload Excel</PageTitle>
 
-@implements IDisposable
 @inject ISnackbar Snackbar
-@inject ReadExcelService readService
+@inject IReadExcelService readService
+@inject IDataTableConverter converter
 @inject IAssistenciaService assistenciaService
 
 <AuthorizeView>
@@ -66,80 +66,45 @@
 
         var dt = await readService.ReadExcelAsync(excelFile);
 
-        List<string> columns = dt.Columns.Cast<System.Data.DataColumn>()
-                                 .Select(x => x.ColumnName)
-                                 .ToList();
-
-        List<string> assistencias = new()
+        Value = 0;
+        int row = 0;
+        int atualiza = 0;
+        int cria = 0;
+        if (converter.ReturnFileType(dt) == "assistencias")
         {
-            "Aeroporto", "Msg", "Notif", "Data", "Voo", "Mov", "Orig Dest", "Pax", "SSR", "AC", "Stand", "Exit", "Ck In", "Gate", "Transferencia"
-        };
+            var assistencias = converter.ConvertDataTableToAssistencias(dt);
 
-        List<string> historico = new()
-        {
-            "Tipo Msg", "Aeroporto", "Notif", "Data Voo", "Hora Voo", "Data Contacto", "Hora Contacto", "Data Calcos", "Hora Calcos",
-            "Data Inicio Assistencia", "Hora Inicio Assistencia", "Data Fim Assistencia", "Hora Fim Assistencia", "Voo", "Mov", "Orig Dest",
-            "Pax", "SSR", "AC", "Stand", "Exit", "Ck In", "Gate", "Transferencia", "Equipamentos", "Justificacao Incumprimento"
-        };
+            foreach (var assistencia in assistencias)
+            {
+                row++;
+                int total = assistencias.Count;
+                Value = (row / (double)assistencias.Count) * 100;
 
-        if (columns.SequenceEqual(assistencias))
-        {
-            List<Assistencia> lista = new();
-            lista = (from DataRow dr in dt.Rows
-                     select new Assistencia()
-                         {
-                             Id = Guid.NewGuid(),
-                             Aeroporto = dr["Aeroporto"].ToString(),
-                             Msg = dr["Msg"].ToString(),
-                             Notif = dr["Notif"].ToString(),
-                             Data = DateTime.Parse(dr["Data"].ToString()),
-                             Voo = dr["Voo"].ToString(),
-                             Mov = dr["Mov"].ToString(),
-                             OrigDest = dr["Orig Dest"].ToString(),
-                             Pax = dr["Pax"].ToString(),
-                             SSR = dr["SSR"].ToString(),
-                             AC = dr["AC"].ToString(),
-                             Stand = dr["Stand"].ToString(),
-                             Exit = dr["Exit"].ToString(),
-                             CkIn = dr["Ck In"].ToString(),
-                             Gate = dr["Gate"].ToString(),
-                             Transferencia = dr["Transferencia"].ToString(),
-                         }).ToList();
+                if (await assistenciaService.ExistsAsync(assistencia))
+                {
+                    atualiza++;
+                }
+                else
+                {
+                    cria++;
+                }
+                ProgressMessage = $"Foram inseridos {cria} e atualizados {atualiza} registos, de um total de {total} registos";
 
-            //Snackbar.Add($"Listagem de assistências, com {dt.Rows.Count} records", Severity.Info);
+                StateHasChanged();
+                await Task.Delay(100);
+
+                await assistenciaService.CreateOrUpdateAsync(assistencia);
+            }
+
         }
-        else if (columns.SequenceEqual(historico))
+        else if (converter.ReturnFileType(dt) == "historico")
         {
-            Snackbar.Add($"Listagem de histórico, com {dt.Rows.Count} records", Severity.Info);
+            Snackbar.Add($"historico", Severity.Success);
         }
         else
         {
             Snackbar.Add($"Ficheiro errado!!!", Severity.Error);
         }
-
     }
 
-    public async void ProgressCount(double step, int row)
-    {
-        Value = 0;
-        do
-        {
-            if (_disposed)
-            {
-                return;
-            }
-
-            row += 1;
-            Value += step;
-            ProgressMessage = $"Processadas {row} linhas!";
-
-            StateHasChanged();
-            await Task.Delay(100);
-        } while (Value < 100);
-
-        ProgressCount(step, row);
-    }
-
-    bool _disposed;
-    public void Dispose() => _disposed = true;
 }

@@ -1,14 +1,15 @@
 ﻿using ExcelDataReader;
 using Microsoft.AspNetCore.Components.Forms;
-using System.Data;
 
 namespace MyWayApp23.Services;
 
-public class ReadExcelService
+public class ReadExcelService : IReadExcelService
 {
     public async Task<DataTable> ReadExcelAsync(IBrowserFile stream)
     {
-        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+        System.Text.Encoding.RegisterProvider(
+            System.Text.CodePagesEncodingProvider.Instance);
+
         DataSet? result = new();
 
         using (var ms = new MemoryStream())

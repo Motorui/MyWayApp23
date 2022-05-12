@@ -3,7 +3,7 @@
 <PageTitle>Weather forecast</PageTitle>
 
 @using MyWayApp23.Data
-@inject AssistenciaService assistenciaService
+@inject IAssistenciaService assistenciaService
 
 <AuthorizeView Policy="lisOnly">
     <Authorized>
@@ -11,7 +11,7 @@
 
         @if (assistencias != null)
         {
-            <MudDataGrid Items="@assistencias.Take(4)">
+            <MudDataGrid Items="@assistencias.Take(1000)">
                 <Columns>
                     <Column T="Assistencia" Field="Aeroporto" Title="UH" />
                     <Column T="Assistencia" Field="Msg" />

@@ -41,7 +41,7 @@ public class HistoricoAssistencia : IBaseEntity
     public string Mov { get; set; } = string.Empty;
 
     [Display(Name = "Origem/Destino:")]
-    public string OrigDest { get; set; } = string.Empty;
+    public string? OrigDest { get; set; } = string.Empty;
 
     [Required]
     [Display(Name = "Passageiro:")]
@@ -51,7 +51,7 @@ public class HistoricoAssistencia : IBaseEntity
     public string SSR { get; set; } = string.Empty;
 
     [Display(Name = "Aeronave:")]
-    public string AC { get; set; } = string.Empty;
+    public string? AC { get; set; } = string.Empty;
 
     [Display(Name = "Stand:")]
     public string? Stand { get; set; } = string.Empty;

@@ -72,6 +72,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<IReadExcelService, ReadExcelService>();
 builder.Services.AddTransient<IDataTableConverter, DataTableConverter>();
 builder.Services.AddTransient<IAssistenciaService, AssistenciaService>();
+builder.Services.AddTransient<IHistoricoService, HistoricoService>();
 
 var app = builder.Build();
 

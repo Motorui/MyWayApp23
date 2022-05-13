@@ -1,4 +1,6 @@
-﻿namespace MyWayApp23.Services;
+﻿using System.Globalization;
+
+namespace MyWayApp23.Services;
 
 public class DataTableConverter : IDataTableConverter
 {
@@ -95,10 +97,14 @@ public class DataTableConverter : IDataTableConverter
         HistoricoAssistencia result = new()
         {
             Id = Guid.NewGuid(),
+            Msg = row["Tipo Msg"].ToString()!,
             Aeroporto = row["Aeroporto"].ToString()!,
-            Msg = row["Msg"].ToString()!,
             Notif = row["Notif"].ToString()!,
-            Data = DateTime.Parse(row["Data"].ToString()!),
+            Data = DateTime.ParseExact(row["Data Voo"].ToString()! + " " + row["Hora Voo"].ToString(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+            Contacto = ConvertDateTimeFromStrings(row["Data Contacto"].ToString()! + " " + row["Hora Contacto"].ToString()!),
+            Calcos = ConvertDateTimeFromStrings(row["Data Calcos"].ToString()! + " " + row["Hora Calcos"].ToString()!),
+            Inicio = ConvertDateTimeFromStrings(row["Data Inicio Assistencia"].ToString()! + " " + row["Hora Inicio Assistencia"].ToString()!),
+            Fim = ConvertDateTimeFromStrings(row["Data Fim Assistencia"].ToString()! + " " + row["Hora Fim Assistencia"].ToString()!),
             Voo = row["Voo"].ToString()!,
             Mov = row["Mov"].ToString()!,
             OrigDest = row["Orig Dest"].ToString(),
@@ -109,9 +115,31 @@ public class DataTableConverter : IDataTableConverter
             Exit = row["Exit"].ToString(),
             CkIn = row["Ck In"].ToString(),
             Gate = row["Gate"].ToString(),
-            Transferencia = row["Transferencia"].ToString()
+            Transferencia = row["Transferencia"].ToString(),
+            Equipamentos = row["Equipamentos"].ToString()!,
+            Justificacao = row["Justificacao Incumprimento"].ToString()!
         };
 
         return result;
+    }
+
+    private static DateTime? ConvertDateTimeFromStrings(string datetime)
+    {
+        if (datetime == null)
+            return null;
+
+        try
+        {
+            return DateTime.ParseExact(datetime, "yyyy-MM-dd HH:mm:ss",
+                                    new CultureInfo("pt-PT"),
+                                    DateTimeStyles.None);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+
+
+
     }
 }

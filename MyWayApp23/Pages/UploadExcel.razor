@@ -6,6 +6,7 @@
 @inject IReadExcelService readService
 @inject IDataTableConverter converter
 @inject IAssistenciaService assistenciaService
+@inject IHistoricoService historicoService
 
 <AuthorizeView>
     <Authorized>
@@ -99,7 +100,29 @@
         }
         else if (converter.ReturnFileType(dt) == "historico")
         {
-            Snackbar.Add($"historico", Severity.Success);
+            var historicos = converter.ConvertDataTableToHistorico(dt);
+
+            foreach (var historico in historicos)
+            {
+                row++;
+                int total = historicos.Count;
+                Value = (row / (double)historicos.Count) * 100;
+
+                if (await historicoService.ExistsAsync(historico))
+                {
+                    atualiza++;
+                }
+                else
+                {
+                    cria++;
+                }
+                ProgressMessage = $"Foram inseridos {cria} e atualizados {atualiza} registos, de um total de {total} registos";
+
+                StateHasChanged();
+                await Task.Delay(100);
+
+                await historicoService.CreateOrUpdateAsync(historico);
+            }
         }
         else
         {
@@ -107,4 +130,4 @@
         }
     }
 
-}
+    }

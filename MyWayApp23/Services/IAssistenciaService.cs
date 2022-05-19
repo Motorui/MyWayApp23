@@ -7,6 +7,7 @@ public interface IAssistenciaService
     Task<bool> DeleteAsync(Assistencia assistencia);
     List<Assistencia> GetAll();
     Task<Assistencia> GetByIdAsync(Guid id);
+    List<Assistencia> GetByDate(DateTime date);
     Task<bool> UpdateAsync(Assistencia assistencia);
-    Task<bool> ExistsAsync(Assistencia assistencia);
+    Task<Assistencia?> ExistsAsync(Assistencia assistencia);
 }

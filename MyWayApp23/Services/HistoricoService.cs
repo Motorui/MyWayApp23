@@ -95,21 +95,16 @@ public class HistoricoService : IHistoricoService
             if (historico == null)
                 return false;
 
-            var exists = await _context.HistoricoAssistencias!.AsNoTracking().SingleOrDefaultAsync(a =>
-                a.Data.Date == historico.Data.Date &&
-                a.Voo == historico.Voo &&
-                a.Mov == historico.Mov &&
-                a.Pax == historico.Pax
-            );
+            var exists = await ExistsAsync(historico);
 
-            if (exists == null)
-            {
-                await _context.AddAsync(historico);
-            }
-            else
+            if (exists != null)
             {
                 historico.Id = exists.Id;
                 _context.Update(historico);
+            }
+            else
+            {
+                await _context.AddAsync(historico);
             }
 
             result = await _context.SaveChangesAsync();
@@ -145,16 +140,17 @@ public class HistoricoService : IHistoricoService
         return result > 0;
     }
 
-    public async Task<bool> ExistsAsync(HistoricoAssistencia historico)
+    public async Task<HistoricoAssistencia?> ExistsAsync(HistoricoAssistencia historico)
     {
         var exists = await _context.HistoricoAssistencias!.AsNoTracking().SingleOrDefaultAsync(a =>
+                a.Aeroporto == historico.Aeroporto &&
                 a.Data.Date == historico.Data.Date &&
                 a.Voo == historico.Voo &&
                 a.Mov == historico.Mov &&
                 a.Pax == historico.Pax
             );
 
-        return exists != null;
+        return exists; ;
 
     }
 }

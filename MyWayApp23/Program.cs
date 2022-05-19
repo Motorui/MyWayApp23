@@ -68,11 +68,10 @@ builder.Services.AddScoped<AuthenticationStateProvider,
 
 builder.Services.AddMudServices();
 
-builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddSingleton<IReadExcelService, ReadExcelService>();
-builder.Services.AddTransient<IDataTableConverter, DataTableConverter>();
-builder.Services.AddTransient<IAssistenciaService, AssistenciaService>();
-builder.Services.AddTransient<IHistoricoService, HistoricoService>();
+builder.Services.AddScoped<IReadExcelService, ReadExcelService>();
+builder.Services.AddScoped<IDataTableConverter, DataTableConverter>();
+builder.Services.AddScoped<IAssistenciaService, AssistenciaService>();
+builder.Services.AddScoped<IHistoricoService, HistoricoService>();
 
 var app = builder.Build();
 

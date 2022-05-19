@@ -31,7 +31,7 @@
                 @if (Value > 0)
                 {
                     <MudProgressLinear Color="Color.Success" Value="@Value" Size="Size.Large" Class="my-5">
-                        <MudText Typo="Typo.subtitle1" Color="Color.Default">
+                        <MudText Typo="Typo.h1" Color="Color.Default">
                             <b>@((int)Value)%</b>
                         </MudText>
                     </MudProgressLinear>
@@ -81,7 +81,7 @@
                 int total = assistencias.Count;
                 Value = (row / (double)assistencias.Count) * 100;
 
-                if (await assistenciaService.ExistsAsync(assistencia))
+                if (await assistenciaService.ExistsAsync(assistencia) != null)
                 {
                     atualiza++;
                 }
@@ -108,7 +108,7 @@
                 int total = historicos.Count;
                 Value = (row / (double)historicos.Count) * 100;
 
-                if (await historicoService.ExistsAsync(historico))
+                if (await historicoService.ExistsAsync(historico) != null)
                 {
                     atualiza++;
                 }

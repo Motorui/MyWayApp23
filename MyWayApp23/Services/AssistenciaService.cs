@@ -43,6 +43,23 @@ public class AssistenciaService : IAssistenciaService
         return assistencia;
     }
 
+    public List<Assistencia> GetByDate(DateTime date)
+    {
+        List<Assistencia> assistencias;
+        try
+        {
+            assistencias = _context.Assistencias!
+                .Where(a => a.Data.Date == date.Date).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            throw;
+        }
+
+        return assistencias;
+    }
+
     public async Task<bool> CreateAsync(Assistencia assistencia)
     {
         int result;
@@ -94,12 +111,7 @@ public class AssistenciaService : IAssistenciaService
             if (assistencia == null)
                 return false;
 
-            var exists = await _context.Assistencias!.AsNoTracking().SingleOrDefaultAsync(a =>
-                a.Data.Date == assistencia.Data.Date &&
-                a.Voo == assistencia.Voo &&
-                a.Mov == assistencia.Mov &&
-                a.Pax == assistencia.Pax
-            );
+            var exists = await ExistsAsync(assistencia);
 
             if (exists == null)
             {
@@ -144,7 +156,7 @@ public class AssistenciaService : IAssistenciaService
         return result > 0;
     }
 
-    public async Task<bool> ExistsAsync(Assistencia assistencia)
+    public async Task<Assistencia?> ExistsAsync(Assistencia assistencia)
     {
         var exists = await _context.Assistencias!.AsNoTracking().SingleOrDefaultAsync(a =>
                 a.Data.Date == assistencia.Data.Date &&
@@ -153,6 +165,6 @@ public class AssistenciaService : IAssistenciaService
                 a.Pax == assistencia.Pax
             );
 
-        return exists != null;
+        return exists;
     }
 }

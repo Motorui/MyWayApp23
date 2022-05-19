@@ -7,19 +7,110 @@
 
 <AuthorizeView Policy="lisOnly">
     <Authorized>
-        <h1>Assistências</h1>
-
-        @if (assistencias != null)
+        @if (assistencias.Count() < 1)
         {
-            <MudDataGrid Items="@assistencias.Take(1000)">
-                <Columns>
-                    <Column T="Assistencia" Field="Aeroporto" Title="UH" />
-                    <Column T="Assistencia" Field="Msg" />
-                    <Column T="Assistencia" Field="Notif" />
-                    <Column T="Assistencia" Field="Data" />
-                    <Column T="Assistencia" Field="Voo" Title="Voo" />
-                </Columns>
-            </MudDataGrid>
+            <MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999">
+                <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+            </MudOverlay>
+            <MudGrid>
+                <MudItem xs="12" sm="12" lg="12" md="12" xl="12" xxl="12">
+                    <MudText Typo="Typo.subtitle1" Color="Color.Default">
+                        Assistências
+                    </MudText>
+
+                    <MudDataGrid Items="@assistencias.OrderByDescending(d=>d.Data)"
+                             Hover="true" Dense="true" Bordered="true" Sortable="true"
+                             Filterable="false" QuickFilter="@_quickFilter" Hideable="true">
+
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Assistências</MudText>
+                            <MudSpacer />
+                            <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Selecionar data"
+                                       HelperText="Filtrar por data" DateFormat="dd/MM/yyyy"
+                                       Date="_searchDate" DateChanged="FilterDate" />
+                            <MudSpacer />
+                            <MudTextField @bind-Value="_searchString" Placeholder="procurar (PAX; VOO; SSR)"
+                                      Adornment="Adornment.Start" Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium" Class="mt-0">
+                            </MudTextField>
+                        </ToolBarContent>
+                        <Columns>
+@*                            <Column T="Assistencia" Field="Aeroporto" Title="UH" />
+                            <Column T="Assistencia" Field="Msg" Title="Msg" />
+                            <Column T="Assistencia" Field="Notif" Title="Notif" />
+                            <Column T="Assistencia" Field="Data" Title="Data" />
+                            <Column T="Assistencia" Field="Voo" Title="Voo" />
+                            <Column T="Assistencia" Field="Mov" Title="Mov" />
+                            <Column T="Assistencia" Field="OrigDest" Title="Orig/Dest" />
+                            <Column T="Assistencia" Field="Pax" Title="PAX" />
+                            <Column T="Assistencia" Field="SSR" Title="SSR" />
+                            <Column T="Assistencia" Field="AC" Title="AC" />
+                            <Column T="Assistencia" Field="Stand" Title="Stand" />
+                            <Column T="Assistencia" Field="Exit" Title="Saída" />
+                            <Column T="Assistencia" Field="CkIn" Title="Ck-In" />
+                            <Column T="Assistencia" Field="Gate" Title="Porta" />
+                            <Column T="Assistencia" Field="Transferencia" Title="Transferência" />*@
+                        </Columns>
+                        <PagerContent>
+                            <MudText Typo="Typo.subtitle1" Color="Color.Default" Class="px-5 py-2">
+                                Sem resultados...
+                            </MudText>
+                        </PagerContent>
+                    </MudDataGrid>
+                </MudItem>
+            </MudGrid>
+        }
+        else
+        {
+            <MudGrid>
+                <MudItem xs="12" sm="12" lg="12" md="12" xl="12" xxl="12">
+                    <MudText Typo="Typo.subtitle1" Color="Color.Default">
+                        Assistências
+                    </MudText>
+
+                    <MudDataGrid Items="@assistencias.OrderByDescending(d=>d.Data)"
+                             Hover="true" Dense="true" Bordered="true" Sortable="true"
+                             Filterable="false" QuickFilter="@_quickFilter" Hideable="true">
+
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Assistências</MudText>
+                            <MudSpacer />
+                            <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Selecionar data"
+                                       HelperText="Filtrar por data" DateFormat="dd/MM/yyyy"
+                                       Date="_searchDate" DateChanged="FilterDate" />
+                            <MudSpacer />
+                            <MudTextField @bind-Value="_searchString" Placeholder="procurar (PAX; VOO; SSR)"
+                                      Adornment="Adornment.Start" Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium" Class="mt-0">
+                            </MudTextField>
+                        </ToolBarContent>
+
+                        <Columns>
+                            <Column T="Assistencia" Field="Aeroporto" Title="UH" />
+                            <Column T="Assistencia" Field="Msg" Title="Msg" />
+                            <Column T="Assistencia" Field="Notif" Title="Notif" />
+                            <Column T="Assistencia" Field="Data" Title="Data" />
+                            <Column T="Assistencia" Field="Voo" Title="Voo" />
+                            <Column T="Assistencia" Field="Mov" Title="Mov" />
+                            <Column T="Assistencia" Field="OrigDest" Title="Orig/Dest" />
+                            <Column T="Assistencia" Field="Pax" Title="PAX" />
+                            <Column T="Assistencia" Field="SSR" Title="SSR" />
+                            <Column T="Assistencia" Field="AC" Title="AC" />
+                            <Column T="Assistencia" Field="Stand" Title="Stand" />
+                            <Column T="Assistencia" Field="Exit" Title="Saída" />
+                            <Column T="Assistencia" Field="CkIn" Title="Ck-In" />
+                            <Column T="Assistencia" Field="Gate" Title="Porta" />
+                            <Column T="Assistencia" Field="Transferencia" Title="Transferência" />
+                        </Columns>
+                        <PagerContent>
+                            <MudDataGridPager T="Assistencia" />
+                        </PagerContent>
+                    </MudDataGrid>
+                </MudItem>
+            </MudGrid>
+
         }
 
     </Authorized>
@@ -30,10 +121,44 @@
 
 
 @code {
+    bool isVisible = true;
     private IEnumerable<Assistencia> assistencias = new List<Assistencia>();
-
+    private string? _searchString;
+    DateTime? _searchDate = DateTime.UtcNow;
     protected override async Task OnInitializedAsync()
     {
+        await Task.Delay(500);
         assistencias = assistenciaService.GetAll();
+
+        isVisible = false;
+    }
+
+    // quick filter - filter gobally across multiple columns with the same input
+    private Func<Assistencia, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Pax.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Voo.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.SSR.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    };
+
+    public async void FilterDate(DateTime? newDate)
+    {
+        _searchDate = newDate;
+        isVisible = true;
+        await Task.Delay(500);
+
+        assistencias = assistenciaService.GetByDate((DateTime)newDate!);
+        isVisible = false;
+        StateHasChanged();
     }
 }

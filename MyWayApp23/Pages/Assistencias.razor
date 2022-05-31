@@ -1,0 +1,63 @@
+﻿@page "/assistencias"
+
+@using MyWayApp23.Data
+@inject IHistoricoService historicoService
+
+<PageTitle>Detalhes</PageTitle>
+
+<AuthorizeView Context="AuthContext">
+    <Authorized>
+        @if (test.Count() < 1)
+        {
+            <MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999">
+                <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+            </MudOverlay>
+        }
+        else
+        {
+            <MudTable Items="@test" Dense="true" Hover="true" Bordered="true" Striped="true">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">test</MudText>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Data</MudTh>
+                    <MudTh>Dia</MudTh>
+                    <MudTh>Total</MudTh>
+                    <MudTh>DEP</MudTh>
+                    <MudTh>% DEP</MudTh>
+                    <MudTh>ARR</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Data">@context.Data</MudTd>
+                    <MudTd DataLabel="Dia">@context.DiaSemana</MudTd>
+                    <MudTd DataLabel="Total">@context.TotalDia</MudTd>
+                    <MudTd DataLabel="DEP">@context.Dep</MudTd>
+                    <MudTd DataLabel="% DEP">@context.DepPercentage</MudTd>
+                    <MudTd DataLabel="ARR">@context.Arr</MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+        }
+
+    </Authorized>
+    <NotAuthorized>
+        <_403 />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    bool isVisible = true;
+    private IEnumerable<HistoricoAssistencia> historico = new List<HistoricoAssistencia>();
+    private IEnumerable<HistoricoDetalhe> test = new List<HistoricoDetalhe>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(500);
+        historico = historicoService.GetAll().OrderByDescending(d => d.Data);
+        test = historicoService.Teste(DateTime.UtcNow).OrderByDescending(d => d.Data);
+        isVisible = false;
+    }
+
+}

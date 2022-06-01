@@ -14,7 +14,7 @@ public class ReadExcelService : IReadExcelService
 
         using (var ms = new MemoryStream())
         {
-            await stream.OpenReadStream(640000).CopyToAsync(ms);
+            await stream.OpenReadStream(30000000).CopyToAsync(ms);
 
             using var reader = ExcelReaderFactory.CreateReader(ms);
 

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Globalization;
 
 namespace MyWayApp23.Services;
 
@@ -120,8 +119,9 @@ public class AssistenciaService : IAssistenciaService
             }
             else
             {
-                assistencia.Id = exists.Id;
-                _context.Update(assistencia);
+                _context.Entry(exists).CurrentValues.SetValues(assistencia);
+                //assistencia.Id = exists.Id;
+               //_context.Update(assistencia);
             }
 
             result = await _context.SaveChangesAsync();

@@ -102,9 +102,7 @@ public class HistoricoService : IHistoricoService
 
                 _context.Entry(exists).CurrentValues.SetValues(historico);
                 //historico.Id = exists.Id;
-
                 //_context.Entry(exists).State = EntityState.Detached;
-
                 //_context.Update(historico);
             }
             else
@@ -157,40 +155,6 @@ public class HistoricoService : IHistoricoService
 
         return exists; ;
 
-    }
-
-    public List<HistoricoDetalhe> Teste(DateTime data)
-    {
-
-        List<HistoricoDetalhe> detalhes = new();
-
-        var historico = GetAll();
-
-        foreach (DateTime date in DateHelper.AllDatesInMonth(data.Year, data.Month))
-        {
-            int total = historico.Where(d => d.Data.Date == date.Date).Count();
-            int dep = historico.Where(m => m.Mov == "D").Where(d => d.Data.Date == date.Date).Count();
-            int arr = historico.Where(m => m.Mov == "A").Where(d => d.Data.Date == date.Date).Count();
-
-            HistoricoDetalhe detalhe = new()
-            {
-                Data = DateOnly.FromDateTime(date),
-                DiaSemana = date.ToString("ddd", CultureInfo.CreateSpecificCulture("pt-PT")),
-                TotalDia = total,
-                Dep = dep,
-                Arr = arr
-            };
-
-            if (total > 0)
-            {
-                detalhe.DepPercentage = PercentageHelper.PercentageToString(dep, total);
-            }
-
-            detalhes.Add(detalhe);
-        }
-
-
-        return detalhes;
     }
 
 }

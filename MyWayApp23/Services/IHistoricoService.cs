@@ -9,6 +9,6 @@
         List<HistoricoAssistencia> GetAll();
         Task<HistoricoAssistencia> GetByIdAsync(Guid id);
         Task<bool> UpdateAsync(HistoricoAssistencia historico);
-        List<HistoricoDetalhe> Teste(DateTime data);
+        
     }
 }

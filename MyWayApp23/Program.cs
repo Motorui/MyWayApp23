@@ -16,8 +16,11 @@ builder.Services.AddServerSideBlazor();
 
 // Add Identity services, order is important, factory first!
 var cs = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContextFactory<DataContext>(options => options.UseSqlServer(cs));
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(cs));
+if (cs != null)
+{
+    builder.Services.AddDbContextFactory<DataContext>(options => options.UseSqlServer(cs));
+    builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(cs));
+}
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<DataContext>()
@@ -72,6 +75,7 @@ builder.Services.AddScoped<IReadExcelService, ReadExcelService>();
 builder.Services.AddScoped<IDataTableConverter, DataTableConverter>();
 builder.Services.AddScoped<IAssistenciaService, AssistenciaService>();
 builder.Services.AddScoped<IHistoricoService, HistoricoService>();
+builder.Services.AddScoped<IHistoricoDetalheService, HistoricoDetalheService>();
 
 var app = builder.Build();
 

@@ -99,11 +99,13 @@ public class HistoricoService : IHistoricoService
 
             if (exists != null)
             {
-                historico.Id = exists.Id;
 
-                _context.Entry(exists).State = EntityState.Detached;
+                _context.Entry(exists).CurrentValues.SetValues(historico);
+                //historico.Id = exists.Id;
 
-                _context.Update(historico);
+                //_context.Entry(exists).State = EntityState.Detached;
+
+                //_context.Update(historico);
             }
             else
             {
@@ -164,7 +166,7 @@ public class HistoricoService : IHistoricoService
 
         var historico = GetAll();
 
-        foreach (DateTime date in AllDatesInMonth(data.Year, data.Month))
+        foreach (DateTime date in DateHelper.AllDatesInMonth(data.Year, data.Month))
         {
             int total = historico.Where(d => d.Data.Date == date.Date).Count();
             int dep = historico.Where(m => m.Mov == "D").Where(d => d.Data.Date == date.Date).Count();
@@ -181,7 +183,7 @@ public class HistoricoService : IHistoricoService
 
             if (total > 0)
             {
-                detalhe.DepPercentage = PercentageCalc(dep, total);
+                detalhe.DepPercentage = PercentageHelper.PercentageToString(dep, total);
             }
 
             detalhes.Add(detalhe);
@@ -191,18 +193,4 @@ public class HistoricoService : IHistoricoService
         return detalhes;
     }
 
-    public static IEnumerable<DateTime> AllDatesInMonth(int year, int month)
-    {
-        int days = DateTime.DaysInMonth(year, month);
-        for (int day = 1; day <= days; day++)
-        {
-            yield return new DateTime(year, month, day);
-        }
-    }
-
-    public string PercentageCalc(double value, double total)
-    {
-        double result = value / total;
-        return result.ToString("P", CultureInfo.InvariantCulture);
-    }
 }

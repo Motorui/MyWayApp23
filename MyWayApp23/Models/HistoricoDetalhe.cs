@@ -13,9 +13,9 @@
         public string JetBridgePercentage { get; set; } = string.Empty;
         public int Remote { get; set; }
         public string RemotePercentage { get; set; } = string.Empty;
-        public int Mais36 { get; set; }
+        public double Mais36 { get; set; }
         public string PercentageMais36 { get; set; } = string.Empty;
-        public int Menos36 { get; set; }
+        public double Menos36 { get; set; }
         public string PercentageMenos36 { get; set; } = string.Empty;
         public int Wchr { get; set; }
         public int Wchs { get; set; }

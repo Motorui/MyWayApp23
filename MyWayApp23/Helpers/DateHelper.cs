@@ -10,4 +10,23 @@ public static class DateHelper
             yield return new DateTime(year, month, day);
         }
     }
+    public static DateTime? ConvertDateTimeFromStrings(string datetime)
+    {
+        if (datetime == null)
+            return null;
+
+        try
+        {
+            return DateTime.ParseExact(datetime, "yyyy-MM-dd HH:mm:ss",
+                                    new CultureInfo("pt-PT"),
+                                    DateTimeStyles.None);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+
+
+
+    }
 }

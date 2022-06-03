@@ -14,7 +14,7 @@ public class HistoricoAssistencia : IBaseEntity
     public string Aeroporto { get; set; } = string.Empty;
 
     [Display(Name = "Notificação:")]
-    public string Notif { get; set; } = string.Empty;
+    public double Notif { get; set; }
 
     [Required]
     [Display(Name = "Data:")]  // Data Voo + Hora Voo

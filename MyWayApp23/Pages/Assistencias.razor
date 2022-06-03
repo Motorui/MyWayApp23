@@ -21,8 +21,8 @@
                        DateChanged="OnDateChange" Required="true" DateFormat="MMM"
                        FixDay="1" />
 
-            <MudTable Items="@detalhes" Dense="true" Hover="true" Bordered="true" 
-                Striped="true" Loading="isVisible" RowsPerPage="31">
+            <MudTable Items="@detalhes" Dense="true" Hover="true" Bordered="true"
+                  Striped="true" Loading="isVisible" RowsPerPage="31">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">@_date?.ToString("MMM")</MudText>
                 </ToolBarContent>
@@ -33,6 +33,12 @@
                     <MudTh>DEP</MudTh>
                     <MudTh>% DEP</MudTh>
                     <MudTh>ARR</MudTh>
+                    <MudTh>% ARR</MudTh>
+                    <MudTh>JetBridge</MudTh>
+                    <MudTh>% JetBridge</MudTh>
+                    <MudTh>Remote</MudTh>
+                    <MudTh>% Remote</MudTh>
+                    <MudTh>>36H</MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="Data">@context.Data</MudTd>
@@ -41,10 +47,16 @@
                     <MudTd DataLabel="DEP">@context.Dep</MudTd>
                     <MudTd DataLabel="% DEP">@context.DepPercentage</MudTd>
                     <MudTd DataLabel="ARR">@context.Arr</MudTd>
+                    <MudTd DataLabel="% ARR">@context.ArrPercentage</MudTd>
+                    <MudTd DataLabel="JetBridge">@context.JetBridge</MudTd>
+                    <MudTd DataLabel="% JetBridge">@context.JetBridgePercentage</MudTd>
+                    <MudTd DataLabel="Remote">@context.Remote</MudTd>
+                    <MudTd DataLabel="% Remote">@context.RemotePercentage</MudTd>
+                     <MudTd DataLabel=">36h">@context.Mais36</MudTd>
                 </RowTemplate>
                 <PagerContent>
-                    <MudTablePager RowsPerPageString="Linhas por página"  
-                        InfoFormat="{first_item} a {last_item} de {all_items}" />
+                    <MudTablePager RowsPerPageString="Linhas por página"
+                               InfoFormat="{first_item} a {last_item} de {all_items}" />
                 </PagerContent>
             </MudTable>
         }

@@ -3,6 +3,7 @@ global using System.Globalization;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using Microsoft.EntityFrameworkCore;
+global using MyWayApp23.Extensions;
 global using MyWayApp23.Helpers;
 global using MyWayApp23.Models;
 global using MyWayApp23.Data;

@@ -76,6 +76,7 @@ builder.Services.AddScoped<IDataTableConverter, DataTableConverter>();
 builder.Services.AddScoped<IAssistenciaService, AssistenciaService>();
 builder.Services.AddScoped<IHistoricoService, HistoricoService>();
 builder.Services.AddScoped<IHistoricoDetalheService, HistoricoDetalheService>();
+builder.Services.AddScoped<IHistoricoDetalheHoraService, HistoricoDetalheHoraService>();
 
 var app = builder.Build();
 

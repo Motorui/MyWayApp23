@@ -162,6 +162,7 @@
         {
             IsUploading = false;
             Snackbar.Add($"Ficheiro errado!!!", Severity.Error);
+            StateHasChanged();
         }
     }
 }

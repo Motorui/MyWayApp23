@@ -19,36 +19,67 @@ public class HistoricoDetalheService : IHistoricoDetalheService
 
         foreach (DateTime date in DateHelper.AllDatesInMonth(data.Year, data.Month))
         {
+            List<HistoricoAssistencia>? detalhesData = historico.Where(d => d.Data.Date == date.Date).ToList();
 
-            int total = historico.Where(d => d.Data.Date == date.Date).Count();
-            int dep = historico.Where(m => m.Mov == "D").Where(d => d.Data.Date == date.Date).Count();
-            int arr = historico.Where(m => m.Mov == "A").Where(d => d.Data.Date == date.Date).Count();
-            int jetbridge = historico.Where(m => _mangas.Contains(m.Stand!)).Where(d => d.Data.Date == date.Date).Count();
-            int remoto = historico.Where(m => _remotos.Contains(m.Stand!)).Where(d => d.Data.Date == date.Date).Count();
-            //int mais36 = historico.Where(m => m.Notif >= 36).Where(d => d.Data.Date == date.Date).Count();
+            TimeOnly average = TimeOnly.FromTimeSpan(new TimeSpan(0));
+
+            List<TimeSpan> media = new();
+            foreach (var row in detalhesData.ToList())
+            {
+                TimeSpan fim = new();
+                if (row.Fim != null) { fim = row.Fim.Value.TimeOfDay; }
+                TimeSpan inicio = new();
+                if (row.Inicio != null) { inicio = row.Inicio.Value.TimeOfDay; }
+
+                if (fim > inicio)
+                {
+                    TimeSpan m = fim - inicio;
+                    media.Add(m);
+                }
+            }
+
+            if (media.Count > 0)
+            {
+                double doubleAverageTicks = media.Average(timeSpan => timeSpan.Ticks);
+                long longAverageTicks = Convert.ToInt64(doubleAverageTicks);
+
+                average = TimeOnly.FromTimeSpan(new TimeSpan(longAverageTicks));
+            }
 
             HistoricoDetalhe detalhe = new()
             {
                 Data = DateOnly.FromDateTime(date),
                 DiaSemana = date.ToString("ddd", CultureInfo.CreateSpecificCulture("pt-PT")),
-                TotalDia = total,
-                Dep = dep,
-                Arr = arr,
-                JetBridge = jetbridge,
-                Remote = remoto,
-                Mais36 = 0,
+                TotalDia = detalhesData.Count,
+                Dep = detalhesData.Count(m => m.Mov == "D"),
+                Arr = detalhesData.Count(m => m.Mov == "A"),
+                JetBridge = detalhesData.Count(m => _mangas.Contains(m.Stand!)),
+                Remote = detalhesData.Count(m => _remotos.Contains(m.Stand!)),
+                Mais36 = detalhesData.Count(m => m.Notif >= 36),
+                Menos36 = detalhesData.Count(m => m.Notif < 36),
+                Wchr = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("wchr")),
+                Wchs = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("wchs")),
+                Wchc = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("wchc")),
+                Maas = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("maas")),
+                Blnd = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("blnd")),
+                Deaf = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("deaf")),
+                Dpna = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("dpna")),
+                Stcr = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("stcr")),
+                Meda = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("meda")),
+                Wcmp = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("wcmp")),
+                Wcbd = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("wcbd")),
+                Wcbw = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("wcbw")),
+                Media = average
             };
 
-            if (total > 0)
+            if (detalhesData.Count > 0)
             {
-                detalhe.DepPercentage = PercentageHelper
-                    .PercentageToString(dep, total);
-                detalhe.ArrPercentage = PercentageHelper
-                    .PercentageToString(arr, total);
-                detalhe.JetBridgePercentage = PercentageHelper
-                    .PercentageToString(jetbridge, total);
-                detalhe.RemotePercentage = PercentageHelper
-                    .PercentageToString(remoto, total);
+                detalhe.DepPercentage = PercentageHelper.PercentageToString(detalhesData.Count(m => m.Mov == "D"), detalhesData.Count);
+                detalhe.ArrPercentage = PercentageHelper.PercentageToString(detalhesData.Count(m => m.Mov == "A"), detalhesData.Count);
+                detalhe.JetBridgePercentage = PercentageHelper.PercentageToString(detalhesData.Count(m => _mangas.Contains(m.Stand!)), detalhesData.Count);
+                detalhe.RemotePercentage = PercentageHelper.PercentageToString(detalhesData.Count(m => _remotos.Contains(m.Stand!)), detalhesData.Count);
+                detalhe.PercentageMais36 = PercentageHelper.PercentageToString(detalhesData.Count(m => m.Notif >= 36), detalhesData.Count);
+                detalhe.PercentageMenos36 = PercentageHelper.PercentageToString(detalhesData.Count(m => m.Notif < 36), detalhesData.Count);
             }
 
             detalhes.Add(detalhe);
@@ -61,4 +92,22 @@ public class HistoricoDetalheService : IHistoricoDetalheService
     {
         return _context.Stands!.Where(t => t.Tipo == tipo).Select(m => m.Numero).ToList();
     }
+
+    //private List<TimeSpan> TimeSpanFromDates(DateTime? i, DateTime? f)
+    //{
+    //    List<TimeSpan> media = new();
+    //    TimeSpan fim = new();
+    //    if (f != null) { fim = f.Value.TimeOfDay; }
+    //    TimeSpan inicio = new();
+    //    if (i != null) { inicio = i.Value.TimeOfDay; }
+
+    //    if (fim > inicio)
+    //    {
+    //        TimeSpan m = fim - inicio;
+    //        media.Add(m);
+    //    }
+    //    else { media.Add(TimeSpan.Zero); }
+
+    //    return media;
+    //}
 }

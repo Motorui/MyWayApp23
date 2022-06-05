@@ -1,93 +1,157 @@
 ﻿@page "/assistencias"
 
-@using MyWayApp23.Data
-@inject IHistoricoDetalheService detalheService
-
-@inject ISnackbar Snackbar
-
 <PageTitle>Detalhes</PageTitle>
 
 <AuthorizeView Context="AuthContext">
     <Authorized>
-        @if (detalhes.Count() <= 1)
-        {
-            <MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999">
-                <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-            </MudOverlay>
-        }
-        else
-        {
-            <MudDatePicker Label="Mês" OpenTo="OpenTo.Month" Date="@_date"
-                       DateChanged="OnDateChange" Required="true" DateFormat="MMM"
-                       FixDay="1" />
 
-            <MudTable Items="@detalhes" Dense="true" Hover="true" Bordered="true"
-                  Striped="true" Loading="isVisible" RowsPerPage="31">
-                <ToolBarContent>
-                    <MudText Typo="Typo.h6">@_date?.ToString("MMM")</MudText>
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh>Data</MudTh>
-                    <MudTh>Dia</MudTh>
-                    <MudTh>Total</MudTh>
-                    <MudTh>DEP</MudTh>
-                    <MudTh>% DEP</MudTh>
-                    <MudTh>ARR</MudTh>
-                    <MudTh>% ARR</MudTh>
-                    <MudTh>JetBridge</MudTh>
-                    <MudTh>% JetBridge</MudTh>
-                    <MudTh>Remote</MudTh>
-                    <MudTh>% Remote</MudTh>
-                    <MudTh>>36H</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Data">@context.Data</MudTd>
-                    <MudTd DataLabel="Dia">@context.DiaSemana</MudTd>
-                    <MudTd DataLabel="Total">@context.TotalDia</MudTd>
-                    <MudTd DataLabel="DEP">@context.Dep</MudTd>
-                    <MudTd DataLabel="% DEP">@context.DepPercentage</MudTd>
-                    <MudTd DataLabel="ARR">@context.Arr</MudTd>
-                    <MudTd DataLabel="% ARR">@context.ArrPercentage</MudTd>
-                    <MudTd DataLabel="JetBridge">@context.JetBridge</MudTd>
-                    <MudTd DataLabel="% JetBridge">@context.JetBridgePercentage</MudTd>
-                    <MudTd DataLabel="Remote">@context.Remote</MudTd>
-                    <MudTd DataLabel="% Remote">@context.RemotePercentage</MudTd>
-                     <MudTd DataLabel=">36h">@context.Mais36</MudTd>
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager RowsPerPageString="Linhas por página"
+        @*<MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999">
+            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+        </MudOverlay>*@
+
+        <MudTable Items="@detalhes" Dense="true" Hover="true" Bordered="true"
+                  Striped="true" Loading="isVisible" RowsPerPage="31" FixedHeader="true" Height="400px">
+            <ToolBarContent>
+                <MudDatePicker Label="Mês" OpenTo="OpenTo.Month" Date="@_date"
+                               DateChanged="OnDateChange" Required="true" DateFormat="MMM"
+                               FixDay="1" AutoClose="true"/>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh Style="white-space: nowrap;">Data</MudTh>
+                <MudTh Style="white-space: nowrap;">Dia</MudTh>
+                <MudTh Style="white-space: nowrap;">Total</MudTh>
+                <MudTh Style="white-space: nowrap;">DEP</MudTh>
+                <MudTh Style="white-space: nowrap;">% DEP</MudTh>
+                <MudTh Style="white-space: nowrap;">ARR</MudTh>
+                <MudTh Style="white-space: nowrap;">% ARR</MudTh>
+                <MudTh Style="white-space: nowrap;">JetBridge</MudTh>
+                <MudTh Style="white-space: nowrap;">% JetBridge</MudTh>
+                <MudTh Style="white-space: nowrap;">Remote</MudTh>
+                <MudTh Style="white-space: nowrap;">% Remote</MudTh>
+                <MudTh Style="white-space: nowrap;">>36H</MudTh>
+                <MudTh Style="white-space: nowrap;">% >36H</MudTh>
+                <MudTh Style="white-space: nowrap;">&lt;36H</MudTh>
+                <MudTh Style="white-space: nowrap;">WCHR</MudTh>
+                <MudTh Style="white-space: nowrap;">WCHS</MudTh>
+                <MudTh Style="white-space: nowrap;">WCHC</MudTh>
+                <MudTh Style="white-space: nowrap;">MAAS</MudTh>
+                <MudTh Style="white-space: nowrap;">BLND</MudTh>
+                <MudTh Style="white-space: nowrap;">DEAF</MudTh>
+                <MudTh Style="white-space: nowrap;">DPNA</MudTh>
+                <MudTh Style="white-space: nowrap;">STCR</MudTh>
+                <MudTh Style="white-space: nowrap;">MEDA</MudTh>
+                <MudTh Style="white-space: nowrap;">WCMP</MudTh>
+                <MudTh Style="white-space: nowrap;">WCBD</MudTh>
+                <MudTh Style="white-space: nowrap;">WCBW</MudTh>
+                <MudTh Style="white-space: nowrap;">Média</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd Style="white-space: nowrap;" DataLabel="Data" v>@context.Data</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="Dia">@context.DiaSemana</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="Total">@context.TotalDia</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="DEP">@context.Dep</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="% DEP">@context.DepPercentage</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="ARR">@context.Arr</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="% ARR">@context.ArrPercentage</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="JetBridge">@context.JetBridge</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="% JetBridge">@context.JetBridgePercentage</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="Remote">@context.Remote</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="% Remote">@context.RemotePercentage</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel=">36h">@context.Mais36</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="% >36h">@context.PercentageMais36</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="<36h">@context.Menos36</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="WCHR">@context.Wchr</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="WCHS">@context.Wchs</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="WCHC">@context.Wchc</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="MAAS">@context.Maas</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="BLND">@context.Blnd</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="DEAF">@context.Deaf</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="DPNA">@context.Dpna</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="STCR">@context.Stcr</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="MEDA">@context.Meda</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="WCMP">@context.Wcmp</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="WCBD">@context.Wcbd</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="WCBW">@context.Wcbw</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="MÉDIA">@context.Media</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Linhas por página"
                                InfoFormat="{first_item} a {last_item} de {all_items}" />
-                </PagerContent>
-            </MudTable>
-        }
+            </PagerContent>
+        </MudTable>
+
+        <MudTable Items="@detalhesHora" Dense="true" Hover="true" Bordered="true"
+                  Striped="true" Loading="isVisible" RowsPerPage="31" FixedHeader="true" Height="400px">
+            <ToolBarContent>
+                <MudDatePicker Label="Mês" OpenTo="OpenTo.Month" Date="@_date"
+                               DateChanged="OnDateChange" Required="true" DateFormat="MMM"
+                               FixDay="1" AutoClose="true"/>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh Style="white-space: nowrap;">Data</MudTh>
+                <MudTh Style="white-space: nowrap;">Dia</MudTh>
+                <MudTh Style="white-space: nowrap;">00:00</MudTh>
+                <MudTh Style="white-space: nowrap;">01:00</MudTh>
+                <MudTh Style="white-space: nowrap;">02:00</MudTh>
+                <MudTh Style="white-space: nowrap;">03:00</MudTh>
+                <MudTh Style="white-space: nowrap;">04:00</MudTh>
+                <MudTh Style="white-space: nowrap;">05:00</MudTh>
+                <MudTh Style="white-space: nowrap;">06:00</MudTh>
+                <MudTh Style="white-space: nowrap;">07:00</MudTh>
+                <MudTh Style="white-space: nowrap;">08:00</MudTh>
+                <MudTh Style="white-space: nowrap;">09:00</MudTh>
+                <MudTh Style="white-space: nowrap;">10:00</MudTh>
+                <MudTh Style="white-space: nowrap;">11:00</MudTh>
+                <MudTh Style="white-space: nowrap;">12:00</MudTh>
+                <MudTh Style="white-space: nowrap;">13:00</MudTh>
+                <MudTh Style="white-space: nowrap;">14:00</MudTh>
+                <MudTh Style="white-space: nowrap;">15:00</MudTh>
+                <MudTh Style="white-space: nowrap;">16:00</MudTh>
+                <MudTh Style="white-space: nowrap;">17:00</MudTh>
+                <MudTh Style="white-space: nowrap;">18:00</MudTh>
+                <MudTh Style="white-space: nowrap;">19:00</MudTh>
+                <MudTh Style="white-space: nowrap;">20:00</MudTh>
+                <MudTh Style="white-space: nowrap;">21:00</MudTh>
+                <MudTh Style="white-space: nowrap;">22:00</MudTh>
+                <MudTh Style="white-space: nowrap;">23:00</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd Style="white-space: nowrap;" DataLabel="Data">@context.Data</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="Dia">@context.DiaSemana</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="00:00">@context.Zero</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="01:00">@context.Uma</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="02:00">@context.Duas</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="03:00">@context.Tres</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="04:00">@context.Quatro</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="05:00">@context.Cinco</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="06:00">@context.Seis</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="07:00">@context.Sete</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="08:00">@context.Oito</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="09:00">@context.Nove</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="10:00">@context.Dez</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="11:00">@context.Onze</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="12:00">@context.Doze</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="13:00">@context.Treze</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="14:00">@context.Quatorze</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="15:00">@context.Quinze</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="16:00">@context.Dezaseis</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="17:00">@context.Dezasete</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="18:00">@context.Dezoito</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="19:00">@context.Dezanove</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="20:00">@context.Vinte</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="21:00">@context.Vinteeum</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="22:00">@context.Vinteedois</MudTd>
+                <MudTd Style="white-space: nowrap;" DataLabel="23:00">@context.Vinteetres</MudTd>
+
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Linhas por página"
+                               InfoFormat="{first_item} a {last_item} de {all_items}" />
+            </PagerContent>
+        </MudTable>
 
     </Authorized>
     <NotAuthorized>
         <_403 />
     </NotAuthorized>
 </AuthorizeView>
-
-@code {
-    bool isVisible = true;
-    DateTime? _date = DateTime.Today;
-    //private IEnumerable<HistoricoAssistencia> historico = new List<HistoricoAssistencia>();
-    private IEnumerable<HistoricoDetalhe> detalhes = new List<HistoricoDetalhe>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await Task.Delay(500);
-        //historico = historicoService.GetAll().OrderByDescending(d => d.Data);
-        detalhes = detalheService.GetDetalhes(DateTime.UtcNow).OrderByDescending(d => d.Data);
-        isVisible = false;
-    }
-
-    private void OnDateChange(DateTime? newDate)
-    {
-        _date = newDate;
-        if (newDate != null)
-            detalhes = detalheService.GetDetalhes((DateTime)newDate).OrderByDescending(d => d.Data);
-
-        //StateHasChanged();
-    }
-
-}

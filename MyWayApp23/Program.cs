@@ -77,6 +77,7 @@ builder.Services.AddScoped<IAssistenciaService, AssistenciaService>();
 builder.Services.AddScoped<IHistoricoService, HistoricoService>();
 builder.Services.AddScoped<IHistoricoDetalheService, HistoricoDetalheService>();
 builder.Services.AddScoped<IHistoricoDetalheHoraService, HistoricoDetalheHoraService>();
+builder.Services.AddScoped<IHistoricoAverageService, HistoricoAverageService>();
 
 var app = builder.Build();
 

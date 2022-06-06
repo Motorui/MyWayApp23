@@ -7,16 +7,20 @@ public partial class Assistencias
     protected IHistoricoDetalheService DetalheService { get; set; } = default!;
     [Inject]
     protected IHistoricoDetalheHoraService DetalheHorasService { get; set; } = default!;
+    [Inject]
+    protected IHistoricoAverageService HistoricoAverageService { get; set; } = default!;
 
     bool isVisible = true;
     DateTime? _date = DateTime.Today;
     private IEnumerable<HistoricoDetalhe> detalhes = new List<HistoricoDetalhe>();
     private IEnumerable<HistoricoDetalheHora> detalhesHora = new List<HistoricoDetalheHora>();
+    private IEnumerable<HistoricoAverage> average = new List<HistoricoAverage>();
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(5);
         detalhes = DetalheService.GetDetalhes(DateTime.UtcNow).OrderByDescending(d => d.Data);
         detalhesHora = DetalheHorasService.GetDetalhesHora(DateTime.UtcNow).OrderByDescending(d => d.Data);
+        average = HistoricoAverageService.GetAvgDep(DateTime.UtcNow);
         isVisible = false;
     }
 

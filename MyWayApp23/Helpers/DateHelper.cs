@@ -10,6 +10,7 @@ public static class DateHelper
             yield return new DateTime(year, month, day);
         }
     }
+
     public static DateTime? ConvertDateTimeFromStrings(string datetime)
     {
         if (datetime == null)

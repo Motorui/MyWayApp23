@@ -29,4 +29,7 @@ public class HistoricoDetalheHora
     public int Vinteeum { get; set; }
     public int Vinteedois { get; set; }
     public int Vinteetres { get; set; }
+    public int Manha { get; set; }
+    public int Tarde { get; set; }
+    public int Noite { get; set; }
 }

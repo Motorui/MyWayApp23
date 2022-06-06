@@ -46,7 +46,11 @@ public class HistoricoDetalheHoraService : IHistoricoDetalheHoraService
                 Vinte = detalhesData.Count(h => h.Data.TimeOfDay.Hours.Equals(20)),
                 Vinteeum = detalhesData.Count(h => h.Data.TimeOfDay.Hours.Equals(21)),
                 Vinteedois = detalhesData.Count(h => h.Data.TimeOfDay.Hours.Equals(22)),
-                Vinteetres = detalhesData.Count(h => h.Data.TimeOfDay.Hours.Equals(23))
+                Vinteetres = detalhesData.Count(h => h.Data.TimeOfDay.Hours.Equals(23)),
+                Manha = detalhesData.Count(h => h.Data.TimeOfDay.Hours >= 4 && h.Data.TimeOfDay.Hours <= 13),
+                Tarde = detalhesData.Count(h => h.Data.TimeOfDay.Hours >= 14 && h.Data.TimeOfDay.Hours <= 23),
+                Noite = detalhesData.Count(h => h.Data.TimeOfDay.Hours >= 0 && h.Data.TimeOfDay.Hours <= 3) +
+                        detalhesData.Count(h => h.Data.TimeOfDay.Hours >= 22 && h.Data.TimeOfDay.Hours <= 23),
             };
 
             horas.Add(detalhe);

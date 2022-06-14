@@ -349,7 +349,7 @@ namespace MyWayApp23.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Assistencias");
+                    b.ToTable("Assistencias", (string)null);
                 });
 
             modelBuilder.Entity("MyWayApp23.Models.HistoricoAssistencia", b =>
@@ -443,7 +443,7 @@ namespace MyWayApp23.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HistoricoAssistencias");
+                    b.ToTable("HistoricoAssistencias", (string)null);
                 });
 
             modelBuilder.Entity("MyWayApp23.Models.Stand", b =>
@@ -480,7 +480,7 @@ namespace MyWayApp23.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stands");
+                    b.ToTable("Stands", (string)null);
 
                     b.HasData(
                         new

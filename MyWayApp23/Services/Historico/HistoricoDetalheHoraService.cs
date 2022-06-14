@@ -1,4 +1,4 @@
-﻿namespace MyWayApp23.Services;
+﻿namespace MyWayApp23.Services.Historico;
 
 public class HistoricoDetalheHoraService : IHistoricoDetalheHoraService
 {
@@ -20,7 +20,7 @@ public class HistoricoDetalheHoraService : IHistoricoDetalheHoraService
             List<HistoricoAssistencia>? detalhesData = historico.Where(d => d.Data.Date == date.Date).ToList();
             HistoricoDetalheHora detalhe = new()
             {
-                Data = DateOnly.FromDateTime(date),
+                Data = date,
                 DiaSemana = date.ToString("ddd", CultureInfo.CreateSpecificCulture("pt-PT")),
                 TotalDia = detalhesData.Count,
                 Zero = detalhesData.Count(h => h.Data.TimeOfDay.Hours.Equals(0)),

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using MyWayApp23.Models.Historico;
+using System.Globalization;
 
 namespace MyWayApp23.Services;
 

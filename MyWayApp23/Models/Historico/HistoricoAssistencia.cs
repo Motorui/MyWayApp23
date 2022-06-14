@@ -1,4 +1,4 @@
-﻿namespace MyWayApp23.Models;
+﻿namespace MyWayApp23.Models.Historico;
 
 [Table("HistoricoAssistencias")]
 public class HistoricoAssistencia : IBaseEntity
@@ -35,7 +35,7 @@ public class HistoricoAssistencia : IBaseEntity
     [Required]
     [Display(Name = "Voo:")]
     public string Voo { get; set; } = string.Empty;
-    
+
     [Required]
     [Display(Name = "Movimento:")]
     public string Mov { get; set; } = string.Empty;
@@ -73,7 +73,7 @@ public class HistoricoAssistencia : IBaseEntity
 
     [Display(Name = "Justificação:")]
     public string? Justificacao { get; set; } = string.Empty;
-    
+
     #region BaseEntity
 
     [Display(Name = "Registo criado em:", ShortName = "Criado em:")]

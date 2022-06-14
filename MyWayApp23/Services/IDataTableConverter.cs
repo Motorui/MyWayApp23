@@ -1,4 +1,6 @@
-﻿namespace MyWayApp23.Services
+﻿using MyWayApp23.Models.Historico;
+
+namespace MyWayApp23.Services
 {
     public interface IDataTableConverter
     {

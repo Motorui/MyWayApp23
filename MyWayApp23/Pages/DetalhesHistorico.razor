@@ -1,0 +1,99 @@
+﻿@page "/detalhesHistorico"
+@using MyWayApp23.Components
+
+@inject IHistoricoDetalheService detalheService
+@inject IHistoricoDetalheHoraService detalheHorasService
+
+<PageTitle>Detalhes</PageTitle>
+
+<AuthorizeView Context="AuthContext">
+    <Authorized>
+        <MudItem xs="12">
+            <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
+        </MudItem>
+        <MudGrid>
+            <MudItem xs="12">
+                @if (_date != null)
+                {
+                    <MudText Typo="Typo.h3">
+                        A mostrar detalhes para o mês de @_date.Value.ToString("MMM yyyy", CultureInfo.CreateSpecificCulture("pt-PT"))
+                    </MudText>
+                }
+            </MudItem>
+            <MudItem xs="2">
+                <MudDatePicker Label="Mês" OpenTo="OpenTo.Month" Date="@_date"
+                               DateChanged="OnDateChange" Required="true" DateFormat="MMM"
+                               FixDay="1" AutoClose="true" />
+            </MudItem>
+            <MudItem xs="2"></MudItem>
+            <MudItem xs="2"></MudItem>
+            <MudItem xs="2"></MudItem>
+            <MudItem xs="2"></MudItem>
+            <MudItem xs="2"></MudItem>
+            <MudItem xs="12">
+                <HistoricoDetalheTableComponent Items="@detalhes"
+                                                IsVisible="@isVisible"
+                                                HeaderText="Detalhes" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <HistoricoDetalheHoraTableComponent Items="@detalhesHora"
+                                                    IsVisible="@isVisible"
+                                                    HeaderText="Detalhes por hora" />
+            </MudItem>
+            <MudItem xs="6">
+                <HistoricoDetalheDiaTableComponent Items="@detalhesHora"
+                                                   IsVisible="@isVisible"
+                                                   HeaderText="Detalhes por manhã, tarde e noite" />
+            </MudItem>
+            <MudItem xs="6">
+
+            </MudItem>
+        </MudGrid>
+
+    </Authorized>
+    <NotAuthorized>
+        <_403 />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    private List<BreadcrumbItem> _breads = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Início", href: "#"),
+        new BreadcrumbItem("Detalhes", href: null, disabled: true)
+    };
+
+    private bool isVisible = true;
+    private DateTime? _date = DateTime.Today;
+
+    private IEnumerable<HistoricoDetalhe> detalhes = new List<HistoricoDetalhe>();
+    private IEnumerable<HistoricoDetalheHora> detalhesHora = new List<HistoricoDetalheHora>();
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(5);
+        if (_date != null)
+        {
+            GetData((DateTime)_date);
+        }
+        isVisible = false;
+    }
+
+    private void OnDateChange(DateTime? newDate)
+    {
+        isVisible = true;
+        _date = newDate;
+        if (newDate != null)
+        {
+            GetData((DateTime)newDate);
+        }
+        isVisible = false;
+    }
+
+    private void GetData(DateTime date)
+    {
+        detalhes = detalheService.GetDetalhes(date).OrderByDescending(d => d.Data);
+        detalhesHora = detalheHorasService.GetDetalhesHora(date).OrderByDescending(d => d.Data);
+    }
+}                        

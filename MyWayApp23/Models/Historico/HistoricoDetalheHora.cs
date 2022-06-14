@@ -1,9 +1,19 @@
-﻿namespace MyWayApp23.Models;
+﻿namespace MyWayApp23.Models.Historico;
 
-public class HistoricoDetalheHora
+[Table("HistoricoDetalheHora")]
+public class HistoricoDetalheHora : IBaseEntity
 {
-    public DateOnly Data { get; set; }
-    public string DiaSemana { get; set; } = string.Empty;
+    private string diaSemana = string.Empty;
+
+    [Key]
+    public Guid Id { get; set; }
+    public string Uh { get; set; } = string.Empty;
+    public DateTime Data { get; set; }
+    public string DiaSemana
+    {
+        get => diaSemana;
+        set => diaSemana = Data.DayOfWeek.ToString()[..3];
+    }
     public int TotalDia { get; set; }
     public int Zero { get; set; }
     public int Uma { get; set; }
@@ -32,4 +42,19 @@ public class HistoricoDetalheHora
     public int Manha { get; set; }
     public int Tarde { get; set; }
     public int Noite { get; set; }
+    #region BaseEntity
+
+    [Display(Name = "Registo criado em:", ShortName = "Criado em:")]
+    public DateTime? CreatedAt { get; set; }
+
+    [Display(Name = "Registo criado por:", ShortName = "Criado por:")]
+    public string CreatedBy { get; set; } = string.Empty;
+
+    [Display(Name = "Registo atualizado em:", ShortName = "Atualizado em:")]
+    public DateTime? LastUpdatedAt { get; set; }
+
+    [Display(Name = "Registo atualizado por:", ShortName = "Atualizado por:")]
+    public string LastUpdatedBy { get; set; } = string.Empty;
+
+    #endregion
 }

@@ -1,18 +1,20 @@
-﻿namespace MyWayApp23.Services;
+﻿namespace MyWayApp23.Services.Historico;
 
 public class HistoricoDetalheService : IHistoricoDetalheService
 {
     private readonly DataContext _context;
+    private readonly IStandService _standService;
 
-    public HistoricoDetalheService(DataContext context)
+    public HistoricoDetalheService(DataContext context, IStandService standService)
     {
         _context = context;
+        _standService = standService;
     }
 
     public List<HistoricoDetalhe> GetDetalhes(DateTime data)
     {
-        List<string> _mangas = TipoStand("JETBRIDGE");
-        List<string> _remotos = TipoStand("REMOTE");
+        List<string> _mangas = _standService.GetStands(true, "Lis").ToList();
+        List<string> _remotos = _standService.GetStands(false, "Lis").ToList();
         List<HistoricoDetalhe> detalhes = new();
 
         var historico = _context.HistoricoAssistencias!.ToList();
@@ -24,7 +26,7 @@ public class HistoricoDetalheService : IHistoricoDetalheService
             TimeOnly average = TimeOnly.FromTimeSpan(new TimeSpan(0));
 
             List<TimeSpan> media = new();
-            foreach (var row in detalhesData.ToList())
+            foreach (var row in detalhesData)
             {
                 TimeSpan fim = new();
                 if (row.Fim != null) { fim = row.Fim.Value.TimeOfDay; }
@@ -48,7 +50,7 @@ public class HistoricoDetalheService : IHistoricoDetalheService
 
             HistoricoDetalhe detalhe = new()
             {
-                Data = DateOnly.FromDateTime(date),
+                Data = date,
                 DiaSemana = date.ToString("ddd", CultureInfo.CreateSpecificCulture("pt-PT")),
                 TotalDia = detalhesData.Count,
                 Dep = detalhesData.Count(m => m.Mov == "D"),
@@ -69,7 +71,7 @@ public class HistoricoDetalheService : IHistoricoDetalheService
                 Wcmp = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("wcmp")),
                 Wcbd = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("wcbd")),
                 Wcbw = detalhesData.Count(m => m.SSR.ContainsCaseInsensitive("wcbw")),
-                Media = average
+                Media = average.ToTimeSpan().TotalMinutes
             };
 
             if (detalhesData.Count > 0)
@@ -88,26 +90,30 @@ public class HistoricoDetalheService : IHistoricoDetalheService
         return detalhes.Where(t => t.TotalDia > 0).ToList();
     }
 
-    private List<string> TipoStand(string tipo)
+    public List<HistoricoDetalhe> GetDetalhesAno(DateTime data)
     {
-        return _context.Stands!.Where(t => t.Tipo == tipo).Select(m => m.Numero).ToList();
+        DateTime begin = new(data.Year,1,1);
+        DateTime end = new(data.Year, 12, 1);
+        List<HistoricoDetalhe> detalhes = new();
+
+        var historico = _context.HistoricoAssistencias!.ToList();
+
+        for (DateTime date = begin; date <= end; date = date.AddDays(1))
+        {
+            List<HistoricoAssistencia>? detalhesData = historico.Where(d => d.Data.Date == date.Date).ToList();
+
+            HistoricoDetalhe detalhe = new()
+            {
+                Data = date,
+                TotalDia = detalhesData.Count,
+                Dep = detalhesData.Count(m => m.Mov == "D"),
+                Arr = detalhesData.Count(m => m.Mov == "A")
+            };
+
+            detalhes.Add(detalhe);
+        }
+
+        return detalhes.Where(t => t.TotalDia > 0).ToList();
     }
 
-    //private List<TimeSpan> TimeSpanFromDates(DateTime? i, DateTime? f)
-    //{
-    //    List<TimeSpan> media = new();
-    //    TimeSpan fim = new();
-    //    if (f != null) { fim = f.Value.TimeOfDay; }
-    //    TimeSpan inicio = new();
-    //    if (i != null) { inicio = i.Value.TimeOfDay; }
-
-    //    if (fim > inicio)
-    //    {
-    //        TimeSpan m = fim - inicio;
-    //        media.Add(m);
-    //    }
-    //    else { media.Add(TimeSpan.Zero); }
-
-    //    return media;
-    //}
 }

@@ -1,19 +1,21 @@
 ﻿@page "/"
 
+@inject IHistoricoDetalheService detalhe
+
 <PageTitle>Index</PageTitle>
 
-@using MyWayApp23.Data
-
-<h1>Hello, world!</h1>
+@*<h1>Hello, world!</h1>
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<SurveyPrompt Title="How is Blazor working for you?" />*@
 
 <AuthorizeView>
     <Authorized>
-        <p>Olá, @context.User.Identity!.Name</p>
-
+        @*<p>Olá, @context.User.Identity!.Name</p>*@
+        <MudItem xs="12">
+            <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="50%"></MudChart>
+        </MudItem>
     </Authorized>
     <NotAuthorized>
         <p>Não sei o teu username sem te logares!</p>
@@ -23,7 +25,22 @@ Welcome to your new app.
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    public List<ChartSeries> Series = new List<ChartSeries>();
+    public ChartOptions Options = new ChartOptions();
+    public string[]? XAxisLabels;
+
+    protected override void OnInitialized()
     {
+        var data = detalhe.GetDetalhesAno(DateTime.UtcNow);
+        Series = new()
+        {
+            new ChartSeries() { Name = "Assist. Real", Data = data.Select(t=> (double)t.TotalDia).ToArray() },
+            new ChartSeries() { Name = "Dep", Data = data.Select(t=> (double)t.Dep).ToArray() },
+            new ChartSeries() { Name = "Arr", Data = data.Select(t=> (double)t.Arr).ToArray() },
+        };
+        XAxisLabels = data.Select(t=> t.Data.ToString("d/MMM", CultureInfo.CreateSpecificCulture("pt-PT"))).Where((x, i) => i % 10 == 10).ToArray();
+        Options.YAxisTicks = 400;
+        Options.LineStrokeWidth = 2;
+        StateHasChanged();
     }
 }

@@ -2,11 +2,14 @@
 
 <PageTitle>Upload Excel</PageTitle>
 
+@using Services.Excel
+
 @inject ISnackbar Snackbar
 @inject IReadExcelService readService
 @inject IDataTableConverter converter
 @inject IAssistenciaService assistenciaService
 @inject IHistoricoService historicoService
+@inject IHistoricoDetalheService detalheService
 
 <AuthorizeView>
     <Authorized>
@@ -95,7 +98,6 @@
             foreach (var assistencia in assistencias)
             {
                 row++;
-                //Value = (row / (double)assistencias.Count) * 100.0;
                 Value = 100.0 * row / assistencias.Count;
 
                 if (await assistenciaService.ExistsAsync(assistencia) != null)
@@ -125,13 +127,12 @@
         else if (converter.ReturnFileType(dt) == "historico")
         {
             IsUploading = false;
-            var historicos = converter.ConvertDataTableToHistorico(dt);
+            List<HistoricoAssistencia> historicos = converter.ConvertDataTableToHistorico(dt);
             int total = historicos.Count;
 
             foreach (var historico in historicos)
             {
                 row++;
-                //Value = (row / historicos.Count) * 100.0;
                 Value = 100.0 * row / historicos.Count;
 
                 if (await historicoService.ExistsAsync(historico) != null)

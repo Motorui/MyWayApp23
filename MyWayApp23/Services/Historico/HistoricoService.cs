@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace MyWayApp23.Services;
+namespace MyWayApp23.Services.Historico;
 
 public class HistoricoService : IHistoricoService
 {
@@ -153,7 +153,7 @@ public class HistoricoService : IHistoricoService
                 a.Pax == historico.Pax
             );
 
-        return exists; ;
+        return exists;
 
     }
 

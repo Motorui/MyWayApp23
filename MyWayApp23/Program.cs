@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor.Services;
 using MyWayApp23.Areas.Identity.Services;
+using MyWayApp23.Services.Excel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,7 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<IReadExcelService, ReadExcelService>();
 builder.Services.AddScoped<IDataTableConverter, DataTableConverter>();
 builder.Services.AddScoped<IAssistenciaService, AssistenciaService>();
+builder.Services.AddScoped<IStandService, StandService>();
 builder.Services.AddScoped<IHistoricoService, HistoricoService>();
 builder.Services.AddScoped<IHistoricoDetalheService, HistoricoDetalheService>();
 builder.Services.AddScoped<IHistoricoDetalheHoraService, HistoricoDetalheHoraService>();

@@ -1,6 +1,4 @@
-﻿using MyWayApp23.Models.Historico;
-
-namespace MyWayApp23.Services
+﻿namespace MyWayApp23.Services
 {
     public interface IDataTableConverter
     {
@@ -9,5 +7,7 @@ namespace MyWayApp23.Services
         Assistencia ConvertRowToAssistencia(DataRow row);
         HistoricoAssistencia ConvertRowToHistorico(DataRow row);
         string ReturnFileType(DataTable tbl);
+        List<HistoricoAssistencia> ConvertDtToHistorico(DataTable dt);
+
     }
 }

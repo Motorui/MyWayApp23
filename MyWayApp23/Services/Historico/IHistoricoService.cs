@@ -1,6 +1,4 @@
-﻿using MyWayApp23.Models.Historico;
-
-namespace MyWayApp23.Services.Historico;
+﻿namespace MyWayApp23.Services.Historico;
 
 public interface IHistoricoService
 {
@@ -9,7 +7,8 @@ public interface IHistoricoService
     Task<bool> DeleteAsync(HistoricoAssistencia historico);
     Task<HistoricoAssistencia?> ExistsAsync(HistoricoAssistencia historico);
     List<HistoricoAssistencia> GetAll();
-    Task<HistoricoAssistencia> GetByIdAsync(Guid id);
+    Task<HistoricoAssistencia> GetByIdAsync(string id);
+    Task<List<HistoricoAssistencia>> GetByDateAsync(DateTime date);
     Task<bool> UpdateAsync(HistoricoAssistencia historico);
     
 }

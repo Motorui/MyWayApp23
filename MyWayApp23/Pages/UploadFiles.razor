@@ -1,0 +1,93 @@
+﻿@page "/uploadfiles"
+
+<PageTitle>Upload de ficheiros</PageTitle>
+
+@using EFCore.BulkExtensions
+@using MyWayApp23.Services.Upload
+@using Services.Excel
+
+@inject ISnackbar Snackbar
+@inject IUploadHistoricoService uploadHistoricoService
+
+<AuthorizeView>
+    <Authorized>
+        @if (IsUploading)
+        {
+            <MudOverlay Visible="IsUploading" DarkBackground="true" ZIndex="9999" AutoClose="false">
+
+                <MudText Typo="Typo.h5" Color="Color.Primary"
+                     Class="d-flex align-center justify-center mud-width-full">
+                    A ler ficheiro!!!
+                </MudText>
+                <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="my-2" />
+
+            </MudOverlay>
+        }
+        else
+        {
+            
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
+                </MudItem>
+                <MudItem xs="12" sm="12" lg="12" md="12" xl="12" xxl="12">
+                    <InputFile id="fileInput112" OnChange="UploadMyFiles" hidden accept=".xls, .xlsx" />
+
+                    <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Dark"
+                           StartIcon="@Icons.Filled.UploadFile"
+                           for="fileInput112">
+                        Upload ficheiros de assistências
+                    </MudButton>
+
+                </MudItem>
+                <MudItem xs="12">
+                    @if (Value > 0)
+                    {
+                        <MudProgressLinear Color="Color.Success" Value="@Value" Size="Size.Large" Class="my-5">
+                            <MudText Typo="Typo.button" Color="Color.Default">
+                                <b>@((int)Value)%</b>
+                            </MudText>
+                        </MudProgressLinear>
+                        <MudText>@((MarkupString)ProgressMessage!)</MudText>
+                    }
+                    <MudText Typo="Typo.h6">@((MarkupString)ProgressMessage!)</MudText>
+                </MudItem>
+            </MudGrid>
+
+        }
+    </Authorized>
+    <NotAuthorized>
+        <_403 />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+    public double Value { get; set; } = 0;
+    public string? ProgressMessage { get; set; } = string.Empty;
+    public bool IsUploading = false;
+    StatsInfo stats { get; set; } = new();
+
+    private List<BreadcrumbItem> _breads = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Início", href: "#"),
+        new BreadcrumbItem("Upload", href: null, disabled: true)
+    };
+
+    private async void UploadMyFiles(InputFileChangeEventArgs e)
+    {
+        IsUploading = true;
+        stats = await uploadHistoricoService.UploadFile(e.File);
+        await Task.Delay(10);
+        IsUploading = false;
+        if (stats != null)
+        {
+            ProgressMessage = $"<p>Foram processadas {stats.StatsNumberInserted + stats.StatsNumberUpdated + stats.StatsNumberDeleted} entradas!</p>" +
+            $"<p>Inseridas {stats.StatsNumberInserted} entradas!</p>" +
+            $"<p>Atualizadas {stats.StatsNumberUpdated} entradas!</p>";
+        }
+        StateHasChanged();
+    }
+}

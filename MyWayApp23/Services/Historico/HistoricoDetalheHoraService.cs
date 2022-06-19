@@ -21,7 +21,7 @@ public class HistoricoDetalheHoraService : IHistoricoDetalheHoraService
             HistoricoDetalheHora detalhe = new()
             {
                 Data = date,
-                DiaSemana = date.ToString("ddd", CultureInfo.CreateSpecificCulture("pt-PT")),
+                DiaSemana = date.DayOfWeek,
                 TotalDia = detalhesData.Count,
                 Zero = detalhesData.Count(h => h.Data.TimeOfDay.Hours.Equals(0)),
                 Uma = detalhesData.Count(h => h.Data.TimeOfDay.Hours.Equals(1)),

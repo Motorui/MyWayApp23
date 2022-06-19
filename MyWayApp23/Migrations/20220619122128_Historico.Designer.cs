@@ -12,15 +12,15 @@ using MyWayApp23.Data;
 namespace MyWayApp23.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220525120703_Stands")]
-    partial class Stands
+    [Migration("20220619122128_Historico")]
+    partial class Historico
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0-preview.4.22229.2")
+                .HasAnnotation("ProductVersion", "7.0.0-preview.5.22302.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -166,13 +166,13 @@ namespace MyWayApp23.Migrations
                         {
                             Id = "B22698B8-42A2-4115-9631-1C2D1E2AC5F7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "70dcae22-9ccc-45bf-9807-86e3fbe1db22",
+                            ConcurrencyStamp = "2f546024-e6d1-4302-8697-ba176c5687f5",
                             Email = "rui.santos@portway.pt",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "RUI.SANTOS@PORTWAY.PT",
                             NormalizedUserName = "RAPEREIRA",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAmJCuMtFlgkYAZI8fEKCvrHJVH/Vim38W5pqN8DxdHUIs0uM1IOjyH9Qa6UGkQp6A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEN8fhVHG0B5EDnheV/iAhAxHI+vQpXnEi09MYUgdQAuekw02NIi3NjIaWW6RhYljBg==",
                             PhoneNumber = "XXXXXXXXXXXXX",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "00000000-0000-0000-0000-000000000000",
@@ -355,11 +355,10 @@ namespace MyWayApp23.Migrations
                     b.ToTable("Assistencias");
                 });
 
-            modelBuilder.Entity("MyWayApp23.Models.HistoricoAssistencia", b =>
+            modelBuilder.Entity("MyWayApp23.Models.Historico.HistoricoAssistencia", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AC")
                         .HasColumnType("nvarchar(max)");
@@ -386,6 +385,9 @@ namespace MyWayApp23.Migrations
 
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
+
+                    b.Property<long>("Duracao")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Equipamentos")
                         .HasColumnType("nvarchar(max)");
@@ -420,9 +422,8 @@ namespace MyWayApp23.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Notif")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("Notif")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("OrigDest")
                         .HasColumnType("nvarchar(max)");
@@ -489,7 +490,7 @@ namespace MyWayApp23.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("58b24048-bf94-43de-a7fb-2a67220442ac"),
+                            Id = new Guid("eccabd8a-7d52-43cc-a465-efb22dc9bcd9"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -498,7 +499,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("cb3fca0b-ff7d-4fde-8150-63328fab5519"),
+                            Id = new Guid("7e524414-8fe6-49e9-a1ec-9d9c21762c26"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -507,7 +508,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d3d483c2-7df1-49a3-8160-2345465545f8"),
+                            Id = new Guid("8538c153-2143-46ec-9736-3fcb7db359af"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -516,7 +517,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("dfe6ca26-4258-4747-bced-20000e5c9f14"),
+                            Id = new Guid("dbce99a8-8975-4d9d-86c0-3bfe9a419b48"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -525,7 +526,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7065bf9b-96ad-478c-86e1-40ff659a871c"),
+                            Id = new Guid("5fbd73ea-6523-4540-8918-49c00e527ccb"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -534,7 +535,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4aa0b93d-e191-4e18-8825-9b278d4517b9"),
+                            Id = new Guid("ef4e202f-85f9-47a8-a130-a21bf2f0b90c"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -543,7 +544,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ed7bb2b6-79ee-4d90-8f31-c9119e5d4ebb"),
+                            Id = new Guid("bd20a470-1361-44cb-94e2-aafacc2ddc1a"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -552,7 +553,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f8813662-e93a-49af-8558-8481ac4a2855"),
+                            Id = new Guid("e41fadd5-b3a9-44ee-b61d-8cbe5b22e7a9"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -561,7 +562,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("bee45983-ee7a-4c9f-a8aa-8d082977be30"),
+                            Id = new Guid("9210915d-62f4-4b68-a899-3c44f84f1539"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -570,7 +571,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4e195678-a901-4a1e-b9ca-e6f5cfd94f78"),
+                            Id = new Guid("1164cf25-b7dc-4a9a-baae-850f0292076d"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -579,7 +580,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0400f7bc-7985-4aab-88b0-4bc621e25eed"),
+                            Id = new Guid("7d4e68d9-b9e6-4bc2-8264-159da450341c"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -588,7 +589,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("96ff0f4b-2e71-4fe2-8bce-e4ab7a492a56"),
+                            Id = new Guid("bab04a35-0b04-4a1b-b954-3f579be3c028"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -597,7 +598,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1cb5467f-4764-42d9-bed5-b7adfd939192"),
+                            Id = new Guid("6b0642be-3580-47f2-a80a-20479de9cea2"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -606,7 +607,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("40253c47-fc0b-4d27-8288-770c0be09335"),
+                            Id = new Guid("4c038a88-323c-4579-8727-ac64d09fe98d"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -615,7 +616,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("75697e36-cfb9-44f5-bff4-bcfc485d50ed"),
+                            Id = new Guid("65e1ed7f-4ee6-42fa-a14f-562d6b4e07df"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -624,7 +625,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b73073d5-e13e-4562-ad9f-19c4d412995c"),
+                            Id = new Guid("ff8cf653-8767-4cd3-a710-26345f360a44"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -633,7 +634,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("21794338-e7b4-47c1-94d6-23ff68f01645"),
+                            Id = new Guid("e1814a73-ddfd-4448-b5da-75378a0124d9"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -642,7 +643,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("430e3c02-9af1-4621-868b-7b6d3204ff3f"),
+                            Id = new Guid("7b666508-4fb0-4c72-b708-82261eb83dca"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -651,7 +652,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e1b50c3c-6b97-48ab-8abe-67bbe9d249ba"),
+                            Id = new Guid("ad02ec72-4816-4aa9-96f5-a805b3930e02"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -660,7 +661,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("810bd0a4-c576-4273-bc5d-aae3841db17a"),
+                            Id = new Guid("b4638b90-2911-41e0-9488-0290c271ba2c"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -669,7 +670,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b216ba52-cf2e-4e87-8561-c392d71ca473"),
+                            Id = new Guid("d64c9843-8980-4df8-94bd-b1f658019573"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -678,7 +679,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ade4613a-b97c-49f0-b025-1596c4c053de"),
+                            Id = new Guid("88e55366-020c-4f2f-9afa-daa9a4a6428a"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -687,7 +688,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("bdec30c2-46f0-4595-8b26-ebaef958ce4b"),
+                            Id = new Guid("db44f244-757f-4a26-a057-f4e31c2c16ad"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -696,7 +697,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5716d8e6-045d-4f4a-acf3-553baa9e53b4"),
+                            Id = new Guid("05296417-dda6-4a8d-bfa9-f3b8e6f227df"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -705,7 +706,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6a9a5550-5ea0-4053-80d8-5d4d33b4f033"),
+                            Id = new Guid("3d7eb0fd-cc69-4d01-919f-b20b0321088f"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -714,7 +715,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("42ef9695-5e17-45bb-ae61-b3c20f942049"),
+                            Id = new Guid("b03f120b-625b-4862-9f4f-a4712dc26d4e"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -723,7 +724,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3effb17f-d0b7-4669-8174-73d15bc08fe5"),
+                            Id = new Guid("ea462a3a-daec-471e-a859-66a332d4eb49"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -732,7 +733,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b29a4180-1f52-4f10-a51a-b1b20029a89c"),
+                            Id = new Guid("43e0bcbb-36b2-4ae1-887a-170238d4d69c"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -741,7 +742,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e58a8aa0-281d-483d-8141-b35787ee2160"),
+                            Id = new Guid("79546923-49ed-4e06-9e52-c8ef10515d72"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -750,7 +751,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("40ac4bbf-7bfc-4a83-9a1b-b04f72958e1c"),
+                            Id = new Guid("bc0a3c2a-fc59-4a47-8e24-c025b2fd1d60"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -759,7 +760,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("76766ecd-58c3-44bd-a3a5-b6b2596aa20d"),
+                            Id = new Guid("50c7a6a1-b791-443d-9579-ea7e42c30d0d"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -768,7 +769,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("42bf92b1-15ba-427e-aeea-73056464bf95"),
+                            Id = new Guid("c2273d52-fc7d-4cad-8cd7-8c5a93526f56"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -777,7 +778,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("52b4f52f-cffb-4704-8ebd-b41ef495debd"),
+                            Id = new Guid("5c76aeee-1a9b-45f3-b240-c07f30cfd183"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -786,7 +787,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c9a55db0-314b-40fc-9cdc-b98bfd4bcbd7"),
+                            Id = new Guid("68e65516-bc78-45cc-946a-c57711cc7481"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -795,7 +796,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("10727444-4e84-41f8-802c-de15610d7d7a"),
+                            Id = new Guid("b2b0d27d-772b-4f43-9c9e-46bde56f3803"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -804,7 +805,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("2941219e-7c48-4345-b8a0-92d6e601ef1c"),
+                            Id = new Guid("838c0563-321a-474c-860d-fcee68c5afa5"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -813,7 +814,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6d849c3d-954b-4e69-9a59-288570a2f623"),
+                            Id = new Guid("ac94eb2c-ad87-466f-ab06-f5401dbd5cb3"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -822,7 +823,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("916fa702-1739-4016-a824-bef917797039"),
+                            Id = new Guid("2818b85c-16fa-43aa-9f28-1b7359e38f7d"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -831,7 +832,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f7516fe5-b54f-4e35-8cad-69b5b6c5ecb8"),
+                            Id = new Guid("c9d1707a-c9a1-4b50-b7ad-2ac1c7212dc3"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -840,7 +841,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0efe2360-57a6-48e9-8ff5-9d4a81165228"),
+                            Id = new Guid("516e14c7-6733-4228-8287-5cf93272364b"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -849,7 +850,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("61bfee61-87df-4ebd-b3c2-e0d4792725a4"),
+                            Id = new Guid("19ca39a2-936b-4ac8-a2d7-ea01dedcf929"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -858,7 +859,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("26016952-c71b-4c37-9302-19e058cf47a7"),
+                            Id = new Guid("be098440-c479-4dca-86ee-67010d873a67"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -867,7 +868,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e6ba1657-e1e8-443f-9384-2a7e58fbc2a9"),
+                            Id = new Guid("423d7c64-4437-4da5-8dbe-447755411bb2"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -876,7 +877,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("fac6c97a-f20d-40db-b36e-0d2ae4f4d8f8"),
+                            Id = new Guid("7431e3af-783c-4dc4-93cb-8c363eed4f48"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -885,7 +886,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("25add1af-8bb7-4e1d-aabc-3544f4539447"),
+                            Id = new Guid("f5031bcc-a090-4adc-9804-52521934be50"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -894,7 +895,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("2e6ea7f7-3c3d-4df4-b0f6-a06e13fcdff9"),
+                            Id = new Guid("f23e868d-0234-41b3-bd9f-664a17133e63"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -903,7 +904,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c44bb4fe-af72-445f-a187-b631a3a3d0af"),
+                            Id = new Guid("40fef9be-caa7-443c-8fb8-c2d574af9509"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -912,7 +913,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3610367e-4eb8-425d-addb-82827d6e6bd6"),
+                            Id = new Guid("f3f3d435-dcee-4b5e-a75a-e1c1738b867e"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -921,7 +922,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("70c8d872-bf55-4b8d-b778-ab97b3d8067a"),
+                            Id = new Guid("0b8f5d48-a641-4aff-927f-80842936a31f"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -930,7 +931,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ab2c3a88-ad21-4fff-8631-45e8dadbf334"),
+                            Id = new Guid("e2bc8952-830e-4698-8173-7b9d06caa91f"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -939,7 +940,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f6a172d6-1aa6-4886-b26e-27da02607e2a"),
+                            Id = new Guid("ed72fb17-c36a-469a-8bb5-76150e5ced72"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -948,7 +949,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("34f9199b-fb0c-4c19-93e8-c74d86834599"),
+                            Id = new Guid("d6a14acf-13db-4863-8dff-7e17e42729f5"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -957,7 +958,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("34c84b25-e161-424d-b2db-a8999f62517d"),
+                            Id = new Guid("13da7ddc-9211-4533-828d-d5ad1910bc00"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -966,7 +967,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5a671c0e-bf16-49cb-b344-6d193c5dae8c"),
+                            Id = new Guid("e56a42ac-04cb-4571-a1fc-5dd03b07fdb7"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -975,7 +976,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6fa22363-326d-4b56-941e-e3ed903a7a2c"),
+                            Id = new Guid("e21a33e4-479c-4962-95e2-8d11b5113d09"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -984,7 +985,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("26fed09a-5819-4374-bbea-ead10599bb2b"),
+                            Id = new Guid("0efa2638-e7ed-4af9-bbb6-e11dba1f69b3"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -993,7 +994,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("52cfb923-768e-4603-b295-c852c16ca9ca"),
+                            Id = new Guid("2db61a58-a253-4882-9e2c-8bc73bf3a24f"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1002,7 +1003,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d6c71305-a0c1-456f-9a0e-fb9f379f538c"),
+                            Id = new Guid("08631682-9535-424c-bd29-9bf28b689694"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1011,7 +1012,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6a339a67-cb96-4ff7-8364-da0fdc803aff"),
+                            Id = new Guid("cdc576d1-3b95-4887-a348-11dd5b9a95fd"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1020,7 +1021,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("36fcf91e-b34e-44f4-aef0-69ede7e6c52c"),
+                            Id = new Guid("7bff4137-a4ed-4c80-ace6-c040bf9c8267"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1029,7 +1030,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9310bcfb-1363-4947-b851-ff8dfec45672"),
+                            Id = new Guid("4626709b-ec1d-4269-93e7-035281dc3ff5"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1038,7 +1039,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("14953810-d01a-4f57-94ab-360739d8eb46"),
+                            Id = new Guid("d724cb8c-1a6e-4037-9a51-ecce8e2c7ffe"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1047,7 +1048,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("10c712a7-353a-4e6e-9344-e58c86e75a9a"),
+                            Id = new Guid("182cb744-0177-45d7-abdc-294d09eba5bb"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1056,7 +1057,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b62a5989-fee9-492c-97ec-529a50147d84"),
+                            Id = new Guid("cd74fb3a-e79e-4f38-a197-d91f011d1ed4"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1065,7 +1066,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b83d4117-7c1a-4aa8-af33-df1214b3360d"),
+                            Id = new Guid("145f811c-63e1-492c-a0c5-69608bec0595"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1074,7 +1075,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("94ab0fcd-ddfd-44b5-9792-1b238a416038"),
+                            Id = new Guid("d8daa433-31e3-4130-869f-45b21e495138"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1083,7 +1084,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c4f32ff0-61f3-4dc8-a2b1-bd61f9b3a52c"),
+                            Id = new Guid("1ec787fc-1cfc-40f1-a755-f4278bbed9ec"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1092,7 +1093,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("cd739270-72fc-424b-ae3d-f1e1cdb483e9"),
+                            Id = new Guid("c89fc436-dcd5-452d-9cb3-b4f1f0d3413c"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1101,7 +1102,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("044cda4e-7b5e-4942-8b3d-377c54660fa9"),
+                            Id = new Guid("1e7435dc-19ff-4008-9137-3e174806ea06"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1110,7 +1111,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5291179c-9702-44d5-b298-2f3aa62bd782"),
+                            Id = new Guid("15608536-b40a-487f-aa39-1d8827d38c66"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1119,7 +1120,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("61f02c03-03ec-4f0b-897b-dea84730bcea"),
+                            Id = new Guid("1d234287-6edb-4b71-8c55-2182248768e0"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1128,7 +1129,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b641f46b-8237-4499-a9b3-d8fdfd19ec34"),
+                            Id = new Guid("77ac0155-cc40-47f0-b011-3df3673e1d53"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1137,7 +1138,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d22b39a0-c4f8-45cd-8e71-9a8fc546eca3"),
+                            Id = new Guid("171ae922-3bdb-49f0-a0aa-c3627022b3f4"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1146,7 +1147,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ff257c51-39f0-4bee-9885-9788c093dd11"),
+                            Id = new Guid("6085252c-2f91-4dfd-a15b-dbd1c90fcdcc"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1155,7 +1156,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e21951d0-f38d-46d4-b604-924757a15a54"),
+                            Id = new Guid("589f2cd7-c73e-400a-80e8-a0760bfbf204"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1164,7 +1165,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("487262ca-262d-4319-ae1e-d185a8bddb5d"),
+                            Id = new Guid("49010979-47f3-443b-9986-0f79d514e640"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1173,7 +1174,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("53816e76-e7f4-4a76-b2fa-bc75f191ef24"),
+                            Id = new Guid("740a269f-6a6d-4269-8162-5351c43385d8"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1182,7 +1183,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e9503318-7b73-403f-8980-9590e0aac951"),
+                            Id = new Guid("a412eda4-87a0-4f27-8025-71a9fa705fd6"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1191,7 +1192,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0c9fd0d4-f14b-437e-bfde-88085d3c7b14"),
+                            Id = new Guid("ef3489eb-6f0b-4fa3-b0e0-92225290d9aa"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1200,7 +1201,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("985d8bf8-2fef-41c5-ad0b-4b2460bca857"),
+                            Id = new Guid("8cabe186-7a7a-470d-940b-c4a52a715698"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1209,7 +1210,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("dca4b848-4006-4aa0-bcbc-957e55fcadfc"),
+                            Id = new Guid("b69f91b0-bb06-40c2-83fe-b6bd6c022954"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1218,7 +1219,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("914b142d-9e56-4b37-bbc9-2912f6e80557"),
+                            Id = new Guid("4d066c34-df7b-4bc3-a3be-e23282c90406"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1227,7 +1228,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7f76fe62-b8a0-4007-8106-6ea2e6e9228a"),
+                            Id = new Guid("f8a36fe5-fcb0-4975-ae62-c02314116b55"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1236,7 +1237,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e34a48b8-724b-490e-9079-62b478f6cfd5"),
+                            Id = new Guid("85c5ad4a-202a-4f34-9bd2-aeffc9e79bb4"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1245,7 +1246,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("fd7c213a-6a83-40ad-bb94-66c98af33368"),
+                            Id = new Guid("9f14c722-44f0-4c74-a47b-434960a73040"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1254,7 +1255,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8b0fffd4-f8f6-47ac-8951-ed2ab29e50e0"),
+                            Id = new Guid("e581751a-e004-4fbd-a63e-b30aae9b5732"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1263,7 +1264,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c2413e9c-e086-497f-8302-e30db4e75495"),
+                            Id = new Guid("07047f82-f78e-4f2b-9bef-727fb0b8562b"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1272,7 +1273,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("2b2dc471-24bf-4010-ba3a-95a73b7fd942"),
+                            Id = new Guid("a25c84ce-058f-48ba-865e-513a22362665"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",
@@ -1281,7 +1282,7 @@ namespace MyWayApp23.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b4308787-091d-4c1c-8f0b-08b80cea5795"),
+                            Id = new Guid("475fa77c-031d-4a47-baf3-b9fab14e9844"),
                             Aeroporto = "Lis",
                             CreatedBy = "",
                             LastUpdatedBy = "",

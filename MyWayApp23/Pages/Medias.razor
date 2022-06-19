@@ -1,7 +1,8 @@
 ﻿@page "/medias"
 
 @using MyWayApp23.Components
-@inject IHistoricoAverageService HistoricoAverageService
+@*@inject IHistoricoAverageService HistoricoAverageService*@
+@inject IHistoricoService service
 
 <PageTitle>Médias</PageTitle>
 
@@ -26,6 +27,9 @@
             <MudItem xs="2"></MudItem>
             <MudItem xs="2"></MudItem>
             <MudItem xs="4">
+                <HistoricoDetalheTableComponent Items="@historico" />
+            </MudItem>
+            @*<MudItem xs="4">
                 <YearMonthAverageTableComponent Items="@averageTotal"
                                                 IsVisible="@isVisible"
                                                 HeaderText="Média total" />
@@ -53,8 +57,8 @@
             <MudItem xs="4">
                 <YearMonthAverageTimeTableComponent Items="@averageTime"
                                                 IsVisible="@isVisible"
-                                                HeaderText="Média de duração" />
-            </MudItem>
+                HeaderText="Média de duração" />
+            </MudItem>*@
         </MudGrid>
 
     </Authorized>
@@ -85,12 +89,13 @@
         }
     }
 
-    private List<HistoricoAverage> averageTotal = new List<HistoricoAverage>();
-    private List<HistoricoAverage> averageDep = new List<HistoricoAverage>();
-    private List<HistoricoAverage> averageArr = new List<HistoricoAverage>();
-    private List<HistoricoAverage> averageJet = new List<HistoricoAverage>();
-    private List<HistoricoAverage> averageRemote = new List<HistoricoAverage>();
-    private List<HistoricoAverageTime> averageTime = new List<HistoricoAverageTime>();
+    private List<HistoricoAssistencia> historico = new List<HistoricoAssistencia>();
+    //private List<HistoricoAverage> averageTotal = new List<HistoricoAverage>();
+    //private List<HistoricoAverage> averageDep = new List<HistoricoAverage>();
+    //private List<HistoricoAverage> averageArr = new List<HistoricoAverage>();
+    //private List<HistoricoAverage> averageJet = new List<HistoricoAverage>();
+    //private List<HistoricoAverage> averageRemote = new List<HistoricoAverage>();
+    //private List<HistoricoAverageTime> averageTime = new List<HistoricoAverageTime>();
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(5);
@@ -104,16 +109,17 @@
         GetData();
     }
 
-    private void GetData()
+    private async void GetData()
     {
         if (_date != null)
         {
-            averageTotal = HistoricoAverageService.GetAvgTotal((DateTime)_date);
-            averageDep = HistoricoAverageService.GetAvgArrDep((DateTime)_date, "D");
-            averageArr = HistoricoAverageService.GetAvgArrDep((DateTime)_date, "A");
-            averageJet = HistoricoAverageService.GetAvgRemJet((DateTime)_date, "JETBRIDGE");
-            averageRemote = HistoricoAverageService.GetAvgRemJet((DateTime)_date, "REMOTE");
-            averageTime = HistoricoAverageService.GetAvgTime((DateTime)_date);
+            historico = await service.GetByDateAsync((DateTime)_date);
+            //averageTotal = HistoricoAverageService.GetAvgTotal((DateTime)_date);
+            //averageDep = HistoricoAverageService.GetAvgArrDep((DateTime)_date, "D");
+            //averageArr = HistoricoAverageService.GetAvgArrDep((DateTime)_date, "A");
+            //averageJet = HistoricoAverageService.GetAvgRemJet((DateTime)_date, "JETBRIDGE");
+            //averageRemote = HistoricoAverageService.GetAvgRemJet((DateTime)_date, "REMOTE");
+            //averageTime = HistoricoAverageService.GetAvgTime((DateTime)_date);
         }
         isVisible = false;
     }

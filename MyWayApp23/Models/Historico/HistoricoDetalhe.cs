@@ -3,30 +3,24 @@
 [Table("HistoricoDetalhe")]
 public class HistoricoDetalhe : IBaseEntity
 {
-    private string diaSemana = string.Empty;
-
     [Key]
-    public Guid Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     public string Uh { get; set; } = string.Empty;
     public DateTime Data { get; set; }
-    public string DiaSemana
-    {
-        get => diaSemana;
-        set => diaSemana = Data.DayOfWeek.ToString()[..3];
-    }
+    public DayOfWeek DiaDaSemana { get; set; }
     public int TotalDia { get; set; }
     public int Dep { get; set; }
-    public string DepPercentage { get; set; } = string.Empty;
+    public double DepPercentage { get; set; }
     public int Arr { get; set; }
-    public string ArrPercentage { get; set; } = string.Empty;
+    public double ArrPercentage { get; set; }
     public int JetBridge { get; set; }
-    public string JetBridgePercentage { get; set; } = string.Empty;
+    public double JetBridgePercentage { get; set; }
     public int Remote { get; set; }
-    public string RemotePercentage { get; set; } = string.Empty;
-    public double Mais36 { get; set; }
-    public string PercentageMais36 { get; set; } = string.Empty;
-    public double Menos36 { get; set; }
-    public string PercentageMenos36 { get; set; } = string.Empty;
+    public double RemotePercentage { get; set; }
+    public int Mais36 { get; set; }
+    public double PercentageMais36 { get; set; }
+    public int Menos36 { get; set; }
+    public double PercentageMenos36 { get; set; }
     public int Wchr { get; set; }
     public int Wchs { get; set; }
     public int Wchc { get; set; }

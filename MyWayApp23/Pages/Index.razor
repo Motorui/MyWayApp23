@@ -13,9 +13,9 @@ Welcome to your new app.
 <AuthorizeView>
     <Authorized>
         @*<p>Olá, @context.User.Identity!.Name</p>*@
-        <MudItem xs="12">
+@*        <MudItem xs="12">
             <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="50%"></MudChart>
-        </MudItem>
+        </MudItem>*@
     </Authorized>
     <NotAuthorized>
         <p>Não sei o teu username sem te logares!</p>
@@ -31,16 +31,16 @@ Welcome to your new app.
 
     protected override void OnInitialized()
     {
-        var data = detalhe.GetDetalhesAno(DateTime.UtcNow);
-        Series = new()
-        {
-            new ChartSeries() { Name = "Assist. Real", Data = data.Select(t=> (double)t.TotalDia).ToArray() },
-            new ChartSeries() { Name = "Dep", Data = data.Select(t=> (double)t.Dep).ToArray() },
-            new ChartSeries() { Name = "Arr", Data = data.Select(t=> (double)t.Arr).ToArray() },
-        };
-        XAxisLabels = data.Select(t=> t.Data.ToString("d/MMM", CultureInfo.CreateSpecificCulture("pt-PT"))).Where((x, i) => i % 10 == 10).ToArray();
-        Options.YAxisTicks = 400;
-        Options.LineStrokeWidth = 2;
-        StateHasChanged();
+        //var data = detalhe.GetDetalhesAno(DateTime.UtcNow);
+        //Series = new()
+        //{
+        //    new ChartSeries() { Name = "Assist. Real", Data = data.Select(t=> (double)t.TotalDia).ToArray() },
+        //    new ChartSeries() { Name = "Dep", Data = data.Select(t=> (double)t.Dep).ToArray() },
+        //    new ChartSeries() { Name = "Arr", Data = data.Select(t=> (double)t.Arr).ToArray() },
+        //};
+        //XAxisLabels = data.Select(t=> t.Data.ToString("d/MMM", CultureInfo.CreateSpecificCulture("pt-PT"))).Where((x, i) => i % 10 == 10).ToArray();
+        //Options.YAxisTicks = 400;
+        //Options.LineStrokeWidth = 2;
+        //StateHasChanged();
     }
 }

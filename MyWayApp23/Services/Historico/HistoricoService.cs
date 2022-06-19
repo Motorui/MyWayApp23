@@ -27,7 +27,7 @@ public class HistoricoService : IHistoricoService
         return historicos;
     }
 
-    public async Task<HistoricoAssistencia> GetByIdAsync(Guid id)
+    public async Task<HistoricoAssistencia> GetByIdAsync(string id)
     {
         HistoricoAssistencia historico;
         try
@@ -42,6 +42,22 @@ public class HistoricoService : IHistoricoService
         }
 
         return historico;
+    }
+    public async Task<List<HistoricoAssistencia>> GetByDateAsync(DateTime date)
+    {
+        List<HistoricoAssistencia> historicos;
+        try
+        {
+            historicos = await _context.HistoricoAssistencias!
+                .Where(d=> d.Data.Month.Equals(date.Month)).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            throw;
+        }
+
+        return historicos;
     }
 
     public async Task<bool> CreateAsync(HistoricoAssistencia historico)

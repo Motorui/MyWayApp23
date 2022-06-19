@@ -51,7 +51,6 @@ public class HistoricoDetalheService : IHistoricoDetalheService
             HistoricoDetalhe detalhe = new()
             {
                 Data = date,
-                DiaSemana = date.ToString("ddd", CultureInfo.CreateSpecificCulture("pt-PT")),
                 TotalDia = detalhesData.Count,
                 Dep = detalhesData.Count(m => m.Mov == "D"),
                 Arr = detalhesData.Count(m => m.Mov == "A"),
@@ -76,12 +75,12 @@ public class HistoricoDetalheService : IHistoricoDetalheService
 
             if (detalhesData.Count > 0)
             {
-                detalhe.DepPercentage = PercentageHelper.PercentageToString(detalhesData.Count(m => m.Mov == "D"), detalhesData.Count);
-                detalhe.ArrPercentage = PercentageHelper.PercentageToString(detalhesData.Count(m => m.Mov == "A"), detalhesData.Count);
-                detalhe.JetBridgePercentage = PercentageHelper.PercentageToString(detalhesData.Count(m => _mangas.Contains(m.Stand!)), detalhesData.Count);
-                detalhe.RemotePercentage = PercentageHelper.PercentageToString(detalhesData.Count(m => _remotos.Contains(m.Stand!)), detalhesData.Count);
-                detalhe.PercentageMais36 = PercentageHelper.PercentageToString(detalhesData.Count(m => m.Notif >= 36), detalhesData.Count);
-                detalhe.PercentageMenos36 = PercentageHelper.PercentageToString(detalhesData.Count(m => m.Notif < 36), detalhesData.Count);
+                detalhe.DepPercentage = PercentageHelper.PercentageToDouble(detalhesData.Count(m => m.Mov == "D"), detalhesData.Count);
+                detalhe.ArrPercentage = PercentageHelper.PercentageToDouble(detalhesData.Count(m => m.Mov == "A"), detalhesData.Count);
+                detalhe.JetBridgePercentage = PercentageHelper.PercentageToDouble(detalhesData.Count(m => _mangas.Contains(m.Stand!)), detalhesData.Count);
+                detalhe.RemotePercentage = PercentageHelper.PercentageToDouble(detalhesData.Count(m => _remotos.Contains(m.Stand!)), detalhesData.Count);
+                detalhe.PercentageMais36 = PercentageHelper.PercentageToDouble(detalhesData.Count(m => m.Notif >= 36), detalhesData.Count);
+                detalhe.PercentageMenos36 = PercentageHelper.PercentageToDouble(detalhesData.Count(m => m.Notif < 36), detalhesData.Count);
             }
 
             detalhes.Add(detalhe);

@@ -9,11 +9,7 @@ public class HistoricoDetalheHora : IBaseEntity
     public Guid Id { get; set; }
     public string Uh { get; set; } = string.Empty;
     public DateTime Data { get; set; }
-    public string DiaSemana
-    {
-        get => diaSemana;
-        set => diaSemana = Data.DayOfWeek.ToString()[..3];
-    }
+    public DayOfWeek DiaSemana { get; set; }
     public int TotalDia { get; set; }
     public int Zero { get; set; }
     public int Uma { get; set; }

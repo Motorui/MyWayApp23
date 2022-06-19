@@ -25,4 +25,18 @@ public static class StringExtensions
             return OutVal;
         }
     }
+
+    public static long ConvertToLong(this string? source)
+    {
+        if (source == null || source.Trim() == "-")
+        {
+            return TimeSpan.Zero.Ticks;
+        }
+        else
+        {
+            return new TimeSpan(int.Parse(source.Split(':')[0]),
+                int.Parse(source.Split(':')[1]), 0).Ticks;
+        }
+    }
+
 }

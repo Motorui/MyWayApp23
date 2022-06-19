@@ -4,7 +4,7 @@
 public class HistoricoAssistencia : IBaseEntity
 {
     [Key]
-    public Guid Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     [Display(Name = "Mensagem:")]
     public string Msg { get; set; } = string.Empty;
@@ -14,7 +14,7 @@ public class HistoricoAssistencia : IBaseEntity
     public string Aeroporto { get; set; } = string.Empty;
 
     [Display(Name = "Notificação:")]
-    public double Notif { get; set; }
+    public long Notif { get; set; }
 
     [Required]
     [Display(Name = "Data:")]  // Data Voo + Hora Voo
@@ -31,6 +31,9 @@ public class HistoricoAssistencia : IBaseEntity
 
     [Display(Name = "Fim:")]  // Data Fim Assistencia + Hora Fim Assistencia
     public DateTime? Fim { get; set; } = null;
+
+    [Display(Name = "Duração:")]  // Hora Fim Assistencia - Hora Inicio Assistencia
+    public long Duracao { get; set; }
 
     [Required]
     [Display(Name = "Voo:")]

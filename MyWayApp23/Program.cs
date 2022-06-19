@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using MudBlazor.Services;
 using MyWayApp23.Areas.Identity.Services;
 using MyWayApp23.Services.Excel;
+using MyWayApp23.Services.Upload;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,7 +80,8 @@ builder.Services.AddScoped<IStandService, StandService>();
 builder.Services.AddScoped<IHistoricoService, HistoricoService>();
 builder.Services.AddScoped<IHistoricoDetalheService, HistoricoDetalheService>();
 builder.Services.AddScoped<IHistoricoDetalheHoraService, HistoricoDetalheHoraService>();
-builder.Services.AddScoped<IHistoricoAverageService, HistoricoAverageService>();
+//builder.Services.AddScoped<IHistoricoAverageService, HistoricoAverageService>();
+builder.Services.AddScoped<IUploadHistoricoService,UploadHistoricoService>();
 
 var app = builder.Build();
 

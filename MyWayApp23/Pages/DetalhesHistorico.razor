@@ -1,9 +1,6 @@
 ﻿@page "/detalhesHistorico"
 @using MyWayApp23.Components
 
-@inject IHistoricoDetalheService detalheService
-@inject IHistoricoDetalheHoraService detalheHorasService
-
 <PageTitle>Detalhes</PageTitle>
 
 <AuthorizeView Context="AuthContext">
@@ -37,14 +34,14 @@
             </MudItem>
 
             <MudItem xs="12">
-                <HistoricoDetalheHoraTableComponent Items="@detalhesHora"
+@*                <HistoricoDetalheHoraTableComponent Items="@detalhesHora"
                                                     IsVisible="@isVisible"
-                                                    HeaderText="Detalhes por hora" />
+                                                    HeaderText="Detalhes por hora" />*@
             </MudItem>
             <MudItem xs="6">
-                <HistoricoDetalheDiaTableComponent Items="@detalhesHora"
+@*                <HistoricoDetalheDiaTableComponent Items="@detalhesHora"
                                                    IsVisible="@isVisible"
-                                                   HeaderText="Detalhes por manhã, tarde e noite" />
+                                                   HeaderText="Detalhes por manhã, tarde e noite" />*@
             </MudItem>
             <MudItem xs="6">
 
@@ -70,30 +67,30 @@
 
     private IEnumerable<HistoricoDetalhe> detalhes = new List<HistoricoDetalhe>();
     private IEnumerable<HistoricoDetalheHora> detalhesHora = new List<HistoricoDetalheHora>();
-    protected override async Task OnInitializedAsync()
-    {
-        await Task.Delay(5);
-        if (_date != null)
-        {
-            GetData((DateTime)_date);
-        }
-        isVisible = false;
-    }
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    await Task.Delay(5);
+    //    if (_date != null)
+    //    {
+    //        GetData((DateTime)_date);
+    //    }
+    //    isVisible = false;
+    //}
 
     private void OnDateChange(DateTime? newDate)
     {
-        isVisible = true;
-        _date = newDate;
-        if (newDate != null)
-        {
-            GetData((DateTime)newDate);
-        }
-        isVisible = false;
+        //isVisible = true;
+        //_date = newDate;
+        //if (newDate != null)
+        //{
+        //    GetData((DateTime)newDate);
+        //}
+        //isVisible = false;
     }
 
-    private void GetData(DateTime date)
-    {
-        detalhes = detalheService.GetDetalhes(date).OrderByDescending(d => d.Data);
-        detalhesHora = detalheHorasService.GetDetalhesHora(date).OrderByDescending(d => d.Data);
-    }
+    //private void GetData(DateTime date)
+    //{
+    //    detalhes = detalheService.GetDetalhes(date).OrderByDescending(d => d.Data);
+    //    detalhesHora = detalheHorasService.GetDetalhesHora(date).OrderByDescending(d => d.Data);
+    //}
 }                        

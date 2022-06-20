@@ -8,7 +8,7 @@ public interface IHistoricoService
     Task<HistoricoAssistencia?> ExistsAsync(HistoricoAssistencia historico);
     List<HistoricoAssistencia> GetAll();
     Task<HistoricoAssistencia> GetByIdAsync(string id);
-    Task<List<HistoricoAssistencia>> GetByDateAsync(DateTime date);
+    Task<List<HistoricoAssistencia>> GetByYearAsync(int year);
     Task<bool> UpdateAsync(HistoricoAssistencia historico);
     
 }

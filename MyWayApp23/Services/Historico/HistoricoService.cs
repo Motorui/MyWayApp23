@@ -43,13 +43,13 @@ public class HistoricoService : IHistoricoService
 
         return historico;
     }
-    public async Task<List<HistoricoAssistencia>> GetByDateAsync(DateTime date)
+    public async Task<List<HistoricoAssistencia>> GetByYearAsync(int year)
     {
         List<HistoricoAssistencia> historicos;
         try
         {
             historicos = await _context.HistoricoAssistencias!
-                .Where(d=> d.Data.Month.Equals(date.Month)).ToListAsync();
+                .Where(d=> d.Data.Year.Equals(year)).ToListAsync();
         }
         catch (Exception ex)
         {

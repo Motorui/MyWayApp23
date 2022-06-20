@@ -19,15 +19,14 @@ public static class StringHelper
 
     public static string ConvertToHistoricoId(HistoricoAssistencia row)
     {
-        Regex rgx = new("[^a-zA-Z0-9 -]");
         string inicio = row.Inicio.HasValue ? row.Inicio.Value.Ticks.ToString() : row.Data.Ticks.ToString();
-        string id = rgx.Replace(row.Aeroporto.Trim(), "")
-            + "-" + row.Data.Ticks.ToString()
-            + "-" + inicio
-            + "-" + rgx.Replace(row.Voo.Trim(), "")
-            + "-" + rgx.Replace(row.Mov.Trim(), "")
-            + "-" + rgx.Replace(row.Pax.Trim(), "")
-            + "-" + rgx.Replace(row.SSR.Trim(), "");
-        return id.ToUpper();
+        string id = row.Aeroporto.RemoveNonAlphanumeric().Trim()
+            + "-" + row.Data.Ticks.ToString().RemoveWhitespace().Trim()
+            + "-" + inicio.RemoveWhitespace().Trim()
+            + "-" + row.Voo.RemoveNonAlphanumeric().Trim()
+            + "-" + row.Mov.RemoveNonAlphanumeric().Trim()
+            + "-" + row.Pax.RemoveNonAlphanumeric().Trim()
+            + "-" + row.SSR.RemoveNonAlphanumeric().Trim();
+        return id.RemoveWhitespace().ToUpper();
     }
 }

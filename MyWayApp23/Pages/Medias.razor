@@ -1,5 +1,4 @@
 ﻿@page "/medias"
-
 @using MyWayApp23.Components
 @*@inject IHistoricoAverageService HistoricoAverageService*@
 @inject IHistoricoService service
@@ -18,46 +17,58 @@
                 </MudText>
             </MudItem>
             <MudItem xs="2">
-                <MudDatePicker Label="Selecionar ano" @bind-Date="@SelectedDate" OpenTo="OpenTo.Year"
-                               FixMonth="1" FixDay="1" DateFormat="yyyy" AutoClose="true" />
+                @*<MudDatePicker Label="Ano" @bind-Date="_date" OpenTo="OpenTo.Year"
+                FixMonth="@DateTime.Today.Month" FixDay="@DateTime.Today.Day" DateFormat="yyyy" />*@
+                <MudSelect T="int" Label="Ano" Variant="Variant.Text" @bind-Value="_year">
+                    @foreach (var year in last5Years!)
+                    {
+                        <MudSelectItem Value="@year.Year" />
+                    }
+                </MudSelect>
             </MudItem>
-            <MudItem xs="2"></MudItem>
-            <MudItem xs="2"></MudItem>
-            <MudItem xs="2"></MudItem>
-            <MudItem xs="2"></MudItem>
-            <MudItem xs="2"></MudItem>
+            <MudItem xs="2">
+                <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search" 
+                OnClick="OnYearChange">Filtrar</MudButton>
+            </MudItem>
+            <MudItem xs="8"></MudItem>
+            <MudItem xs="12">
+                @if (isVisible)
+                {
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+                }
+            </MudItem>
             <MudItem xs="4">
                 <HistoricoDetalheTableComponent Items="@historico" />
             </MudItem>
             @*<MudItem xs="4">
-                <YearMonthAverageTableComponent Items="@averageTotal"
-                                                IsVisible="@isVisible"
-                                                HeaderText="Média total" />
+            <YearMonthAverageTableComponent Items="@averageTotal"
+            IsVisible="@isVisible"
+            HeaderText="Média total" />
             </MudItem>
             <MudItem xs="4">
-                <YearMonthAverageTableComponent Items="@averageDep"
-                                                IsVisible="@isVisible"
-                                                HeaderText="Média de partidas" />
+            <YearMonthAverageTableComponent Items="@averageDep"
+            IsVisible="@isVisible"
+            HeaderText="Média de partidas" />
             </MudItem>
             <MudItem xs="4">
-                <YearMonthAverageTableComponent Items="@averageArr"
-                                                IsVisible="@isVisible"
-                                                HeaderText="Média de chegadas" />
+            <YearMonthAverageTableComponent Items="@averageArr"
+            IsVisible="@isVisible"
+            HeaderText="Média de chegadas" />
             </MudItem>
             <MudItem xs="4">
-                <YearMonthAverageTableComponent Items="@averageJet"
-                                                IsVisible="@isVisible"
-                                                HeaderText="Média em JetBridge" />
+            <YearMonthAverageTableComponent Items="@averageJet"
+            IsVisible="@isVisible"
+            HeaderText="Média em JetBridge" />
             </MudItem>
             <MudItem xs="4">
-                <YearMonthAverageTableComponent Items="@averageRemote"
-                                                IsVisible="@isVisible"
-                                                HeaderText="Média em Remoto" />
+            <YearMonthAverageTableComponent Items="@averageRemote"
+            IsVisible="@isVisible"
+            HeaderText="Média em Remoto" />
             </MudItem>
             <MudItem xs="4">
-                <YearMonthAverageTimeTableComponent Items="@averageTime"
-                                                IsVisible="@isVisible"
-                HeaderText="Média de duração" />
+            <YearMonthAverageTimeTableComponent Items="@averageTime"
+            IsVisible="@isVisible"
+            HeaderText="Média de duração" />
             </MudItem>*@
         </MudGrid>
 
@@ -76,18 +87,9 @@
         new BreadcrumbItem("Médias", null, disabled: true)
     };
 
+    IEnumerable<DateTime>? last5Years;
     private bool isVisible = true;
-
-    public DateTime? _date = DateTime.Today;
-    private DateTime? SelectedDate
-    {
-        get => _date;
-        set
-        {
-            _date = value;
-            DateChanged();
-        }
-    }
+    private int _year = DateTime.Today.Year;
 
     private List<HistoricoAssistencia> historico = new List<HistoricoAssistencia>();
     //private List<HistoricoAverage> averageTotal = new List<HistoricoAverage>();
@@ -98,22 +100,31 @@
     //private List<HistoricoAverageTime> averageTime = new List<HistoricoAverageTime>();
     protected override async Task OnInitializedAsync()
     {
+        last5Years = from n in Enumerable.Range(0, 5)
+                     select DateTime.UtcNow.AddYears(-n);
         await Task.Delay(5);
         GetData();
     }
 
-    private void DateChanged()
+    private void OnYearChange()
     {
         isVisible = true;
         Task.Delay(15);
         GetData();
     }
 
+    //private void DateChanged()
+    //{
+    //    isVisible = true;
+    //    Task.Delay(15);
+    //    GetData();
+    //}
+
     private async void GetData()
     {
-        if (_date != null)
+        if (_year > 0)
         {
-            historico = await service.GetByDateAsync((DateTime)_date);
+            historico = await service.GetByYearAsync(_year);
             //averageTotal = HistoricoAverageService.GetAvgTotal((DateTime)_date);
             //averageDep = HistoricoAverageService.GetAvgArrDep((DateTime)_date, "D");
             //averageArr = HistoricoAverageService.GetAvgArrDep((DateTime)_date, "A");
@@ -122,5 +133,6 @@
             //averageTime = HistoricoAverageService.GetAvgTime((DateTime)_date);
         }
         isVisible = false;
+        StateHasChanged();
     }
 } 

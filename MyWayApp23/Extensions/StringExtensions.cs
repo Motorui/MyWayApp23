@@ -1,4 +1,6 @@
-﻿namespace MyWayApp23.Extensions;
+﻿using System.Text.RegularExpressions;
+
+namespace MyWayApp23.Extensions;
 
 public static class StringExtensions
 {
@@ -39,4 +41,20 @@ public static class StringExtensions
         }
     }
 
+    private static readonly Regex sWhitespace = new(@"\s+");
+    public static string ReplaceWhitespace(string input, string replacement)
+    {
+        return sWhitespace.Replace(input, replacement);
+    }
+
+    public static string RemoveWhitespace(this string input)
+    {
+        return sWhitespace.Replace(input, "");
+    }
+
+    private static readonly Regex sNonAlphanumeric = new("[^a-zA-Z0-9 -]");
+    public static string RemoveNonAlphanumeric(this string input)
+    {
+        return sNonAlphanumeric.Replace(input, "");
+    }
 }

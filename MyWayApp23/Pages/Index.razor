@@ -1,6 +1,8 @@
 ﻿@page "/"
 
-@inject IHistoricoDetalheService detalhe
+@using Newtonsoft.Json.Linq
+@implements IDisposable
+@inject IHistoricoService service
 
 <PageTitle>Index</PageTitle>
 
@@ -13,34 +15,136 @@ Welcome to your new app.
 <AuthorizeView>
     <Authorized>
         @*<p>Olá, @context.User.Identity!.Name</p>*@
-@*        <MudItem xs="12">
-            <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="50%"></MudChart>
+        @*        <MudItem xs="12">
+        <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="50%"></MudChart>
         </MudItem>*@
+
+        <ChartJs3 Height="200" UseLocalChartJs="true"
+                  ChartJsInitializer="@chartjsinit"
+                  OnChartJsCreated="@CreateData" />
+
     </Authorized>
     <NotAuthorized>
         <p>Não sei o teu username sem te logares!</p>
     </NotAuthorized>
 </AuthorizeView>
 @code {
+
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
-    public List<ChartSeries> Series = new List<ChartSeries>();
-    public ChartOptions Options = new ChartOptions();
-    public string[]? XAxisLabels;
+    private JObject chartjsinit;
+    private IDisposable _Subscription;
 
-    protected override void OnInitialized()
+    private List<HistoricoAssistencia> historico = new List<HistoricoAssistencia>();
+    protected override async Task OnInitializedAsync()
     {
-        //var data = detalhe.GetDetalhesAno(DateTime.UtcNow);
-        //Series = new()
-        //{
-        //    new ChartSeries() { Name = "Assist. Real", Data = data.Select(t=> (double)t.TotalDia).ToArray() },
-        //    new ChartSeries() { Name = "Dep", Data = data.Select(t=> (double)t.Dep).ToArray() },
-        //    new ChartSeries() { Name = "Arr", Data = data.Select(t=> (double)t.Arr).ToArray() },
-        //};
-        //XAxisLabels = data.Select(t=> t.Data.ToString("d/MMM", CultureInfo.CreateSpecificCulture("pt-PT"))).Where((x, i) => i % 10 == 10).ToArray();
-        //Options.YAxisTicks = 400;
-        //Options.LineStrokeWidth = 2;
-        //StateHasChanged();
+        historico = await service.GetByYearAsync(DateTime.Today.Year);
+
+        var data = historico.AsEnumerable().GroupBy(x => new { Dia = x.Data.Date })
+        .Select(x => new
+        {
+            Mes = x.Key.Dia.ToString("d/MMM"),
+            Real = x.Count(),
+            Dep = x.Count(m => m.Mov == "D"),
+            Arr = x.Count(m => m.Mov == "A")
+        });
+
+        var labels = data.Select(m => m.Mes).ToArray();
+
+        chartjsinit = JObject.FromObject(new
+        {
+            type = "line",
+            data = new
+            {
+                labels = labels,
+                //data =
+                datasets = new object[] { new {
+                        label= "Real",
+                        backgroundColor= "rgb(255, 99, 132)",
+                        borderColor= "rgb(255, 99, 132)",
+                        data = data.Select(t=>t.Real).ToArray(),
+                        fill = 1
+                    },
+                    new {
+                        label= "Dep",
+                        backgroundColor= "rgb(0, 99, 132)",
+                        borderColor= "rgb(0, 99, 132)",
+                        data = data.Select(t=>t.Dep).ToArray(),
+                        fill = 1
+                    }
+    }
+            },
+            options = new
+            {
+                maintainAspectRatio = false,
+                elements = new
+                {
+                    point = new
+                    {
+                        radius = 0
+                    },
+                },
+                animation = new
+                {
+                    easing = "linear",
+                    duration = 950
+                },
+                plugins = new
+                {
+                    tooltip = new
+                    {
+                        enabled = false
+                    },
+                    legend = new
+                    {
+                        display = false
+                    },
+                },
+                scales = new
+                {
+                    y = new
+                    {
+                        min = 40,
+                        max = 1000,
+                        ticks = new
+                        {
+                            stepSize = 10
+                        },
+                        display = false,
+                    },
+                    x = new
+                    {
+                        display = false,
+                    }
+                }
+            }
+        });
+    }
+
+    private async Task<object[]?> CreateData(ChartJs3 chart)
+    {
+        var datasets = new object[] { new {
+                        label= "Real",
+                        backgroundColor= "rgb(255, 99, 132)",
+                        borderColor= "rgb(255, 99, 132)",
+                        data = data.Select(t=>t.Real).ToArray(),
+                        fill = 1
+                    },
+                    new {
+                        label= "Dep",
+                        backgroundColor= "rgb(0, 99, 132)",
+                        borderColor= "rgb(0, 99, 132)",
+                        data = data.Select(t=>t.Dep).ToArray(),
+                        fill = 1
+                    }
+    };
+        await Task.Delay(10);
+        return datasets;
+    }
+
+    public void Dispose()
+    {
+        _Subscription?.Dispose();
     }
 }

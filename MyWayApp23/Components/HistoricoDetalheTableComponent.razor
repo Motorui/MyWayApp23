@@ -1,26 +1,53 @@
 ﻿@using System.Diagnostics
-<MudSimpleTable Style="overflow-x: auto;">
+<MudSimpleTable Dense="true" Hover="true" Bordered="true" Striped="true" Style="overflow-x: auto;">
     <thead>
         <tr>
             @if (headings != null)
             {
                 foreach (var h in headings)
                 {
-                    <th>@h</th>
+                    <th style="white-space: nowrap">@h</th>
                 }
             }
 
         </tr>
     </thead>
     <tbody>
-        @foreach (var row in rows)
-        {
-            <tr>
-                @foreach (var x in row.Split())
-                {
-                    <td>@x</td>
-                }
-            </tr>
+        @{
+            var items = Items.AsEnumerable().GroupBy(g => new { Mes = g.Data.ToString("MMM") })
+            .Select(x => new
+            {
+                Mes = x.Key.Mes,
+                Pax = x.Count(),
+                DepMais36 = x.Count(n =>
+            TimeSpan.FromTicks(n.Notif) >= TimeSpan.FromHours(36)
+            && n.Mov == "D"),
+                DepMenos36 = x.Count(n =>
+            TimeSpan.FromTicks(n.Notif) < TimeSpan.FromHours(36)
+            && n.Mov == "D"),
+                ArrMais36 = x.Count(n =>
+            TimeSpan.FromTicks(n.Notif) >= TimeSpan.FromHours(36)
+            && n.Mov == "A"),
+                ArrMenos36 = x.Count(n =>
+            TimeSpan.FromTicks(n.Notif) < TimeSpan.FromHours(36) &&
+            TimeSpan.FromTicks(n.Notif) >= TimeSpan.FromMinutes(90)
+            && n.Mov == "A"),
+                ArrMenos90M = x.Count(n =>
+            TimeSpan.FromTicks(n.Notif) < TimeSpan.FromMinutes(90)
+            && n.Mov == "A"),
+            });
+            foreach (var row in items)
+            {
+                <tr>
+                    <td>@row.Mes</td>
+                    <td>@row.Pax</td>
+                    <td>@row.DepMais36</td>
+                    <td>@row.DepMenos36</td>
+                    <td>@row.ArrMais36</td>
+                    <td>@row.ArrMenos36</td>
+                    <td>@row.ArrMenos90M</td>
+                </tr>
+            }
         }
     </tbody>
 </MudSimpleTable>
@@ -28,39 +55,10 @@
 @code {
     [Parameter]
     public List<HistoricoAssistencia> Items { get; set; } = new List<HistoricoAssistencia>();
-    //string[]? headings { get; set; }
-    IEnumerable<T>? rows { get; set; }
 
+    string[] headings = { "Mês", "PAX", "DEP >36H", "DEP <36H", "ARR >36H","ARR<36H>90m",
+        "ARR <90m"};
 
-    protected override async Task OnParametersSetAsync()
-    {
-        await Task.Delay(10);
-        //foreach (var item in Items)
-        //{
-        //    headings = item.GetType().GetProperties().Select(k => k.Name).ToArray();
-        //}
-
-        var rows = Items.AsEnumerable().GroupBy(g => new { Mes = g.Data.Date })
-                 .Select(x => new
-                 {
-                     Pax = x.Count(),
-                     DepMais36 = x.Count(n => n.Notif >= 36)
-                 }
-             );
-
-        Debug.WriteLine("Him here");
-    }
-
-
-    string[] headings = { "ID", "Name", "Email", "Gender", "IP Address" };
-    //string[] rows = {
-    //    @"1 Krishna kpartner0@usatoday.com Male 28.25.250.202",
-    //    @"2 Webb wstitle1@ning.com Male 237.168.134.114",
-    //    @"3 Nathanil nneal2@cyberchimps.com Male 92.6.0.175",
-    //    @"4 Adara alockwood3@patch.com Female 182.174.217.152",
-    //    @"5 Cecilius cchaplin4@shinystat.com Male 195.124.144.18",
-    //    @"6 Cicely cemerine9@soup.io Female 138.94.191.43",
-    //};
 }
 
 @*<MudTable Items="@Items" Dense="true" Hover="true" Bordered="true"

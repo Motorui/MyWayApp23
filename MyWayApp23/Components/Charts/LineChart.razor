@@ -1,0 +1,96 @@
+﻿@using System.Text.Json
+@using Newtonsoft.Json
+@inject IJSRuntime JSRuntime
+
+<canvas id="@(Id+Guid.NewGuid())" width="400" height="400"></canvas>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    [Parameter]
+    public List<HistoricoAssistencia> Items { get; set; } = new List<HistoricoAssistencia>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var values = Items.GroupBy(x => new { Dia = x.Data.Date })
+                .Select(x => new
+                {
+                    labels = x.Key.Dia.ToString("d/MMM"),
+                    Real = x.Select(s => s.Voo).Count(),
+                    Dep = x.Count(m => m.Mov == "D"),
+                    Arr = x.Count(m => m.Mov == "A")
+                }).ToList();
+
+            if (values != null)
+            {
+
+
+                var config = new
+                {
+                    type = "line",
+                    data = new
+                    {
+                        labels = values.Select(l => l.labels).ToArray(),
+                        datasets = new
+                        {
+                            label = "Filled",
+                            backgroundColor = "Utils.CHART_COLORS.red",
+                            borderColor = "Utils.CHART_COLORS.red",
+                            data = values.Select(d => d.Real).ToArray(),
+                            fill = true,
+                        }
+
+                    },
+                    options = new
+                    {
+                        responsive = true,
+                        plugins = new
+                        {
+                            title = new
+                            {
+                                display = true,
+                                text = "nome da chart"
+                            }
+                        },
+                        interaction = new
+                        {
+                            mode = "index",
+                            intersect = false
+                        },
+                        scales = new
+                        {
+                            x = new
+                            {
+                                display = true,
+                                title = new
+                                {
+                                    display = true,
+                                    text = "dia"
+                                }
+                            },
+                            y = new
+                            {
+                                display = true,
+                                title = new
+                                {
+                                    display = true,
+                                    text = "valor"
+                                }
+                            }
+                        }
+                    }
+                };
+
+                //string stringdata = JsonConvert.SerializeObject(data);
+                //Console.WriteLine(stringdata);
+
+                string stringjson = JsonConvert.SerializeObject(config);
+                Console.WriteLine(stringjson);
+
+                await JSRuntime.InvokeVoidAsync("setupChart", Id, stringjson);
+            }
+        }
+    }
+}

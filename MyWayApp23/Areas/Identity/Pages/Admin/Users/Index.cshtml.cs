@@ -24,8 +24,8 @@ public class IndexModel : BasePageModel
             var thisViewModel = new UserRolesViewModel
             {
                 UserId = user.Id,
-                Email = user.Email,
-                UserName = user.UserName,
+                Email = user.Email!,
+                UserName = user.UserName!,
                 Roles = await GetUserRoles(user)
             };
             UsersWithRoles.Add(thisViewModel);

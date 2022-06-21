@@ -11,7 +11,7 @@ public class DetailsModel : BasePageModel
         _roleManager = roleManager;
     }
 
-    public IdentityRole Role { get; set; } = new IdentityRole();
+    public IdentityRole? Role { get; set; } = new IdentityRole();
 
     public async Task<IActionResult> OnGetAsync(string id)
     {

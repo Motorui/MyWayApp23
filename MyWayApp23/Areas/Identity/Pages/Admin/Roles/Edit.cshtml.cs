@@ -12,7 +12,7 @@ public class EditModel : BasePageModel
     }
 
     [BindProperty]
-    public IdentityRole Role { get; set; } = new IdentityRole();
+    public IdentityRole? Role { get; set; } = new IdentityRole();
 
     public async Task<IActionResult> OnGetAsync(string id)
     {
@@ -36,7 +36,7 @@ public class EditModel : BasePageModel
         {
             var currentRole = _roleManager.FindByIdAsync(id).Result;
 
-            currentRole.Name = Role.Name;
+            currentRole!.Name = Role!.Name;
 
             if (currentRole != null)
             {

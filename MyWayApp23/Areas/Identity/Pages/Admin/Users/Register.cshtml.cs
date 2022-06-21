@@ -27,7 +27,7 @@ public class RegisterModel : BasePageModel
             var userRole = new ManageUserRolesViewModel
             {
                 RoleId = role.Id,
-                RoleName = role.Name,
+                RoleName = role.Name!,
                 Selected = false
             };
             UserRoles.Add(userRole);

@@ -34,9 +34,9 @@ public class ManageModel : BasePageModel
             var userRole = new ManageUserRolesViewModel
             {
                 RoleId = role.Id,
-                RoleName = role.Name
+                RoleName = role.Name!
             };
-            if (await _userManager.IsInRoleAsync(user, role.Name))
+            if (await _userManager.IsInRoleAsync(user, role.Name!))
             {
                 userRole.Selected = true;
             }

@@ -1,7 +1,6 @@
 ﻿@page "/"
+@using MyWayApp23.Components.Charts
 
-@using Newtonsoft.Json.Linq
-@implements IDisposable
 @inject IHistoricoService service
 
 <PageTitle>Index</PageTitle>
@@ -18,10 +17,34 @@ Welcome to your new app.
         @*        <MudItem xs="12">
         <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="50%"></MudChart>
         </MudItem>*@
+        @*        @if (historico != null)
+        {
+        var data = historico.GroupBy(x => new { Dia = x.Data.Date })
+        .Select(x => new
+        {
+        labels = x.Key.Dia.ToString("d/MMM"),
+        real = x.Count(),
+        dep = x.Count(m => m.Mov == "D"),
+        arr = x.Count(m => m.Mov == "A")
+        }).ToList();
 
-        <ChartJs3 Height="200" UseLocalChartJs="true"
-                  ChartJsInitializer="@chartjsinit"
-                  OnChartJsCreated="@CreateData" />
+
+        string[] labels = (from e in data select e.labels).ToArray();
+        string[] real = (from e in data select e.real.ToString()).ToArray();
+
+
+
+        }*@
+
+        @*        <Chart Id="pie1" Type="@Chart.ChartType.Pie"
+        Data="@(new[] { "1", "2" })" BackgroundColor="@(new[] { "blue","green" })"
+        Labels="@(new[] { "Fail","Ok" })">
+        </Chart>*@
+
+        @if (historico != null)
+        {
+            <LineChart Id="Line" Items="historico"></LineChart>
+        }
 
     </Authorized>
     <NotAuthorized>
@@ -29,122 +52,50 @@ Welcome to your new app.
     </NotAuthorized>
 </AuthorizeView>
 @code {
-
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
-
-    private JObject chartjsinit;
-    private IDisposable _Subscription;
 
     private List<HistoricoAssistencia> historico = new List<HistoricoAssistencia>();
     protected override async Task OnInitializedAsync()
     {
         historico = await service.GetByYearAsync(DateTime.Today.Year);
-
-        var data = historico.AsEnumerable().GroupBy(x => new { Dia = x.Data.Date })
-        .Select(x => new
-        {
-            Mes = x.Key.Dia.ToString("d/MMM"),
-            Real = x.Count(),
-            Dep = x.Count(m => m.Mov == "D"),
-            Arr = x.Count(m => m.Mov == "A")
-        });
-
-        var labels = data.Select(m => m.Mes).ToArray();
-
-        chartjsinit = JObject.FromObject(new
-        {
-            type = "line",
-            data = new
-            {
-                labels = labels,
-                //data =
-                datasets = new object[] { new {
-                        label= "Real",
-                        backgroundColor= "rgb(255, 99, 132)",
-                        borderColor= "rgb(255, 99, 132)",
-                        data = data.Select(t=>t.Real).ToArray(),
-                        fill = 1
-                    },
-                    new {
-                        label= "Dep",
-                        backgroundColor= "rgb(0, 99, 132)",
-                        borderColor= "rgb(0, 99, 132)",
-                        data = data.Select(t=>t.Dep).ToArray(),
-                        fill = 1
-                    }
-    }
-            },
-            options = new
-            {
-                maintainAspectRatio = false,
-                elements = new
-                {
-                    point = new
-                    {
-                        radius = 0
-                    },
-                },
-                animation = new
-                {
-                    easing = "linear",
-                    duration = 950
-                },
-                plugins = new
-                {
-                    tooltip = new
-                    {
-                        enabled = false
-                    },
-                    legend = new
-                    {
-                        display = false
-                    },
-                },
-                scales = new
-                {
-                    y = new
-                    {
-                        min = 40,
-                        max = 1000,
-                        ticks = new
-                        {
-                            stepSize = 10
-                        },
-                        display = false,
-                    },
-                    x = new
-                    {
-                        display = false,
-                    }
-                }
-            }
-        });
     }
 
-    private async Task<object[]?> CreateData(ChartJs3 chart)
+    protected override void OnAfterRender(bool firstRender)
     {
-        var datasets = new object[] { new {
-                        label= "Real",
-                        backgroundColor= "rgb(255, 99, 132)",
-                        borderColor= "rgb(255, 99, 132)",
-                        data = data.Select(t=>t.Real).ToArray(),
-                        fill = 1
-                    },
-                    new {
-                        label= "Dep",
-                        backgroundColor= "rgb(0, 99, 132)",
-                        borderColor= "rgb(0, 99, 132)",
-                        data = data.Select(t=>t.Dep).ToArray(),
-                        fill = 1
-                    }
-    };
-        await Task.Delay(10);
-        return datasets;
-    }
+        if (firstRender)
+        {
+            //var labels = data.Select(m => m.Mes).ToArray();
 
-    public void Dispose()
-    {
-        _Subscription?.Dispose();
+            //ChartData = historico.GroupBy(x => new { Dia = x.Data.Date })
+            //    .Select(x => new
+            //    {
+            //        labels = x.Key.Dia.ToString("d/MMM").ToArray(),
+            //        datasets = new object[] { new
+            //            {
+            //                label= "Real",
+            //                backgroundColor= "rgb(255, 99, 132)",
+            //                borderColor= "rgb(255, 99, 132)",
+            //                data = x.Count(),
+            //                fill = 1
+
+            //            },
+            //            new {
+            //                label= "Dep",
+            //                backgroundColor= "rgb(0, 99, 132)",
+            //                borderColor= "rgb(0, 99, 132)",
+            //                data = x.Count(m => m.Mov == "D"),
+            //                fill = 1
+            //            } ,
+            //            new {
+            //                label= "Arr",
+            //                backgroundColor= "rgb(0, 88, 165)",
+            //                borderColor= "rgb(0, 99, 132)",
+            //                data = x.Count(m => m.Mov == "A"),
+            //                fill = 1
+            //            }}
+            //    }).ToArray();
+
+        }
     }
 }

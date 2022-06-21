@@ -30,18 +30,18 @@ public class EditUserModel : BasePageModel
             ToastMessage = $"O utilizador com o Id = {id} não encontrado";
             return;
         }
-        Input.Username = user.UserName;
-        Input.Email = user.Email;
-        Input.Password = user.PasswordHash;
+        Input.Username = user.UserName!;
+        Input.Email = user.Email!;
+        Input.Password = user.PasswordHash!;
 
         foreach (var role in _roleManager.Roles.ToList())
         {
             var userRole = new ManageUserRolesViewModel
             {
                 RoleId = role.Id,
-                RoleName = role.Name
+                RoleName = role.Name!
             };
-            if (await _userManager.IsInRoleAsync(user, role.Name))
+            if (await _userManager.IsInRoleAsync(user, role.Name!))
             {
                 userRole.Selected = true;
             }
@@ -58,7 +58,7 @@ public class EditUserModel : BasePageModel
         if (ModelState.IsValid)
         {
             var user = await _userManager.FindByIdAsync(id);
-            user.UserName = Input.Username;
+            user!.UserName = Input.Username;
             user.Email = Input.Email;
 
             if (user == null)

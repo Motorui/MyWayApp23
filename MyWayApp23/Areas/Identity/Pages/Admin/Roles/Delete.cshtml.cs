@@ -13,7 +13,7 @@ public class DeleteModel : BasePageModel
     }
 
     [BindProperty]
-    public IdentityRole Role { get; set; } = new IdentityRole();
+    public IdentityRole? Role { get; set; } = new IdentityRole();
 
     public async Task<IActionResult> OnGetAsync(string id)
     {

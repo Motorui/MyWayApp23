@@ -14,38 +14,16 @@ Welcome to your new app.
 <AuthorizeView>
     <Authorized>
         @*<p>Olá, @context.User.Identity!.Name</p>*@
-        @*        <MudItem xs="12">
-        <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="50%"></MudChart>
-        </MudItem>*@
-        @*        @if (historico != null)
-        {
-        var data = historico.GroupBy(x => new { Dia = x.Data.Date })
-        .Select(x => new
-        {
-        labels = x.Key.Dia.ToString("d/MMM"),
-        real = x.Count(),
-        dep = x.Count(m => m.Mov == "D"),
-        arr = x.Count(m => m.Mov == "A")
-        }).ToList();
-
-
-        string[] labels = (from e in data select e.labels).ToArray();
-        string[] real = (from e in data select e.real.ToString()).ToArray();
-
-
-
-        }*@
-
-        @*        <Chart Id="pie1" Type="@Chart.ChartType.Pie"
-        Data="@(new[] { "1", "2" })" BackgroundColor="@(new[] { "blue","green" })"
-        Labels="@(new[] { "Fail","Ok" })">
-        </Chart>*@
-
-        @if (historico != null)
-        {
-            <LineChart Id="Line" Items="historico"></LineChart>
-        }
-
+        <MudGrid>
+            <MudItem xs="12">
+                <MudPaper Class="pa-5" Elevation="5">
+                    @if (historico != null)
+                    {
+                        <PaxDemandChart @ref="paxDemandChart"></PaxDemandChart>
+                    }
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
     </Authorized>
     <NotAuthorized>
         <p>Não sei o teu username sem te logares!</p>
@@ -55,47 +33,29 @@ Welcome to your new app.
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
-    private List<HistoricoAssistencia> historico = new List<HistoricoAssistencia>();
+    private PaxDemandChart? paxDemandChart;
+
+    private List<HistoricoAssistencia> historico { get; set; } = new();
     protected override async Task OnInitializedAsync()
     {
         historico = await service.GetByYearAsync(DateTime.Today.Year);
+
+        var paxDemandChartData = historico.GroupBy(x => new { Dia = x.Data.Date })
+            .Select(x => new
+            {
+                labels = x.Key.Dia.ToString("d/MMM"),
+                real = x.Count(),
+                dep = x.Count(m => m.Mov == "D"),
+                arr = x.Count(m => m.Mov == "A")
+            }).ToList();
+
+        List<string> labels = paxDemandChartData.Select(m => m.labels).ToList();
+        List<decimal> real = paxDemandChartData.Select(m => (decimal)m.real).ToList();
+        List<decimal> dep = paxDemandChartData.Select(m => (decimal)m.dep).ToList();
+        List<decimal> arr = paxDemandChartData.Select(m => (decimal)m.arr).ToList();
+
+        paxDemandChart!.FillData(labels, real, dep, arr);
+
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            //var labels = data.Select(m => m.Mes).ToArray();
-
-            //ChartData = historico.GroupBy(x => new { Dia = x.Data.Date })
-            //    .Select(x => new
-            //    {
-            //        labels = x.Key.Dia.ToString("d/MMM").ToArray(),
-            //        datasets = new object[] { new
-            //            {
-            //                label= "Real",
-            //                backgroundColor= "rgb(255, 99, 132)",
-            //                borderColor= "rgb(255, 99, 132)",
-            //                data = x.Count(),
-            //                fill = 1
-
-            //            },
-            //            new {
-            //                label= "Dep",
-            //                backgroundColor= "rgb(0, 99, 132)",
-            //                borderColor= "rgb(0, 99, 132)",
-            //                data = x.Count(m => m.Mov == "D"),
-            //                fill = 1
-            //            } ,
-            //            new {
-            //                label= "Arr",
-            //                backgroundColor= "rgb(0, 88, 165)",
-            //                borderColor= "rgb(0, 99, 132)",
-            //                data = x.Count(m => m.Mov == "A"),
-            //                fill = 1
-            //            }}
-            //    }).ToArray();
-
-        }
-    }
 }

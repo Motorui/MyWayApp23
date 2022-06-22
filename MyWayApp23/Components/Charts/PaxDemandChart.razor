@@ -1,0 +1,55 @@
+﻿<Chart Config="_config" @ref="_chart" Height="500px" />
+
+@code {
+    private LineChartConfig _config = new();
+    private Chart? _chart;
+
+    public void FillData(List<string> labels, List<decimal> real,
+    List<decimal> dep, List<decimal> arr)
+    {
+        _config = new LineChartConfig()
+            {
+                Options = new Options()
+                {
+                    Responsive = true,
+                    MaintainAspectRatio = false,
+                    Plugins = new Plugins()
+                    {
+                        Legend = new Legend()
+                        {
+                            Align = LegendAlign.Center,
+                            Display = true,
+                            Position = LegendPosition.Bottom
+                        }
+                    },
+                }
+            };
+
+        _config.Data.Labels = labels;
+        _config.Data.Datasets.Add(new LineDataset()
+            {
+                Label = "Real",
+                Data = real,
+                BackgroundColor = "rgba(220,20,60,0.2)",
+                BorderColor = "rgba(220,20,60,1)",
+                Fill = true
+            });
+        _config.Data.Datasets.Add(new LineDataset()
+            {
+                Label = "Dep",
+                Data = dep,
+                BackgroundColor = "rgba(34,139,34,0.2)",
+                BorderColor = "rgba(34,139,34,1)",
+                Fill = true
+            });
+        _config.Data.Datasets.Add(new LineDataset()
+            {
+                Label = "Arr",
+                Data = arr,
+                BackgroundColor = "rgba(30,144,255,0.2)",
+                BorderColor = "rgba(30,144,255,1)",
+                Fill = true
+            });
+        StateHasChanged();
+    }
+}

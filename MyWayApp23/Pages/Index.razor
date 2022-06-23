@@ -23,6 +23,14 @@ Welcome to your new app.
                     }
                 </MudPaper>
             </MudItem>
+            <MudItem xs="12">
+                <MudPaper Class="pa-5" Elevation="5">
+                    @if (historico != null)
+                    {
+                        <DemandByShiftChart @ref="demandByShiftChart"></DemandByShiftChart>
+                    }
+                </MudPaper>
+            </MudItem>
         </MudGrid>
     </Authorized>
     <NotAuthorized>
@@ -34,6 +42,7 @@ Welcome to your new app.
     public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     private PaxDemandChart? paxDemandChart;
+    private DemandByShiftChart? demandByShiftChart;
 
     private List<HistoricoAssistencia> historico { get; set; } = new();
     protected override async Task OnInitializedAsync()
@@ -55,7 +64,7 @@ Welcome to your new app.
         List<decimal> arr = paxDemandChartData.Select(m => (decimal)m.arr).ToList();
 
         paxDemandChart!.FillData(labels, real, dep, arr);
-
+        demandByShiftChart!.OnInit(historico);
     }
 
 }

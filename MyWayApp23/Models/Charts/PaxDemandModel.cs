@@ -1,6 +1,6 @@
 ﻿namespace MyWayApp23.Models.Charts;
 
-public class PaxDemand
+public class PaxDemandModel
 {
     public List<string> Dias { get; set; } = new();
     public List<decimal> Total { get; set; } = new();

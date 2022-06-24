@@ -1,55 +1,76 @@
-﻿<Chart Config="_config" @ref="_chart" Height="500px" />
+﻿<Chart Config="_paxDemandConfig" @ref="_paxDemandChart" Height="500px" />
 
 @code {
-    private LineChartConfig _config = new();
-    private Chart? _chart;
+    private LineChartConfig _paxDemandConfig = new();
+    private Chart? _paxDemandChart;
 
-    public void FillData(List<string> labels, List<decimal> real,
-    List<decimal> dep, List<decimal> arr)
+    private List<PaxDemandModel> PaxDemand { get; set; } = new();
+
+
+    public void OnInit(List<HistoricoAssistencia> historico)
     {
-        _config = new LineChartConfig()
-            {
-                Options = new Options()
+        if (historico != null)
+        {
+            PaxDemand = FillData(historico);
+            _paxDemandConfig = new LineChartConfig()
                 {
-                    Responsive = true,
-                    MaintainAspectRatio = false,
-                    Plugins = new Plugins()
+                    Options = new Options()
                     {
-                        Legend = new Legend()
+                        Responsive = true,
+                        MaintainAspectRatio = false,
+                        Plugins = new Plugins()
                         {
-                            Align = LegendAlign.Center,
-                            Display = true,
-                            Position = LegendPosition.Bottom
-                        }
-                    },
-                }
-            };
+                            Legend = new Legend()
+                            {
+                                Align = LegendAlign.Center,
+                                Display = true,
+                                Position = LegendPosition.Bottom
+                            }
+                        },
+                    }
+                };
 
-        _config.Data.Labels = labels;
-        _config.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Real",
-                Data = real,
-                BackgroundColor = "rgba(220,20,60,0.2)",
-                BorderColor = "rgba(220,20,60,1)",
-                Fill = true
-            });
-        _config.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Dep",
-                Data = dep,
-                BackgroundColor = "rgba(34,139,34,0.2)",
-                BorderColor = "rgba(34,139,34,1)",
-                Fill = true
-            });
-        _config.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Arr",
-                Data = arr,
-                BackgroundColor = "rgba(30,144,255,0.2)",
-                BorderColor = "rgba(30,144,255,1)",
-                Fill = true
-            });
-        StateHasChanged();
+            _paxDemandConfig.Data.Labels = PaxDemand.Select(d => d.Dias.ToString("d/MMM")).ToList();
+            _paxDemandConfig.Data.Datasets.Add(new LineDataset()
+                {
+                    Label = "Real",
+                    Data = PaxDemand.Select(d => d.Total).ToList(),
+                    BackgroundColor = "rgba(220,20,60,0.2)",
+                    BorderColor = "rgba(220,20,60,1)",
+                    Fill = true
+                });
+            _paxDemandConfig.Data.Datasets.Add(new LineDataset()
+                {
+                    Label = "Dep.",
+                    Data = PaxDemand.Select(d => d.Partidas).ToList(),
+                    BackgroundColor = "rgba(34,139,34,0.2)",
+                    BorderColor = "rgba(34,139,34,1)",
+                    Fill = true
+                });
+            _paxDemandConfig.Data.Datasets.Add(new LineDataset()
+                {
+                    Label = "Arr.",
+                    Data = PaxDemand.Select(d => d.Chegadas).ToList(),
+                    BackgroundColor = "rgba(30,144,255,0.2)",
+                    BorderColor = "rgba(30,144,255,1)",
+                    Fill = true
+                });
+            StateHasChanged();
+        }
+
+    }
+
+    public List<PaxDemandModel> FillData(List<HistoricoAssistencia> historico)
+    {
+        List<PaxDemandModel> result = historico.AsEnumerable()
+            .GroupBy(d => new { Dia = d.Data.Date })
+            .Select(x => new PaxDemandModel
+                {
+                    Dias = x.Key.Dia,
+                    Total = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date)),
+                    Partidas = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Mov == "D"),
+                    Chegadas = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Mov == "A"),
+                }).OrderBy(d => d.Dias).ToList();
+        return result;
     }
 }

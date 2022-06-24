@@ -1,0 +1,101 @@
+﻿@page "/historico-tables"
+@inject IHistoricoService service
+
+<PageTitle>Médias</PageTitle>
+
+<AuthorizeView Context="AuthContext">
+    <Authorized>
+        @if (historico != null)
+        {
+            <MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999" AutoClose="false">
+
+                <MudText Typo="Typo.h5" Color="Color.Primary"
+                     Class="d-flex align-center justify-center mud-width-full">
+                    A Carregar dados...
+                </MudText>
+                <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="my-2" />
+
+            </MudOverlay>
+        }
+
+        <MudGrid>
+            
+            <MudItem xs="12">
+                <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
+            </MudItem>
+            
+            <MudItem xs="12">
+                <MudText Typo="Typo.h6">
+                    Médias por mês.
+                </MudText>
+            </MudItem>
+            
+            <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
+                <MudItem xs="2">
+                    <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year">
+                        @foreach (var year in last5Years!)
+                        {
+                            <MudSelectItem Value="@year.Year" />
+                        }
+                    </MudSelect>
+                    </MudItem>
+                    <MudItem xs="2">
+                    <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
+                               OnClick="OnYearChange" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
+                </MudItem>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudItem sm="12" lg="6">
+                    <HistoricoDetalheTableComponent Items="@historico" />
+                </MudItem>
+            </MudItem>
+
+        </MudGrid>
+
+    </Authorized>
+    <NotAuthorized>
+        <_403 />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+
+    private List<BreadcrumbItem> _breads = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Início", href: "#"),
+        new BreadcrumbItem("Médias", null, disabled: true)
+    };
+
+    IEnumerable<DateTime>? last5Years;
+    private bool isVisible = true;
+    private int _year = DateTime.Today.Year;
+
+    private List<HistoricoAssistencia> historico = new List<HistoricoAssistencia>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        last5Years = from n in Enumerable.Range(0, 5)
+                     select DateTime.UtcNow.AddYears(-n);
+        await Task.Delay(5);
+        GetData();
+    }
+
+    private void OnYearChange()
+    {
+        isVisible = true;
+        Task.Delay(15);
+        GetData();
+    }
+
+    private async void GetData()
+    {
+        if (_year > 0)
+        {
+            historico = await service.GetByYearAsync(_year);
+        }
+        isVisible = false;
+        StateHasChanged();
+    }
+} 

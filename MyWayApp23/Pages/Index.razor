@@ -14,30 +14,42 @@ Welcome to your new app.
 <AuthorizeView>
     <Authorized>
         @*<p>Olá, @context.User.Identity!.Name</p>*@
-        <MudGrid>
-            <MudItem xs="12">
-                <MudPaper Class="pa-5" Elevation="5">
-                    @if (historico != null)
-                    {
+        @if (historico != null)
+        {
+            <MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999" AutoClose="false">
+
+                <MudText Typo="Typo.h5" Color="Color.Primary"
+                     Class="d-flex align-center justify-center mud-width-full">
+                    A Carregar dados...
+                </MudText>
+                <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="my-2" />
+
+            </MudOverlay>
+        }
+        
+        @if(historico != null)
+        {
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudPaper Class="pa-5" Elevation="5">
                         <PaxDemandChart @ref="paxDemandChart"></PaxDemandChart>
-                    }
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12">
-                <MudPaper Class="pa-5" Elevation="5">
-                    @if (historico != null)
-                    {
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudPaper Class="pa-5" Elevation="5">
                         <DemandByShiftChart @ref="demandByShiftChart"></DemandByShiftChart>
-                    }
-                </MudPaper>
-            </MudItem>
-        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        }
     </Authorized>
     <NotAuthorized>
         <p>Não sei o teu username sem te logares!</p>
     </NotAuthorized>
 </AuthorizeView>
 @code {
+    private bool isVisible = true;
+
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
@@ -49,22 +61,10 @@ Welcome to your new app.
     {
         historico = await service.GetByYearAsync(DateTime.Today.Year);
 
-        var paxDemandChartData = historico.GroupBy(x => new { Dia = x.Data.Date })
-            .Select(x => new
-            {
-                labels = x.Key.Dia.ToString("d/MMM"),
-                real = x.Count(),
-                dep = x.Count(m => m.Mov == "D"),
-                arr = x.Count(m => m.Mov == "A")
-            }).ToList();
-
-        List<string> labels = paxDemandChartData.Select(m => m.labels).ToList();
-        List<decimal> real = paxDemandChartData.Select(m => (decimal)m.real).ToList();
-        List<decimal> dep = paxDemandChartData.Select(m => (decimal)m.dep).ToList();
-        List<decimal> arr = paxDemandChartData.Select(m => (decimal)m.arr).ToList();
-
-        paxDemandChart!.FillData(labels, real, dep, arr);
+        paxDemandChart!.OnInit(historico);
         demandByShiftChart!.OnInit(historico);
+        isVisible = false;
+        StateHasChanged();
     }
 
 }

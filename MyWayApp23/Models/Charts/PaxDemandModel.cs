@@ -2,8 +2,9 @@
 
 public class PaxDemandModel
 {
-    public List<string> Dias { get; set; } = new();
-    public List<decimal> Total { get; set; } = new();
-    public List<decimal> Partidas { get; set; } = new();
-    public List<decimal> Chegadas { get; set; } = new();
+    public DateTime Dias { get; set; }
+    public decimal Total { get; set; }
+    public decimal Partidas { get; set; }
+    public decimal Chegadas { get; set; }
+
 }

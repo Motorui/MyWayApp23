@@ -16,3 +16,4 @@ global using MyWayApp23.Components;
 global using MyWayApp23.Pages;
 global using MyWayApp23.Shared;
 global using MyWayApp23.Models.Charts;
+global using MyWayApp23.Models.Tables;

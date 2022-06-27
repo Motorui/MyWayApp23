@@ -1,5 +1,6 @@
-﻿@page "/historico-tables"
+﻿@page "/historico-table"
 @inject IHistoricoService service
+@inject ITablesService tableService
 
 <PageTitle>Médias</PageTitle>
 
@@ -19,17 +20,17 @@
         }
 
         <MudGrid>
-            
-            <MudItem xs="12">
+
+            <MudItem xs="12" xxl="12">
                 <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
             </MudItem>
-            
-            <MudItem xs="12">
+
+            <MudItem xs="12" xxl="12">
                 <MudText Typo="Typo.h6">
                     Médias por mês.
                 </MudText>
             </MudItem>
-            
+
             <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
                 <MudItem xs="2">
                     <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year">
@@ -38,21 +39,29 @@
                             <MudSelectItem Value="@year.Year" />
                         }
                     </MudSelect>
-                    </MudItem>
-                    <MudItem xs="2">
+                </MudItem>
+                <MudItem xs="2">
                     <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
                                OnClick="OnYearChange" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
                 </MudItem>
             </MudItem>
 
-            <MudItem xs="12">
-                <MudItem sm="12" lg="6">
-                    <HistoricoDetalheTableComponent Items="@historico" />
-                </MudItem>
+            <MudItem xs="12" lg="4">
+                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+                    <HistoricoDetalheTable Model="@model" />
+                </MudPaper>
             </MudItem>
-
+            <MudItem xs="12" lg="4">
+                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+                    <HistoricoPercentageTable Model="@model" />
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" lg="2">
+                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+                    <MontlyGrowTable Model="@growth" />
+                </MudPaper>
+            </MudItem>
         </MudGrid>
-
     </Authorized>
     <NotAuthorized>
         <_403 />
@@ -73,6 +82,8 @@
     private int _year = DateTime.Today.Year;
 
     private List<HistoricoAssistencia> historico = new List<HistoricoAssistencia>();
+    private List<TotalByMonthModel> model = new List<TotalByMonthModel>();
+    public Dictionary<DateTime, string> growth = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,6 +105,8 @@
         if (_year > 0)
         {
             historico = await service.GetByYearAsync(_year);
+            model = tableService.GetTotalByMonth(historico);
+            growth = tableService.GetGrowth(historico);
         }
         isVisible = false;
         StateHasChanged();

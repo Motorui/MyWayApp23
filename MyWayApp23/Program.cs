@@ -1,10 +1,3 @@
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using MudBlazor.Services;
-using MyWayApp23.Areas.Identity.Services;
-using MyWayApp23.Services.Excel;
-using MyWayApp23.Services.Upload;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -79,6 +72,7 @@ builder.Services.AddScoped<IAssistenciaService, AssistenciaService>();
 builder.Services.AddScoped<IStandService, StandService>();
 builder.Services.AddScoped<IHistoricoService, HistoricoService>();
 builder.Services.AddScoped<IUploadHistoricoService,UploadHistoricoService>();
+builder.Services.AddScoped<ITablesService, TablesService>();
 
 var app = builder.Build();
 

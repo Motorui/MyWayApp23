@@ -23,4 +23,13 @@ public static class PercentageHelper
         }
 
     }
+
+    public static string GetPercentage(decimal value, decimal total)
+    {
+        if (total == 0)
+        {
+            return "0%";
+        }
+        return (value * 100 / total).ToString("0.00") + "%";
+    }
 }

@@ -1,0 +1,38 @@
+﻿<MudSimpleTable Dense="true" Hover="true" Bordered="true" Striped="true" Style="overflow-x: auto;">
+    <thead>
+        <tr>
+            @if (headings != null)
+            {
+                foreach (var h in headings)
+                {
+                    <th style="white-space: nowrap">@h</th>
+                }
+            }
+
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var row in Model)
+            {
+                <tr>
+                    <td>@row.Mes.ToString("MMM")</td>
+                    <td>@row.Total</td>
+                    <td>@row.DepNotif</td>
+                    <td>@row.DepNotNotif</td>
+                    <td>@row.ArrNotif</td>
+                    <td>@row.ArrNotNotif</td>
+                    <td>@row.ArrNotNotif90</td>
+                </tr>
+            }
+        }
+    </tbody>
+</MudSimpleTable>
+
+@code {
+    [Parameter]
+    public List<TotalByMonthModel> Model { get; set; } = new List<TotalByMonthModel>();
+
+    string[] headings = { "Mês", "PAX", "DEP >36H", "DEP <36H", "ARR >36H","ARR<36H>90m",
+        "ARR <90m"};
+}

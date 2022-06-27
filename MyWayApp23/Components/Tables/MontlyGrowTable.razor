@@ -1,0 +1,34 @@
+﻿@using System.Diagnostics
+<MudSimpleTable Dense="true" Hover="true" Bordered="true" Striped="true" Style="overflow-x: auto;">
+    <thead>
+        <tr>
+            @if (headings != null)
+            {
+                foreach (var h in headings)
+                {
+                    <th style="white-space: nowrap">@h</th>
+                }
+            }
+
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var row in Model)
+            {
+                <tr>
+                    <td>@row.Key.ToString("MMM")</td>
+                    <td>@row.Value</td>
+                </tr>
+            }
+        }
+    </tbody>
+</MudSimpleTable>
+
+@code {
+    [Parameter]
+    public Dictionary<DateTime, string> Model { get; set; } = new Dictionary<DateTime, string>();
+
+    string[] headings = { "Mês", "Growth" };
+
+}

@@ -1,0 +1,38 @@
+﻿<MudSimpleTable Dense="true" Hover="true" Bordered="true" Striped="true" Style="overflow-x: auto;">
+    <thead>
+        <tr>
+            @if (headings != null)
+            {
+                foreach (var h in headings)
+                {
+                    <th style="white-space: nowrap">@h</th>
+                }
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var row in Model)
+            {
+                <tr>
+                    <td>@row.Mes.ToString("MMM")</td>
+                    <td>@PercentageHelper.GetPercentage((row.DepNotif  + row.ArrNotif), row.Total)</td>
+                    <td>@PercentageHelper.GetPercentage((row.DepNotNotif  + row.ArrNotNotif + row.ArrNotNotif90), row.Total)</td>
+                    <td>@PercentageHelper.GetPercentage(row.DepNotif, row.Total)</td>
+                    <td>@PercentageHelper.GetPercentage(row.DepNotNotif, row.Total)</td>
+                    <td>@PercentageHelper.GetPercentage(row.ArrNotif, row.Total)</td>
+                    <td>@PercentageHelper.GetPercentage(row.ArrNotNotif, row.Total)</td>
+                    <td>@PercentageHelper.GetPercentage(row.ArrNotNotif90, row.Total)</td>
+                </tr>
+            }
+        }
+    </tbody>
+</MudSimpleTable>
+
+@code {
+    [Parameter]
+    public List<TotalByMonthModel> Model { get; set; } = new List<TotalByMonthModel>();
+
+    string[] headings = { "Mês", "Notif.", "Não Notif.", "DEP >36H", "DEP <36H", "ARR >36H", "ARR<36H>90m", "ARR <90m" };
+
+}

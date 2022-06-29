@@ -30,3 +30,4 @@ global using MyWayApp23.Services.Tabelas;
 global using MyWayApp23.Services.Historico;
 
 global using MudBlazor.Services;
+global using Blazored.LocalStorage;

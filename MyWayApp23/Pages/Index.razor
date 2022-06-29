@@ -1,6 +1,6 @@
 ﻿@page "/"
 @using MyWayApp23.Components.Charts
-
+@inject ILocalStorageService LocalStorage
 @inject IHistoricoService service
 @inject IChartService chartService
 
@@ -27,34 +27,55 @@ Welcome to your new app.
 
             </MudOverlay>
         }
-        
-        @if(historico != null)
+
+        @if (historico != null)
         {
             <MudGrid>
-                  <MudItem xs="12" xxl="12">
-                <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
-            </MudItem>
-
-            <MudItem xs="12" xxl="12">
-                <MudText Typo="Typo.h6">
-                    Médias por mês.
-                </MudText>
-            </MudItem>
-
-            <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
-                <MudItem xs="2">
-                    <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year">
-                        @foreach (var year in last5Years!)
-                        {
-                            <MudSelectItem Value="@year.Year" />
-                        }
-                    </MudSelect>
+                <MudItem xs="12" xxl="12">
+                    <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
                 </MudItem>
-                <MudItem xs="2">
-                    <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
-                               OnClick="OnYearChange" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
+
+                <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
+                    <MudPaper Class="pa-5 d-flex align-content-start flex-wrap flex-grow-1 gap-4" Elevation="5">
+                        <MudItem xs="2">
+                            <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year">
+                                @foreach (var year in last5Years!)
+                                {
+                                    <MudSelectItem Value="@year.Year" />
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="2">
+                            <MudSelect T="int" Label="Mês" Variant="Variant.Outlined" @bind-Value="_month">
+                                @foreach (var mes in _meses!)
+                                {
+                                    <MudSelectItem Value="@mes.Key">@mes.Value</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="2">
+                            <MudSelect T="string" Label="UH" Variant="Variant.Outlined" @bind-Value="_uh">
+                                @foreach (var uh in _uhs!)
+                                {
+                                    <MudSelectItem Value="@uh.Key">@uh.Value</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+
+                        <MudItem xs="2">
+                            <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
+                                   OnClick="FilterData" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
+                        </MudItem>
+                    </MudPaper>
                 </MudItem>
-            </MudItem>
+
+                <MudItem xs="12" xxl="12">
+                    <MudText Typo="Typo.h6">
+                        A ver dados de @_year @(_month != 0 ? $"no mês de {DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(_month)}" : "")
+                        em @_uh
+                    </MudText>
+                </MudItem>
+                
                 <MudItem xs="12">
                     <MudPaper Class="pa-5" Elevation="5">
                         <PaxDemandChart PaxDemandConfig="PaxDemandConfig"></PaxDemandChart>
@@ -75,11 +96,13 @@ Welcome to your new app.
 @code {
     private List<BreadcrumbItem> _breads = new List<BreadcrumbItem>
     {
-        new BreadcrumbItem("Início",null, disabled: true),
+        new BreadcrumbItem("Dashboard",null, disabled: true),
     };
     private bool isVisible = true;
     IEnumerable<DateTime>? last5Years;
     private int _year = DateTime.Today.Year;
+    private int _month = 0;
+    private string _uh = "LIS";
 
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
@@ -92,27 +115,72 @@ Welcome to your new app.
     {
         last5Years = from n in Enumerable.Range(0, 5)
                      select DateTime.UtcNow.AddYears(-n);
-
-        await Task.Delay(5);
-        GetData();
+        await Task.Delay(1);
     }
 
-    private void OnYearChange()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (await LocalStorage.ContainKeyAsync("year"))
+                _year = await LocalStorage.GetItemAsync<int>("year");
+            else
+                _year = DateTime.Today.Year;
+
+            if (await LocalStorage.ContainKeyAsync("month"))
+                _month = await LocalStorage.GetItemAsync<int>("month");
+            else
+                _month = 0;
+            if (await LocalStorage.ContainKeyAsync("uh"))
+                _uh = await LocalStorage.GetItemAsync<string>("uh");
+            else
+                _uh = "LIS";
+
+            await GetData();
+        }
+    }
+
+    private async Task FilterData()
     {
         isVisible = true;
-        Task.Delay(15);
-        GetData();
+        await LocalStorage.SetItemAsync<int>("year", _year);
+        await LocalStorage.SetItemAsync<int>("month", _month);
+        await LocalStorage.SetItemAsync<string>("uh", _uh);
+
+        await GetData();
     }
 
-    private async void GetData()
+    private async Task GetData()
     {
-        if (_year > 0)
-        {
-            historico = await service.GetByYearAsync(_year);
-            PaxDemandConfig = chartService.GetPaxDemandData(historico);
-            DemandsByShiftChartConfig = chartService.GetDemandByShiftData(historico);
-        }
+
+        historico = await service.FilterDataAsync(_year, _uh, _month);
+        PaxDemandConfig = chartService.GetPaxDemandData(historico);
+        DemandsByShiftChartConfig = chartService.GetDemandByShiftData(historico);
+
         isVisible = false;
         StateHasChanged();
     }
+    Dictionary<string, string> _uhs = new()
+    {
+        {"lis","LIS"},
+        {"opo","OPO"},
+        {"fao","FAO"},
+        {"fnc","FNC"},
+    };
+    Dictionary<int, string> _meses = new()
+    {
+        {0,"Ano"},
+        {1,"Jan"},
+        {2,"Fev"},
+        {3,"Mar"},
+        {4,"Abr"},
+        {5,"Mai"},
+        {6,"Jun"},
+        {7,"Jul"},
+        {8,"Ago"},
+        {9,"Set"},
+        {10,"Out"},
+        {11,"Nov"},
+        {12,"Dez"}
+    };
 }

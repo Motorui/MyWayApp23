@@ -1,4 +1,4 @@
-using Blazored.LocalStorage;
+using MyWayApp23.Services.Profile;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,7 @@ var cs = builder.Configuration.GetConnectionString("DefaultConnection");
 if (cs != null)
 {
     builder.Services.AddDbContextFactory<DataContext>(options => options.UseSqlServer(cs));
-    builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(cs));
+    //builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(cs));
 }
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -66,6 +66,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped<AuthenticationStateProvider,
     IdentityValidationProvider<IdentityUser>>();
 
+builder.Services.AddScoped<ProfileService>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddMudServices();
 
@@ -74,7 +75,7 @@ builder.Services.AddScoped<IDataTableConverter, DataTableConverter>();
 builder.Services.AddScoped<IAssistenciaService, AssistenciaService>();
 builder.Services.AddScoped<IStandService, StandService>();
 builder.Services.AddScoped<IHistoricoService, HistoricoService>();
-builder.Services.AddScoped<IUploadHistoricoService,UploadHistoricoService>();
+builder.Services.AddScoped<IUploadHistoricoService, UploadHistoricoService>();
 builder.Services.AddScoped<ITablesService, TablesService>();
 builder.Services.AddScoped<IChartService, ChartService>();
 

@@ -1,6 +1,4 @@
-﻿@using Blazored.LocalStorage
-@inherits LayoutComponentBase
-
+﻿@inherits LayoutComponentBase
 @inject ILocalStorageService LocalStorage
 @*<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
 *@
@@ -11,7 +9,7 @@
                        Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3">MyWay 2023</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Filled.ColorLens" Color="@Color.Default" OnClick="ChangeThemeAsync" />
+        <MudIconButton Icon="@_themeIcon" Color="@Color.Default" OnClick="ChangeThemeAsync" />
         @* @if (_isDarkMode == true)
         {
         <MudIcon Icon="@Icons.Rounded.DarkMode" Color="Color.Error" />
@@ -58,6 +56,7 @@
     private string _themeName = "light";
     private MudTheme _theme = new();
     private bool _isDarkMode;
+    private string _themeIcon = MudBlazor.Icons.Rounded.WbSunny;
 
     bool _drawerOpen = true;
 
@@ -77,10 +76,11 @@
 
             //_currentTheme = _themeName == "light" ? _lightTheme : _darkTheme;
             _isDarkMode = _themeName == "light" ? false : true;
+            _themeIcon = _themeName == "light" ? MudBlazor.Icons.Rounded.DarkMode : MudBlazor.Icons.Rounded.WbSunny;
             StateHasChanged();
         }
     }
-    
+
     //MudTheme? _currentTheme = null;
 
     //private MudTheme _darkTheme = new MudTheme
@@ -129,12 +129,14 @@
             //_currentTheme = _darkTheme;
             _isDarkMode = true;
             _themeName = "dark";
+            _themeIcon = MudBlazor.Icons.Rounded.WbSunny;
         }
         else
         {
             //_currentTheme = _lightTheme;
             _isDarkMode = false;
             _themeName = "light";
+            _themeIcon = MudBlazor.Icons.Rounded.DarkMode;
         }
         await LocalStorage.SetItemAsStringAsync("theme", _themeName);
     }

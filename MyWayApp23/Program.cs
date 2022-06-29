@@ -1,3 +1,5 @@
+using Blazored.LocalStorage;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -64,6 +66,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped<AuthenticationStateProvider,
     IdentityValidationProvider<IdentityUser>>();
 
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddMudServices();
 
 builder.Services.AddScoped<IReadExcelService, ReadExcelService>();
@@ -73,6 +76,7 @@ builder.Services.AddScoped<IStandService, StandService>();
 builder.Services.AddScoped<IHistoricoService, HistoricoService>();
 builder.Services.AddScoped<IUploadHistoricoService,UploadHistoricoService>();
 builder.Services.AddScoped<ITablesService, TablesService>();
+builder.Services.AddScoped<IChartService, ChartService>();
 
 var app = builder.Build();
 

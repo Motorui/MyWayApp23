@@ -32,33 +32,32 @@
             </MudItem>
 
             <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
-                <MudItem xs="2">
+
                     <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year">
                         @foreach (var year in last5Years!)
                         {
                             <MudSelectItem Value="@year.Year" />
                         }
                     </MudSelect>
-                </MudItem>
-                <MudItem xs="2">
+
                     <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
                                OnClick="OnYearChange" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
-                </MudItem>
+
             </MudItem>
 
-            <MudItem xs="12" lg="4">
+            <MudItem xs="12" lg="5">
                 <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
                     <HistoricoDetalheTable Model="@model" />
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" lg="4">
-                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-                    <HistoricoPercentageTable Model="@model" />
                 </MudPaper>
             </MudItem>
             <MudItem xs="12" lg="2">
                 <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
                     <MontlyGrowTable Model="@growth" />
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" lg="5">
+                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+                    <HistoricoPercentageTable Model="@model" />
                 </MudPaper>
             </MudItem>
         </MudGrid>

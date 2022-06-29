@@ -2,6 +2,7 @@
 @using MyWayApp23.Components.Charts
 
 @inject IHistoricoService service
+@inject IChartService chartService
 
 <PageTitle>Index</PageTitle>
 
@@ -30,14 +31,38 @@ Welcome to your new app.
         @if(historico != null)
         {
             <MudGrid>
+                  <MudItem xs="12" xxl="12">
+                <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
+            </MudItem>
+
+            <MudItem xs="12" xxl="12">
+                <MudText Typo="Typo.h6">
+                    Médias por mês.
+                </MudText>
+            </MudItem>
+
+            <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
+                <MudItem xs="2">
+                    <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year">
+                        @foreach (var year in last5Years!)
+                        {
+                            <MudSelectItem Value="@year.Year" />
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="2">
+                    <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
+                               OnClick="OnYearChange" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
+                </MudItem>
+            </MudItem>
                 <MudItem xs="12">
                     <MudPaper Class="pa-5" Elevation="5">
-                        <PaxDemandChart @ref="paxDemandChart"></PaxDemandChart>
+                        <PaxDemandChart PaxDemandConfig="PaxDemandConfig"></PaxDemandChart>
                     </MudPaper>
                 </MudItem>
                 <MudItem xs="12">
                     <MudPaper Class="pa-5" Elevation="5">
-                        <DemandByShiftChart @ref="demandByShiftChart"></DemandByShiftChart>
+                        <DemandByShiftChart DemandsByShiftChartConfig="DemandsByShiftChartConfig"></DemandByShiftChart>
                     </MudPaper>
                 </MudItem>
             </MudGrid>
@@ -48,23 +73,46 @@ Welcome to your new app.
     </NotAuthorized>
 </AuthorizeView>
 @code {
+    private List<BreadcrumbItem> _breads = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Início",null, disabled: true),
+    };
     private bool isVisible = true;
+    IEnumerable<DateTime>? last5Years;
+    private int _year = DateTime.Today.Year;
 
     [CascadingParameter]
     public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
-    private PaxDemandChart? paxDemandChart;
-    private DemandByShiftChart? demandByShiftChart;
-
     private List<HistoricoAssistencia> historico { get; set; } = new();
+    public LineChartConfig PaxDemandConfig { get; set; } = new();
+    public LineChartConfig DemandsByShiftChartConfig { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
-        historico = await service.GetByYearAsync(DateTime.Today.Year);
+        last5Years = from n in Enumerable.Range(0, 5)
+                     select DateTime.UtcNow.AddYears(-n);
 
-        paxDemandChart!.OnInit(historico);
-        demandByShiftChart!.OnInit(historico);
+        await Task.Delay(5);
+        GetData();
+    }
+
+    private void OnYearChange()
+    {
+        isVisible = true;
+        Task.Delay(15);
+        GetData();
+    }
+
+    private async void GetData()
+    {
+        if (_year > 0)
+        {
+            historico = await service.GetByYearAsync(_year);
+            PaxDemandConfig = chartService.GetPaxDemandData(historico);
+            DemandsByShiftChartConfig = chartService.GetDemandByShiftData(historico);
+        }
         isVisible = false;
         StateHasChanged();
     }
-
 }

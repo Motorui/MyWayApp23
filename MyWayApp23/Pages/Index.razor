@@ -15,67 +15,63 @@ Welcome to your new app.
 <AuthorizeView>
     <Authorized>
         @*<p>Olá, @context.User.Identity!.Name</p>*@
-        @if (historico != null)
-        {
-            <MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999" AutoClose="false">
+        <MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999" AutoClose="false">
 
-                <MudText Typo="Typo.h5" Color="Color.Primary"
+            <MudText Typo="Typo.h5" Color="Color.Primary"
                      Class="d-flex align-center justify-center mud-width-full">
-                    A Carregar dados...
-                </MudText>
-                <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="my-2" />
+                A Carregar dados...
+            </MudText>
+            <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="my-2" />
 
-            </MudOverlay>
-        }
+        </MudOverlay>
 
-        @if (historico != null)
-        {
-            <MudGrid>
-                <MudItem xs="12" xxl="12">
-                    <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
-                </MudItem>
+        <MudGrid>
+            <MudItem xs="12" xxl="12">
+                <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
+            </MudItem>
 
-                <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
-                    <MudPaper Class="pa-5 d-flex align-content-start flex-wrap flex-grow-1 gap-4" Elevation="5">
-                        <MudItem xs="2">
-                            <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year">
-                                @foreach (var year in last5Years!)
-                                {
-                                    <MudSelectItem Value="@year.Year" />
-                                }
-                            </MudSelect>
-                        </MudItem>
-                        <MudItem xs="2">
-                            <MudSelect T="int" Label="Mês" Variant="Variant.Outlined" @bind-Value="_month">
-                                @foreach (var mes in _meses!)
-                                {
-                                    <MudSelectItem Value="@mes.Key">@mes.Value</MudSelectItem>
-                                }
-                            </MudSelect>
-                        </MudItem>
-                        <MudItem xs="2">
-                            <MudSelect T="string" Label="UH" Variant="Variant.Outlined" @bind-Value="_uh">
-                                @foreach (var uh in _uhs!)
-                                {
-                                    <MudSelectItem Value="@uh.Key">@uh.Value</MudSelectItem>
-                                }
-                            </MudSelect>
-                        </MudItem>
+            <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
+                <MudPaper Class="pa-5 d-flex align-content-start flex-wrap flex-grow-1 gap-4" Elevation="5">
+                    <MudItem xs="2">
+                        <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year">
+                            @foreach (var year in last5Years!)
+                            {
+                                <MudSelectItem Value="@year.Year" />
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudSelect T="int" Label="Mês" Variant="Variant.Outlined" @bind-Value="_month">
+                            @foreach (var mes in _meses!)
+                            {
+                                <MudSelectItem Value="@mes.Key">@mes.Value</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudSelect T="string" Label="UH" Variant="Variant.Outlined" @bind-Value="_uh">
+                            @foreach (var uh in _uhs!)
+                            {
+                                <MudSelectItem Value="@uh.Key">@uh.Value</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
 
-                        <MudItem xs="2">
-                            <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
+                    <MudItem xs="2">
+                        <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
                                    OnClick="FilterData" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
-                        </MudItem>
-                    </MudPaper>
-                </MudItem>
+                    </MudItem>
+                </MudPaper>
+            </MudItem>
 
-                <MudItem xs="12" xxl="12">
-                    <MudText Typo="Typo.h6">
-                        A ver dados de @_year @(_month != 0 ? $"no mês de {DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(_month)}" : "")
-                        em @_uh
-                    </MudText>
-                </MudItem>
-                
+            <MudItem xs="12" xxl="12">
+                <MudText Typo="Typo.h6">
+                    A ver dados de @_year @(_month != 0 ? $"no mês de {DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(_month)}" : "")
+                    em @_uh
+                </MudText>
+            </MudItem>
+            @if (historico.Count > 0)
+            {
                 <MudItem xs="12">
                     <MudPaper Class="pa-5" Elevation="5">
                         <PaxDemandChart PaxDemandConfig="PaxDemandConfig"></PaxDemandChart>
@@ -86,8 +82,9 @@ Welcome to your new app.
                         <DemandByShiftChart DemandsByShiftChartConfig="DemandsByShiftChartConfig"></DemandByShiftChart>
                     </MudPaper>
                 </MudItem>
-            </MudGrid>
-        }
+            }
+        </MudGrid>
+
     </Authorized>
     <NotAuthorized>
         <p>Não sei o teu username sem te logares!</p>

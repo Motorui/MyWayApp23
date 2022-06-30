@@ -1,4 +1,5 @@
 ﻿@page "/historico-table"
+@inject ILocalStorageService LocalStorage
 @inject IHistoricoService service
 @inject ITablesService tableService
 
@@ -6,23 +7,40 @@
 
 <AuthorizeView Context="AuthContext">
     <Authorized>
-        @if (historico != null)
-        {
-            <MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999" AutoClose="false">
+        <MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999" AutoClose="false">
 
-                <MudText Typo="Typo.h5" Color="Color.Primary"
+            <MudText Typo="Typo.h5" Color="Color.Primary"
                      Class="d-flex align-center justify-center mud-width-full">
-                    A Carregar dados...
-                </MudText>
-                <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="my-2" />
+                A Carregar dados...
+            </MudText>
+            <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="my-2" />
 
-            </MudOverlay>
-        }
+        </MudOverlay>
 
         <MudGrid>
-
             <MudItem xs="12" xxl="12">
                 <MudBreadcrumbs Items="_breads"></MudBreadcrumbs>
+            </MudItem>
+
+            <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
+                <MudPaper Class="pa-5 d-flex align-content-start flex-wrap flex-grow-1 gap-4" Elevation="5">
+                    <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year" Margin="Margin.Dense">
+                        @foreach (var year in last5Years!)
+                        {
+                            <MudSelectItem Value="@year.Year" />
+                        }
+                    </MudSelect>
+                    <MudItem xs="2">
+                        <MudSelect T="string" Label="UH" Variant="Variant.Outlined" @bind-Value="_uh" Margin="Margin.Dense">
+                            @foreach (var uh in _uhs!)
+                            {
+                                <MudSelectItem Value="@uh.Key">@uh.Value</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search" Size="Size.Small"
+                               OnClick="FilterData" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
+                </MudPaper>
             </MudItem>
 
             <MudItem xs="12" xxl="12">
@@ -30,36 +48,24 @@
                     Médias por mês.
                 </MudText>
             </MudItem>
-
-            <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
-
-                    <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year">
-                        @foreach (var year in last5Years!)
-                        {
-                            <MudSelectItem Value="@year.Year" />
-                        }
-                    </MudSelect>
-
-                    <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
-                               OnClick="OnYearChange" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
-
-            </MudItem>
-
-            <MudItem xs="12" lg="5">
-                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-                    <HistoricoDetalheTable Model="@model" />
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" lg="2">
-                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-                    <MontlyGrowTable Model="@growth" />
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" lg="5">
-                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-                    <HistoricoPercentageTable Model="@model" />
-                </MudPaper>
-            </MudItem>
+            @if (historico.Count > 0)
+            {
+                <MudItem xs="12" lg="5">
+                    <MudPaper Class="d-flex align-center justify-center mud-width-full p-2">
+                        <HistoricoDetalheTable Model="@model" />
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" lg="2">
+                    <MudPaper Class="d-flex align-center justify-center mud-width-full p-2">
+                        <MontlyGrowTable Model="@growth" />
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" lg="5">
+                    <MudPaper Class="d-flex align-center justify-center mud-width-full p-2">
+                        <HistoricoPercentageTable Model="@model" />
+                    </MudPaper>
+                </MudItem>
+            }
         </MudGrid>
     </Authorized>
     <NotAuthorized>
@@ -76,9 +82,10 @@
         new BreadcrumbItem("Médias", null, disabled: true)
     };
 
-    IEnumerable<DateTime>? last5Years;
     private bool isVisible = true;
+    IEnumerable<DateTime>? last5Years;
     private int _year = DateTime.Today.Year;
+    private string _uh = "LIS";
 
     private List<HistoricoAssistencia> historico = new List<HistoricoAssistencia>();
     private List<TotalByMonthModel> model = new List<TotalByMonthModel>();
@@ -88,18 +95,37 @@
     {
         last5Years = from n in Enumerable.Range(0, 5)
                      select DateTime.UtcNow.AddYears(-n);
-        await Task.Delay(5);
-        GetData();
+        await Task.Delay(1);
     }
 
-    private void OnYearChange()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (await LocalStorage.ContainKeyAsync("year"))
+                _year = await LocalStorage.GetItemAsync<int>("year");
+            else
+                _year = DateTime.Today.Year;
+
+            if (await LocalStorage.ContainKeyAsync("uh"))
+                _uh = await LocalStorage.GetItemAsync<string>("uh");
+            else
+                _uh = "LIS";
+
+            await GetData();
+        }
+    }
+
+    private async Task FilterData()
     {
         isVisible = true;
-        Task.Delay(15);
-        GetData();
+        await LocalStorage.SetItemAsync<int>("year", _year);
+        await LocalStorage.SetItemAsync<string>("uh", _uh);
+
+        await GetData();
     }
 
-    private async void GetData()
+    private async Task GetData()
     {
         if (_year > 0)
         {
@@ -110,4 +136,12 @@
         isVisible = false;
         StateHasChanged();
     }
+
+    Dictionary<string, string> _uhs = new()
+    {
+        {"lis","LIS"},
+        {"opo","OPO"},
+        {"fao","FAO"},
+        {"fnc","FNC"},
+    };
 } 

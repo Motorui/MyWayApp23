@@ -33,7 +33,8 @@ Welcome to your new app.
             <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
                 <MudPaper Class="pa-5 d-flex align-content-start flex-wrap flex-grow-1 gap-4" Elevation="5">
                     <MudItem xs="2">
-                        <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year">
+                        <MudSelect T="int" Label="Ano" Variant="Variant.Outlined"
+                                   @bind-Value="_year" Margin="Margin.Dense" Dense="true">
                             @foreach (var year in last5Years!)
                             {
                                 <MudSelectItem Value="@year.Year" />
@@ -41,7 +42,8 @@ Welcome to your new app.
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="2">
-                        <MudSelect T="int" Label="Mês" Variant="Variant.Outlined" @bind-Value="_month">
+                        <MudSelect T="int" Label="Mês" Variant="Variant.Outlined"
+                                   @bind-Value="_month" Margin="Margin.Dense" Dense="true">
                             @foreach (var mes in _meses!)
                             {
                                 <MudSelectItem Value="@mes.Key">@mes.Value</MudSelectItem>
@@ -49,7 +51,8 @@ Welcome to your new app.
                         </MudSelect>
                     </MudItem>
                     <MudItem xs="2">
-                        <MudSelect T="string" Label="UH" Variant="Variant.Outlined" @bind-Value="_uh">
+                        <MudSelect T="string" Label="UH" Variant="Variant.Outlined"
+                                   @bind-Value="_uh" Margin="Margin.Dense" Dense="true">
                             @foreach (var uh in _uhs!)
                             {
                                 <MudSelectItem Value="@uh.Key">@uh.Value</MudSelectItem>
@@ -59,7 +62,8 @@ Welcome to your new app.
 
                     <MudItem xs="2">
                         <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
-                                   OnClick="FilterData" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
+                                   Size="Size.Small" OnClick="FilterData"
+                                   Class="align-self-end py-4 flex-1">Filtrar</MudButton>
                     </MudItem>
                 </MudPaper>
             </MudItem>
@@ -80,6 +84,11 @@ Welcome to your new app.
                 <MudItem xs="12">
                     <MudPaper Class="pa-5" Elevation="5">
                         <DemandByShiftChart DemandsByShiftChartConfig="DemandsByShiftChartConfig"></DemandByShiftChart>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <DemandByWeekdayChart DemandByWeekdayChartConfig="DemandByWeekdayChartConfig"></DemandByWeekdayChart>
                     </MudPaper>
                 </MudItem>
             }
@@ -107,6 +116,7 @@ Welcome to your new app.
     private List<HistoricoAssistencia> historico { get; set; } = new();
     public LineChartConfig PaxDemandConfig { get; set; } = new();
     public LineChartConfig DemandsByShiftChartConfig { get; set; } = new();
+    public LineChartConfig DemandByWeekdayChartConfig { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -153,7 +163,8 @@ Welcome to your new app.
         historico = await service.FilterDataAsync(_year, _uh, _month);
         PaxDemandConfig = chartService.GetPaxDemandData(historico);
         DemandsByShiftChartConfig = chartService.GetDemandByShiftData(historico);
-
+        DemandByWeekdayChartConfig = chartService.GetDemandByWeekdayData(historico);
+        
         isVisible = false;
         StateHasChanged();
     }
@@ -166,7 +177,7 @@ Welcome to your new app.
     };
     Dictionary<int, string> _meses = new()
     {
-        {0,"Ano"},
+        {0,"Todos"},
         {1,"Jan"},
         {2,"Fev"},
         {3,"Mar"},

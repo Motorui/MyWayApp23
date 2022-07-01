@@ -6,4 +6,5 @@ public interface IChartService
 {
     LineChartConfig GetPaxDemandData(List<HistoricoAssistencia> historico);
     LineChartConfig GetDemandByShiftData(List<HistoricoAssistencia> historico);
+    LineChartConfig GetDemandByWeekdayData(List<HistoricoAssistencia> historico);
 }

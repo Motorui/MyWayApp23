@@ -24,22 +24,25 @@
 
             <MudItem xs="12" xxl="12" Class="d-flex align-content-start flex-wrap flex-grow-1 gap-4">
                 <MudPaper Class="pa-5 d-flex align-content-start flex-wrap flex-grow-1 gap-4" Elevation="5">
-                    <MudSelect T="int" Label="Ano" Variant="Variant.Outlined" @bind-Value="_year" Margin="Margin.Dense">
+                    <MudSelect T="int" Label="Ano" Variant="Variant.Outlined"
+                               @bind-Value="_year" Margin="Margin.Dense" Dense="true">
                         @foreach (var year in last5Years!)
                         {
                             <MudSelectItem Value="@year.Year" />
                         }
                     </MudSelect>
                     <MudItem xs="2">
-                        <MudSelect T="string" Label="UH" Variant="Variant.Outlined" @bind-Value="_uh" Margin="Margin.Dense">
+                        <MudSelect T="string" Label="UH" Variant="Variant.Outlined"
+                                   @bind-Value="_uh" Margin="Margin.Dense" Dense="true">
                             @foreach (var uh in _uhs!)
                             {
                                 <MudSelectItem Value="@uh.Key">@uh.Value</MudSelectItem>
                             }
                         </MudSelect>
                     </MudItem>
-                    <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search" Size="Size.Small"
-                               OnClick="FilterData" Class="align-self-end py-4 flex-1">Filtrar</MudButton>
+                    <MudButton ButtonType="ButtonType.Button" StartIcon="@Icons.Material.Filled.Search"
+                               Size="Size.Small" OnClick="FilterData"
+                               Class="align-self-end py-4 flex-1">Filtrar</MudButton>
                 </MudPaper>
             </MudItem>
 

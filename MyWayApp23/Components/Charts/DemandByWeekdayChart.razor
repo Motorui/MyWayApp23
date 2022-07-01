@@ -1,0 +1,7 @@
+﻿<Chart Config="DemandByWeekdayChartConfig" @ref="_demandByWeekdayChart" Height="500px" />
+
+@code {
+    [Parameter]
+    public LineChartConfig DemandByWeekdayChartConfig { get; set; } = new();
+    private Chart? _demandByWeekdayChart;
+}

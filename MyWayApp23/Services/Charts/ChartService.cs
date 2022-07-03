@@ -1,8 +1,7 @@
 ﻿using PSC.Blazor.Components.Chartjs.Enums;
 using PSC.Blazor.Components.Chartjs.Models.Common;
 using PSC.Blazor.Components.Chartjs.Models.Line;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 
 namespace MyWayApp23.Services.Charts;
 
@@ -132,6 +131,7 @@ public class ChartService : IChartService
 
         return _demandsByShiftChartConfig;
     }
+
     public LineChartConfig GetDemandByWeekdayData(List<HistoricoAssistencia> historico)
     {
         List<DemandByWeekdayModel> DemandByWeekday = historico.AsEnumerable()
@@ -176,152 +176,95 @@ public class ChartService : IChartService
 
         _demandByWeekdayConfig.Data.Labels = DemandByWeekday.Select(d => d.DiaSemana.ToString()).ToList();
 
-        if (DemandByWeekday.Select(d => d.Jan).ToList().Count > 0)
+        Dictionary<string, List<decimal>> DemandByWeekDayData = FillDemandByWeekDay(DemandByWeekday);
+
+        foreach (var item in DemandByWeekDayData)
         {
+            string color = RandomRgbaColor(1);
             _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
             {
-                Label = "Jan.",
-                Data = DemandByWeekday.Select(d => d.Jan).ToList(),
-                BackgroundColor = "rgba(138,10,244,0.2)",
-                BorderColor = "rgba(138,10,244,1)",
-                Fill = false
+                Label = item.Key,
+                Data = item.Value,
+                BackgroundColor = color,
+                BorderColor = color
             });
         }
 
-        if (DemandByWeekday.Select(d => d.Fev).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Fev.",
-                Data = DemandByWeekday.Select(d => d.Fev).ToList(),
-                BackgroundColor = "rgba(28,10,244,0.2)",
-                BorderColor = "rgba(28,10,244,1)",
-                Fill = false
-            });
-        }
-
-        if (DemandByWeekday.Select(d => d.Mar).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Mar.",
-                Data = DemandByWeekday.Select(d => d.Mar).ToList(),
-                BackgroundColor = "rgba(10,148,244,0.2)",
-                BorderColor = "rgba(10,148,244,1)",
-                Fill = false
-            });
-        }
-
-
-        if (DemandByWeekday.Select(d => d.Abr).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Abr.",
-                Data = DemandByWeekday.Select(d => d.Abr).ToList(),
-                BackgroundColor = "rgba(10,227,244,0.2)",
-                BorderColor = "rgba(10,227,244,1)",
-                Fill = false
-            });
-        }
-
-        if (DemandByWeekday.Select(d => d.Mai).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Mai.",
-                Data = DemandByWeekday.Select(d => d.Mai).ToList(),
-                BackgroundColor = "rgba(10,244,177,0.2)",
-                BorderColor = "rgba(10,244,177,1)",
-                Fill = false
-            });
-        }
-
-        if (DemandByWeekday.Select(d => d.Jun).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Jun.",
-                Data = DemandByWeekday.Select(d => d.Jun).ToList(),
-                BackgroundColor = "rgba(10,244,106,0.2)",
-                BorderColor = "rgba(10,244,106,1)",
-                Fill = false
-            });
-        }
-
-        if (DemandByWeekday.Select(d => d.Jul).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Jul.",
-                Data = DemandByWeekday.Select(d => d.Jul).ToList(),
-                BackgroundColor = "rgba(24,244,10,0.2)",
-                BorderColor = "rgba(24,244,10,1)",
-                Fill = false
-            });
-        }
-
-        if (DemandByWeekday.Select(d => d.Ago).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Ago.",
-                Data = DemandByWeekday.Select(d => d.Ago).ToList(),
-                BackgroundColor = "rgba(148,244,10,0.2)",
-                BorderColor = "rgba(148,244,10,1)",
-                Fill = false
-            });
-        }
-
-        if (DemandByWeekday.Select(d => d.Set).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Set.",
-                Data = DemandByWeekday.Select(d => d.Set).ToList(),
-                BackgroundColor = "rgba(244,241,10,0.2)",
-                BorderColor = "rgba(244,241,10,1)",
-                Fill = false
-            });
-        }
-
-        if (DemandByWeekday.Select(d => d.Out).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Out.",
-                Data = DemandByWeekday.Select(d => d.Out).ToList(),
-                BackgroundColor = "rgba(244,180,10,0.2)",
-                BorderColor = "rgba(244,180,10,1)",
-                Fill = false
-            });
-
-        }
-        
-        if (DemandByWeekday.Select(d => d.Nov).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Nov.",
-                Data = DemandByWeekday.Select(d => d.Nov).ToList(),
-                BackgroundColor = "rgba(244,92,10,0.2)",
-                BorderColor = "rgba(244,92,10,1)",
-                Fill = false
-            });
-        }
-
-        if (DemandByWeekday.Select(d => d.Dez).ToList().Count > 0)
-        {
-            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
-            {
-                Label = "Dez.",
-                Data = DemandByWeekday.Select(d => d.Dez).ToList(),
-                BackgroundColor = "rgba(244,10,10,0.2)",
-                BorderColor = "rgba(244,10,10,1)",
-                Fill = false
-            });
-        }
-        
         return _demandByWeekdayConfig;
+    }
+
+    private static string RandomRgbaColor(double alpha)
+    {
+        var random = new Random();
+        string color = $"rgba({random.Next(0, 255)},{random.Next(0, 255)},{random.Next(0, 255)},{alpha})";
+        return color;
+    }
+
+    private static Dictionary<string, List<decimal>> FillDemandByWeekDay(List<DemandByWeekdayModel> DemandByWeekday)
+    {
+        Dictionary<string, List<decimal>> DemandByWeekDayData = new();
+        if (DemandByWeekday.Select(d => d.Jan).Count() > 0)
+        {
+            DemandByWeekDayData.Add("Jan", DemandByWeekday.Select(d => d.Jan).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Fev).ToList()))
+        {
+            DemandByWeekDayData.Add("Fev", DemandByWeekday.Select(d => d.Fev).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Mar).ToList()))
+        {
+            DemandByWeekDayData.Add("Mar", DemandByWeekday.Select(d => d.Mar).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Abr).ToList()))
+        {
+            DemandByWeekDayData.Add("Abr", DemandByWeekday.Select(d => d.Abr).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Mai).ToList()))
+        {
+            DemandByWeekDayData.Add("Mai", DemandByWeekday.Select(d => d.Mai).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Jun).ToList()))
+        {
+            DemandByWeekDayData.Add("Jun", DemandByWeekday.Select(d => d.Jun).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Jul).ToList()))
+        {
+            DemandByWeekDayData.Add("Jul", DemandByWeekday.Select(d => d.Jul).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Ago).ToList()))
+        {
+            DemandByWeekDayData.Add("Ago", DemandByWeekday.Select(d => d.Ago).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Set).ToList()))
+        {
+            DemandByWeekDayData.Add("Set", DemandByWeekday.Select(d => d.Set).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Out).ToList()))
+        {
+            DemandByWeekDayData.Add("Out", DemandByWeekday.Select(d => d.Out).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Nov).ToList()))
+        {
+            DemandByWeekDayData.Add("Nov", DemandByWeekday.Select(d => d.Nov).ToList());
+        }
+        if (HasItems(DemandByWeekday.Select(d => d.Dez).ToList()))
+        {
+            DemandByWeekDayData.Add("Dez", DemandByWeekday.Select(d => d.Dez).ToList());
+        }
+
+        return DemandByWeekDayData;
+    }
+
+    private static bool HasItems(List<decimal> data)
+    {
+        var result = data.Find(x => x > 0);
+        if (result == 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 }

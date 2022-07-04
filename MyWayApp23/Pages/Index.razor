@@ -78,17 +78,32 @@ Welcome to your new app.
             {
                 <MudItem xs="12">
                     <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Pax Demand</MudText>
                         <PaxDemandChart PaxDemandConfig="PaxDemandConfig"></PaxDemandChart>
                     </MudPaper>
                 </MudItem>
                 <MudItem xs="12">
                     <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Demand by Shift</MudText>
                         <DemandByShiftChart DemandsByShiftChartConfig="DemandsByShiftChartConfig"></DemandByShiftChart>
                     </MudPaper>
                 </MudItem>
                 <MudItem xs="12">
                     <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Demand by Weekday</MudText>
                         <DemandByWeekdayChart DemandByWeekdayChartConfig="DemandByWeekdayChartConfig"></DemandByWeekdayChart>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Remote Parking Demand</MudText>
+                        <DemandByWeekdayChart DemandByWeekdayChartConfig="RemoteParkingChartConfig"></DemandByWeekdayChart>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Pré Notification</MudText>
+                        <PaxDemandChart PaxDemandConfig="PreNotificationChartConfig"></PaxDemandChart>
                     </MudPaper>
                 </MudItem>
             }
@@ -117,6 +132,8 @@ Welcome to your new app.
     public LineChartConfig PaxDemandConfig { get; set; } = new();
     public LineChartConfig DemandsByShiftChartConfig { get; set; } = new();
     public LineChartConfig DemandByWeekdayChartConfig { get; set; } = new();
+    public LineChartConfig RemoteParkingChartConfig { get; set; } = new();
+    public LineChartConfig PreNotificationChartConfig { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,6 +181,8 @@ Welcome to your new app.
         PaxDemandConfig = chartService.GetPaxDemandData(historico);
         DemandsByShiftChartConfig = chartService.GetDemandByShiftData(historico);
         DemandByWeekdayChartConfig = chartService.GetDemandByWeekdayData(historico);
+        RemoteParkingChartConfig = chartService.GetRemoteByWeekdayData(historico);
+        PreNotificationChartConfig = chartService.GetPreNotificationData(historico);
         
         isVisible = false;
         StateHasChanged();

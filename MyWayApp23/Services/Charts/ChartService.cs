@@ -1,12 +1,20 @@
-﻿using PSC.Blazor.Components.Chartjs.Enums;
+﻿using MyWayApp23.Models;
+using PSC.Blazor.Components.Chartjs.Enums;
 using PSC.Blazor.Components.Chartjs.Models.Common;
 using PSC.Blazor.Components.Chartjs.Models.Line;
-using System;
+using System.Linq;
 
 namespace MyWayApp23.Services.Charts;
 
-public class ChartService : IChartService
+public class ChartService : ChartServiceBase, IChartService
 {
+    private readonly IStandService standService;
+
+    public ChartService(IStandService standService)
+    {
+        this.standService = standService;
+    }
+
     public LineChartConfig GetPaxDemandData(List<HistoricoAssistencia> historico)
     {
         List<PaxDemandModel> PaxDemand = historico.AsEnumerable()
@@ -193,78 +201,132 @@ public class ChartService : IChartService
         return _demandByWeekdayConfig;
     }
 
-    private static string RandomRgbaColor(double alpha)
+    public LineChartConfig GetRemoteByWeekdayData(List<HistoricoAssistencia> historico)
     {
-        var random = new Random();
-        string color = $"rgba({random.Next(0, 255)},{random.Next(0, 255)},{random.Next(0, 255)},{alpha})";
-        return color;
+        var uh = historico.Select(u => u.Aeroporto).First();
+        var stands = standService.GetStands(false, uh);
+
+        List<DemandByWeekdayModel> DemandByWeekday = historico.AsEnumerable()
+            .Where(r => stands.Contains(r.Stand!))
+            .GroupBy(d => new { DiaSemana = d.Data.DayOfWeek })
+            .Select(x => new DemandByWeekdayModel
+            {
+                DayOfWeek = x.Key.DiaSemana,
+                DiaSemana = x.Select(d => d.Data.ToString("ddd", new CultureInfo("pt-PT"))).First(),
+                Jan = x.Count(d => d.Data.Month.Equals(1)),
+                Fev = x.Count(d => d.Data.Month.Equals(2)),
+                Mar = x.Count(d => d.Data.Month.Equals(3)),
+                Abr = x.Count(d => d.Data.Month.Equals(4)),
+                Mai = x.Count(d => d.Data.Month.Equals(5)),
+                Jun = x.Count(d => d.Data.Month.Equals(6)),
+                Jul = x.Count(d => d.Data.Month.Equals(7)),
+                Ago = x.Count(d => d.Data.Month.Equals(8)),
+                Set = x.Count(d => d.Data.Month.Equals(9)),
+                Out = x.Count(d => d.Data.Month.Equals(10)),
+                Nov = x.Count(d => d.Data.Month.Equals(11)),
+                Dez = x.Count(d => d.Data.Month.Equals(12)),
+            }).OrderBy(d => (decimal)d.DayOfWeek).ToList();
+
+        LineChartConfig _demandByWeekdayConfig = new();
+
+        _demandByWeekdayConfig = new LineChartConfig()
+        {
+            Options = new Options()
+            {
+                Responsive = true,
+                MaintainAspectRatio = false,
+                Plugins = new Plugins()
+                {
+                    Legend = new Legend()
+                    {
+                        Align = LegendAlign.Center,
+                        Display = true,
+                        Position = LegendPosition.Bottom
+                    }
+                },
+            }
+        };
+
+        _demandByWeekdayConfig.Data.Labels = DemandByWeekday.Select(d => d.DiaSemana.ToString()).ToList();
+
+        Dictionary<string, List<decimal>> DemandByWeekDayData = FillDemandByWeekDay(DemandByWeekday);
+
+        foreach (var item in DemandByWeekDayData)
+        {
+            string color = RandomRgbaColor(1);
+            _demandByWeekdayConfig.Data.Datasets.Add(new LineDataset()
+            {
+                Label = item.Key,
+                Data = item.Value,
+                BackgroundColor = color,
+                BorderColor = color
+            });
+        }
+
+        return _demandByWeekdayConfig;
     }
 
-    private static Dictionary<string, List<decimal>> FillDemandByWeekDay(List<DemandByWeekdayModel> DemandByWeekday)
+    public LineChartConfig GetPreNotificationData(List<HistoricoAssistencia> historico)
     {
-        Dictionary<string, List<decimal>> DemandByWeekDayData = new();
-        if (DemandByWeekday.Select(d => d.Jan).Count() > 0)
-        {
-            DemandByWeekDayData.Add("Jan", DemandByWeekday.Select(d => d.Jan).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Fev).ToList()))
-        {
-            DemandByWeekDayData.Add("Fev", DemandByWeekday.Select(d => d.Fev).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Mar).ToList()))
-        {
-            DemandByWeekDayData.Add("Mar", DemandByWeekday.Select(d => d.Mar).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Abr).ToList()))
-        {
-            DemandByWeekDayData.Add("Abr", DemandByWeekday.Select(d => d.Abr).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Mai).ToList()))
-        {
-            DemandByWeekDayData.Add("Mai", DemandByWeekday.Select(d => d.Mai).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Jun).ToList()))
-        {
-            DemandByWeekDayData.Add("Jun", DemandByWeekday.Select(d => d.Jun).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Jul).ToList()))
-        {
-            DemandByWeekDayData.Add("Jul", DemandByWeekday.Select(d => d.Jul).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Ago).ToList()))
-        {
-            DemandByWeekDayData.Add("Ago", DemandByWeekday.Select(d => d.Ago).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Set).ToList()))
-        {
-            DemandByWeekDayData.Add("Set", DemandByWeekday.Select(d => d.Set).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Out).ToList()))
-        {
-            DemandByWeekDayData.Add("Out", DemandByWeekday.Select(d => d.Out).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Nov).ToList()))
-        {
-            DemandByWeekDayData.Add("Nov", DemandByWeekday.Select(d => d.Nov).ToList());
-        }
-        if (HasItems(DemandByWeekday.Select(d => d.Dez).ToList()))
-        {
-            DemandByWeekDayData.Add("Dez", DemandByWeekday.Select(d => d.Dez).ToList());
-        }
+        long notif = TimeSpan.FromHours(36).Ticks;
+        List<PaxDemandModel> PaxDemand = historico.AsEnumerable()
+            .GroupBy(d => new { Dia = d.Data.Date })
+            .Select(x => new PaxDemandModel
+            {
+                Dias = x.Key.Dia,
+                Total = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date)),
+                //notificadas
+                Partidas = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Notif >= notif),
+                //não notificadas
+                Chegadas = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Notif < notif),
+            }).OrderBy(d => d.Dias).ToList();
 
-        return DemandByWeekDayData;
-    }
+        LineChartConfig _paxDemandConfig = new();
 
-    private static bool HasItems(List<decimal> data)
-    {
-        var result = data.Find(x => x > 0);
-        if (result == 0)
+        _paxDemandConfig = new LineChartConfig()
         {
-            return false;
-        }
-        else
+            Options = new Options()
+            {
+                Responsive = true,
+                MaintainAspectRatio = false,
+                Plugins = new Plugins()
+                {
+                    Legend = new Legend()
+                    {
+                        Align = LegendAlign.Center,
+                        Display = true,
+                        Position = LegendPosition.Bottom
+                    }
+                },
+            }
+        };
+
+        _paxDemandConfig.Data.Labels = PaxDemand.Select(d => d.Dias.ToString("d/MMM")).ToList();
+        _paxDemandConfig.Data.Datasets.Add(new LineDataset()
         {
-            return true;
-        }
+            Label = "Real",
+            Data = PaxDemand.Select(d => d.Total).ToList(),
+            BackgroundColor = "rgba(220,20,60,0.2)",
+            BorderColor = "rgba(220,20,60,1)",
+            Fill = true
+        });
+        _paxDemandConfig.Data.Datasets.Add(new LineDataset()
+        {
+            Label = ">36h",
+            Data = PaxDemand.Select(d => d.Partidas).ToList(),
+            BackgroundColor = "rgba(34,139,34,0.2)",
+            BorderColor = "rgba(34,139,34,1)",
+            Fill = true
+        });
+        _paxDemandConfig.Data.Datasets.Add(new LineDataset()
+        {
+            Label = "<36h",
+            Data = PaxDemand.Select(d => d.Chegadas).ToList(),
+            BackgroundColor = "rgba(30,144,255,0.2)",
+            BorderColor = "rgba(30,144,255,1)",
+            Fill = true
+        });
+
+        return _paxDemandConfig;
     }
 }

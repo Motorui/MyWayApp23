@@ -88,13 +88,13 @@ Welcome to your new app.
                         <DemandByShiftChart DemandsByShiftChartConfig="DemandsByShiftChartConfig"></DemandByShiftChart>
                     </MudPaper>
                 </MudItem>
-                <MudItem xs="12">
+                <MudItem xs="6">
                     <MudPaper Class="pa-5" Elevation="5">
                         <MudText Align="Align.Center">Demand by Weekday</MudText>
                         <DemandByWeekdayChart DemandByWeekdayChartConfig="DemandByWeekdayChartConfig"></DemandByWeekdayChart>
                     </MudPaper>
                 </MudItem>
-                <MudItem xs="12">
+                <MudItem xs="6">
                     <MudPaper Class="pa-5" Elevation="5">
                         <MudText Align="Align.Center">Remote Parking Demand</MudText>
                         <DemandByWeekdayChart DemandByWeekdayChartConfig="RemoteParkingChartConfig"></DemandByWeekdayChart>
@@ -104,6 +104,12 @@ Welcome to your new app.
                     <MudPaper Class="pa-5" Elevation="5">
                         <MudText Align="Align.Center">Pré Notification</MudText>
                         <PaxDemandChart PaxDemandConfig="PreNotificationChartConfig"></PaxDemandChart>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Non Notified vs Pax Demand</MudText>
+                        <PaxDemandChart PaxDemandConfig="NonNotifiedVsPaxChartConfig"></PaxDemandChart>
                     </MudPaper>
                 </MudItem>
             }
@@ -134,6 +140,7 @@ Welcome to your new app.
     public LineChartConfig DemandByWeekdayChartConfig { get; set; } = new();
     public LineChartConfig RemoteParkingChartConfig { get; set; } = new();
     public LineChartConfig PreNotificationChartConfig { get; set; } = new();
+    public LineChartConfig NonNotifiedVsPaxChartConfig { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -183,7 +190,8 @@ Welcome to your new app.
         DemandByWeekdayChartConfig = chartService.GetDemandByWeekdayData(historico);
         RemoteParkingChartConfig = chartService.GetRemoteByWeekdayData(historico);
         PreNotificationChartConfig = chartService.GetPreNotificationData(historico);
-        
+        NonNotifiedVsPaxChartConfig = chartService.GetNonNotifiedVsPaxDemandData(historico);
+
         isVisible = false;
         StateHasChanged();
     }

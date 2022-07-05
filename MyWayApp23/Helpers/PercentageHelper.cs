@@ -23,6 +23,21 @@ public static class PercentageHelper
         }
 
     }
+    public static decimal PercentageToDecimal(int? value, int? total)
+    {
+        //percentage = (yourNumber / totalNumber) * 100;
+        decimal doubleValue = Convert.ToDecimal(value);
+        decimal doubleTotal = Convert.ToDecimal(total);
+        if (value > 0 && total > 0)
+        {
+            return (doubleValue / doubleTotal) * 100;
+        }
+        else
+        {
+            return 0;
+        }
+
+    }
 
     public static string GetPercentage(decimal value, decimal total)
     {

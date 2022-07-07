@@ -62,3 +62,10 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 40vh;
+    width: 65vw;
+}

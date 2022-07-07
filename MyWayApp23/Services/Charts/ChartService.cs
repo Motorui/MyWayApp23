@@ -3,6 +3,7 @@ using PSC.Blazor.Components.Chartjs.Enums;
 using PSC.Blazor.Components.Chartjs.Models.Common;
 using PSC.Blazor.Components.Chartjs.Models.Line;
 using System.Linq;
+using static MudBlazor.CategoryTypes;
 
 namespace MyWayApp23.Services.Charts;
 

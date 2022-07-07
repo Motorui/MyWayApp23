@@ -1,5 +1,4 @@
-﻿using MyWayApp23.Models;
-using PSC.Blazor.Components.Chartjs.Enums;
+﻿using PSC.Blazor.Components.Chartjs.Enums;
 using PSC.Blazor.Components.Chartjs.Models.Common;
 using PSC.Blazor.Components.Chartjs.Models.Line;
 using System.Linq;
@@ -55,7 +54,7 @@ public class ChartService : ChartServiceBase, IChartService
             Data = PaxDemand.Select(d => d.Total).ToList(),
             BackgroundColor = "rgba(220,20,60,0.2)",
             BorderColor = "rgba(220,20,60,1)",
-            Fill = true
+            Fill = true,
         });
         _paxDemandConfig.Data.Datasets.Add(new LineDataset()
         {
@@ -325,6 +324,63 @@ public class ChartService : ChartServiceBase, IChartService
             Data = PaxDemand.Select(d => d.Chegadas).ToList(),
             BackgroundColor = "rgba(30,144,255,0.2)",
             BorderColor = "rgba(30,144,255,1)",
+            Fill = true
+        });
+
+        return _paxDemandConfig;
+    }
+
+    public LineChartConfig GetNonNotifiedVsPaxDemandData(List<HistoricoAssistencia> historico)
+    {
+        long notif = TimeSpan.FromHours(36).Ticks;
+        List<PaxDemandModel> PaxDemand = historico.AsEnumerable()
+            .GroupBy(d => new { Dia = d.Data.Date })
+            .Select(x => new PaxDemandModel
+            {
+                Dias = x.Key.Dia,
+                Total = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date)),
+                //percentagens sem notificação
+                Partidas = PercentageHelper.PercentageToDecimal(
+                   x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Notif < notif),
+                     x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date))
+                    )
+            }).OrderBy(d => d.Dias).ToList();
+
+        LineChartConfig _paxDemandConfig = new();
+
+        _paxDemandConfig = new LineChartConfig()
+        {
+            Options = new Options()
+            {
+                Responsive = true,
+                MaintainAspectRatio = false,
+                Plugins = new Plugins()
+                {
+                    Legend = new Legend()
+                    {
+                        Align = LegendAlign.Center,
+                        Display = true,
+                        Position = LegendPosition.Bottom
+                    },
+                },
+            }
+        };
+
+        _paxDemandConfig.Data.Labels = PaxDemand.Select(d => d.Dias.ToString("d/MMM")).ToList();
+        _paxDemandConfig.Data.Datasets.Add(new LineDataset()
+        {
+            Label = "Real",
+            Data = PaxDemand.Select(d => d.Total).ToList(),
+            BackgroundColor = "rgba(220,20,60,0.2)",
+            BorderColor = "rgba(220,20,60,1)",
+            Fill = true,
+        });
+        _paxDemandConfig.Data.Datasets.Add(new LineDataset()
+        {
+            Label = "%<36h",
+            Data = PaxDemand.Select(d => d.Partidas).ToList(),
+            BackgroundColor = "rgba(34,139,34,0.2)",
+            BorderColor = "rgba(34,139,34,1)",
             Fill = true
         });
 

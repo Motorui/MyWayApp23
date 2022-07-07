@@ -13,4 +13,5 @@ public interface IChartService
     LineChartConfig GetRemoteByWeekdayData(List<HistoricoAssistencia> historico);
 
     LineChartConfig GetPreNotificationData(List<HistoricoAssistencia> historico);
+    LineChartConfig GetNonNotifiedVsPaxDemandData(List<HistoricoAssistencia> historico);
 }

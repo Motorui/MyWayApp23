@@ -2,7 +2,7 @@
 @using MyWayApp23.Components.Charts
 @inject ILocalStorageService LocalStorage
 @inject IHistoricoService service
-@inject IChartService chartService
+
 <PageTitle>Index</PageTitle>
 
 @*<h1>Hello, world!</h1>
@@ -77,39 +77,51 @@ Welcome to your new app.
                 <MudItem xs="12">
                     <MudPaper Elevation="5" Class="pa-5">
                         <MudText Align="Align.Center">Pax Demand</MudText>
-                        <MyChart Id="Pax-Demand" ChartData="historico"></MyChart>
+                        <PaxDemandChart Id="Pax-Demand" ChartData="historico" />
                     </MudPaper>
                 </MudItem>
-                @*                <MudItem xs="12">
-            <MudPaper Class="pa-5" Elevation="5">
-            <MudText Align="Align.Center">Pax Demand</MudText>
-            <PaxDemandChart PaxDemandConfig="PaxDemandConfig"></PaxDemandChart>
-            </MudPaper>
-            </MudItem>
-            <MudItem xs="12">
-            <MudPaper Class="pa-5" Elevation="5">
-            <MudText Align="Align.Center">Demand by Shift</MudText>
-            <DemandByShiftChart DemandsByShiftChartConfig="DemandsByShiftChartConfig"></DemandByShiftChart>
-            </MudPaper>
-            </MudItem>
-            <MudItem xs="12">
-            <MudPaper Class="pa-5" Elevation="5">
-            <MudText Align="Align.Center">Demand by Weekday</MudText>
-            <DemandByWeekdayChart DemandByWeekdayChartConfig="DemandByWeekdayChartConfig"></DemandByWeekdayChart>
-            </MudPaper>
-            </MudItem>
-            <MudItem xs="12">
-            <MudPaper Class="pa-5" Elevation="5">
-            <MudText Align="Align.Center">Remote Parking Demand</MudText>
-            <DemandByWeekdayChart DemandByWeekdayChartConfig="RemoteParkingChartConfig"></DemandByWeekdayChart>
-            </MudPaper>
-            </MudItem>
-            <MudItem xs="12">
-            <MudPaper Class="pa-5" Elevation="5">
-            <MudText Align="Align.Center">Pré Notification</MudText>
-            <PaxDemandChart PaxDemandConfig="PreNotificationChartConfig"></PaxDemandChart>
-            </MudPaper>
-            </MudItem>*@
+
+                <MudItem xs="12">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Demand by Shift</MudText>
+                        <DemandByShiftChart Id="Demand-By-Shift" ChartData="historico" />
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="6">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Demand by Weekday</MudText>
+                        <DemandByWeekdayChart Id="Demand-By-Weekday" ChartData="historico" />
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="6">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Remote Parking Demand</MudText>
+                        <RemoteParkingDemandChart id="Remote-Parking" ChartData="historico" />
+                    </MudPaper>
+                </MudItem>
+                
+                <MudItem xs="12">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Pré Notification</MudText>
+                        <PreNotificationChart Id="Pre-Notification" ChartData="historico" />
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Non Notified Vs Pax Demand</MudText>
+                        <NonNotifiedVsPaxDemand Id="Non-Notified-Vs-Pax-Demand" ChartData="historico" />
+                    </MudPaper>
+                </MudItem>
+
+@*                <MudItem xs="4">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Avg Non Notified</MudText>
+                        <AvgNonNotifiedChart Id="Avg-Non-Notified" ChartData="historico" />
+                    </MudPaper>
+                </MudItem>*@
             }
         </MudGrid>
     </Authorized>
@@ -132,12 +144,12 @@ Welcome to your new app.
     public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     private List<HistoricoAssistencia> historico { get; set; } = new();
-    public LineChartConfig PaxDemandConfig { get; set; } = new();
-    public LineChartConfig DemandsByShiftChartConfig { get; set; } = new();
-    public LineChartConfig DemandByWeekdayChartConfig { get; set; } = new();
-    public LineChartConfig RemoteParkingChartConfig { get; set; } = new();
-    public LineChartConfig PreNotificationChartConfig { get; set; } = new();
-    public LineChartConfig NonNotifiedVsPaxChartConfig { get; set; } = new();
+    //public LineChartConfig PaxDemandConfig { get; set; } = new();
+    //public LineChartConfig DemandsByShiftChartConfig { get; set; } = new();
+    //public LineChartConfig DemandByWeekdayChartConfig { get; set; } = new();
+    //public LineChartConfig RemoteParkingChartConfig { get; set; } = new();
+    //public LineChartConfig PreNotificationChartConfig { get; set; } = new();
+    //public LineChartConfig NonNotifiedVsPaxChartConfig { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -182,11 +194,11 @@ Welcome to your new app.
     {
 
         historico = await service.FilterDataAsync(_year, _uh, _month);
-        PaxDemandConfig = chartService.GetPaxDemandData(historico);
-        DemandsByShiftChartConfig = chartService.GetDemandByShiftData(historico);
-        DemandByWeekdayChartConfig = chartService.GetDemandByWeekdayData(historico);
-        RemoteParkingChartConfig = chartService.GetRemoteByWeekdayData(historico);
-        PreNotificationChartConfig = chartService.GetPreNotificationData(historico);
+        //PaxDemandConfig = chartService.GetPaxDemandData(historico);
+        //DemandsByShiftChartConfig = chartService.GetDemandByShiftData(historico);
+        //DemandByWeekdayChartConfig = chartService.GetDemandByWeekdayData(historico);
+        //RemoteParkingChartConfig = chartService.GetRemoteByWeekdayData(historico);
+        //PreNotificationChartConfig = chartService.GetPreNotificationData(historico);
 
         isVisible = false;
         StateHasChanged();

@@ -1,0 +1,37 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="small-chart-container">
+    <canvas id="@Id" height="400"></canvas>
+</div>
+
+@code {
+    [Parameter]
+    public List<HistoricoAssistencia>? ChartData { get; set; }
+
+    [Parameter]
+    public string? Id { get; set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="firstRender"></param>
+    /// <returns></returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        long notif = TimeSpan.FromHours(36).Ticks;
+        if (ChartData != null)
+        {
+            var chartData = ChartData.AsEnumerable()
+            .GroupBy(d => new { Mes = d.Data.Month })
+            .Select(x => new
+            {
+                Month = x.Key,
+                Meses = x.Select(d => d.Data.ToString("MMM", new CultureInfo("pt-PT"))).First(),
+                Average = PercentageHelper.PercentageToDecimal(
+                       x.Count(d => d.Data.Month.Equals(x.Key.Mes) && d.Notif >= notif),
+                         x.Count(d => d.Data.Month.Equals(x.Key.Mes)))
+            }).OrderBy(d => d.Month);
+
+            await JSRuntime.InvokeVoidAsync("avgNonNotifiedChart", Id, chartData);
+        }
+    }
+}

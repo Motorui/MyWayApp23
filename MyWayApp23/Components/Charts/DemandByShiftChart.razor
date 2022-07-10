@@ -1,7 +1,35 @@
-﻿<Chart Config="DemandsByShiftChartConfig" @ref="_demandsByShiftChart" Height="500px" />
+﻿@inject IJSRuntime JSRuntime
+
+<div class="small-chart-container">
+    <canvas id="@Id" height="400"></canvas>
+</div>
 
 @code {
     [Parameter]
-    public LineChartConfig DemandsByShiftChartConfig { get; set; } = new();
-    private Chart? _demandsByShiftChart;
+    public List<HistoricoAssistencia>? ChartData { get; set; }
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ChartData != null)
+        {
+            var chartData = ChartData.AsEnumerable()
+            .GroupBy(d => new { Dia = d.Data.Date })
+            .Select(x => new
+            {
+                Data = x.Key.Dia,
+                Dias = x.Key.Dia.ToString("d/MMM"),
+                Manha = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) &&
+                d.Data.Hour >= 4 && d.Data.Hour < 13),
+                Tarde = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) &&
+                d.Data.Hour >= 13 && d.Data.Hour < 23),
+                Noite = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) &&
+                d.Data.Hour >= 0 && d.Data.Hour < 4),
+            }).OrderBy(d => d.Data).ToList();
+
+            await JSRuntime.InvokeVoidAsync("demandByShiftChart", Id, chartData);
+        }
+    }
 }

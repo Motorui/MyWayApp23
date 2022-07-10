@@ -1,0 +1,46 @@
+﻿@inject IJSRuntime JSRuntime
+@inject IStandService standService
+
+<div class="small-chart-container">
+    <canvas id="@Id" height="400"></canvas>
+</div>
+
+@code {
+    [Parameter]
+    public List<HistoricoAssistencia>? ChartData { get; set; }
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ChartData != null)
+        {
+            var uh = ChartData.Select(u => u.Aeroporto).First();
+            var stands = standService.GetStands(false, uh);
+
+            var chartData = ChartData.AsEnumerable()
+            .Where(r => stands.Contains(r.Stand!))
+            .GroupBy(d => new { DiaSemana = d.Data.DayOfWeek })
+            .Select(x => new
+                {
+                    DayOfWeek = x.Key.DiaSemana,
+                    DiaSemana = x.Select(d => d.Data.ToString("ddd", new CultureInfo("pt-PT"))).First(),
+                    Jan = x.Count(d => d.Data.Month.Equals(1)),
+                    Fev = x.Count(d => d.Data.Month.Equals(2)),
+                    Mar = x.Count(d => d.Data.Month.Equals(3)),
+                    Abr = x.Count(d => d.Data.Month.Equals(4)),
+                    Mai = x.Count(d => d.Data.Month.Equals(5)),
+                    Jun = x.Count(d => d.Data.Month.Equals(6)),
+                    Jul = x.Count(d => d.Data.Month.Equals(7)),
+                    Ago = x.Count(d => d.Data.Month.Equals(8)),
+                    Set = x.Count(d => d.Data.Month.Equals(9)),
+                    Out = x.Count(d => d.Data.Month.Equals(10)),
+                    Nov = x.Count(d => d.Data.Month.Equals(11)),
+                    Dez = x.Count(d => d.Data.Month.Equals(12)),
+                }).OrderBy(d => (decimal)d.DayOfWeek).ToList();
+
+            await JSRuntime.InvokeVoidAsync("remoteParkingDemand", Id, chartData);
+        }
+    }
+}

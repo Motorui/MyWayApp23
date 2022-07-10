@@ -8,6 +8,21 @@ public static class PercentageHelper
         return result.ToString("P", CultureInfo.InvariantCulture);
     }
 
+    public static int PercentageToInteger(int? value, int? total)
+    {
+        //percentage = (yourNumber / totalNumber) * 100;
+        double doubleValue = Convert.ToDouble(value);
+        double doubleTotal = Convert.ToDouble(total);
+        if (value > 0 && total > 0)
+        {
+            return (int)((doubleValue / doubleTotal) * 100);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     public static double PercentageToDouble(int? value, int? total)
     {
         //percentage = (yourNumber / totalNumber) * 100;
@@ -21,8 +36,8 @@ public static class PercentageHelper
         {
             return 0;
         }
-
     }
+
     public static decimal PercentageToDecimal(int? value, int? total)
     {
         //percentage = (yourNumber / totalNumber) * 100;
@@ -36,7 +51,6 @@ public static class PercentageHelper
         {
             return 0;
         }
-
     }
 
     public static string GetPercentage(decimal value, decimal total)

@@ -13,7 +13,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-
         long notif = TimeSpan.FromHours(36).Ticks;
         if (ChartData != null)
         {
@@ -24,14 +23,17 @@
                 Data = x.Key.Dia,
                 Dias = x.Key.Dia.ToString("d/MMM"),
                 Total = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date)),
-                //notificadas
-                Partidas = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Notif >= notif),
-                //não notificadas
-                Chegadas = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Notif < notif),
+                //percentagens sem notificação
+                NNotif = PercentageHelper.PercentageToDecimal(
+                       x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Notif >= notif),
+                         x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date))),
+                //percentagens com notificação
+                Notif = PercentageHelper.PercentageToDecimal(
+                       x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Notif < notif),
+                         x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date)))
             }).OrderBy(d => d.Data).ToList();
 
-            await JSRuntime.InvokeVoidAsync("paxDemandChart", Id, chartData);
+            await JSRuntime.InvokeVoidAsync("nonNotifiedVsPaxDemand", Id, chartData);
         }
-
     }
 }

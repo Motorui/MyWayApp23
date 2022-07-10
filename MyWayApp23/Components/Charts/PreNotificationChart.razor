@@ -1,0 +1,35 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="small-chart-container">
+    <canvas id="@Id" height="400"></canvas>
+</div>
+
+@code {
+    [Parameter]
+    public List<HistoricoAssistencia>? ChartData { get; set; }
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        long notif = TimeSpan.FromHours(36).Ticks;
+        if (ChartData != null)
+        {
+            var chartData = ChartData.AsEnumerable()
+                .GroupBy(d => new { Dia = d.Data.Date })
+                .Select(x => new
+                {
+                    Data = x.Key.Dia,
+                    Dias = x.Key.Dia.ToString("d/MMM"),
+                    Total = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date)),
+                    //sem notificação
+                    NNotif = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Notif >= notif),
+                    //com notificação
+                    Notif = x.Count(d => d.Data.Date.Equals(x.Key.Dia.Date) && d.Notif < notif)
+                }).OrderBy(d => d.Data).ToList();
+
+            await JSRuntime.InvokeVoidAsync("preNotificationChart", Id, chartData);
+        }
+    }
+}

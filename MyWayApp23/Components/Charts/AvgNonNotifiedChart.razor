@@ -10,28 +10,30 @@
 
     [Parameter]
     public string? Id { get; set; }
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="firstRender"></param>
-    /// <returns></returns>
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         long notif = TimeSpan.FromHours(36).Ticks;
         if (ChartData != null)
         {
-            var chartData = ChartData.AsEnumerable()
-            .GroupBy(d => new { Mes = d.Data.Month })
-            .Select(x => new
-            {
-                Month = x.Key,
-                Meses = x.Select(d => d.Data.ToString("MMM", new CultureInfo("pt-PT"))).First(),
-                Average = PercentageHelper.PercentageToDecimal(
-                       x.Count(d => d.Data.Month.Equals(x.Key.Mes) && d.Notif >= notif),
-                         x.Count(d => d.Data.Month.Equals(x.Key.Mes)))
-            }).OrderBy(d => d.Month);
 
-            await JSRuntime.InvokeVoidAsync("avgNonNotifiedChart", Id, chartData);
+            List<string> chartLabels = new();
+            List<decimal> chartData = new();
+            for (var i = 1; i < 13; i++)
+            {
+                string mes = DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(i);
+                int? total = ChartData.Count(d => d.Data.Month.Equals(i));
+                int? nnotif = ChartData.Count(d => d.Data.Month.Equals(i) && d.Notif > notif);
+
+                if (total > 0)
+                {
+                    chartLabels.Add(mes);
+                    chartData.Add(PercentageHelper.PercentageToDecimal(nnotif, total) );
+                }
+
+            }
+
+            await JSRuntime.InvokeVoidAsync("avgNonNotifiedChart", Id, chartLabels.ToArray(), chartData.ToArray());
         }
     }
 }

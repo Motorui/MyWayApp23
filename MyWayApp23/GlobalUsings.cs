@@ -25,7 +25,6 @@ global using MyWayApp23.Services;
 global using MyWayApp23.Services.Excel;
 global using MyWayApp23.Services.Tables;
 global using MyWayApp23.Services.Upload;
-global using MyWayApp23.Services.Charts;
 global using MyWayApp23.Services.Tabelas;
 global using MyWayApp23.Services.Historico;
 

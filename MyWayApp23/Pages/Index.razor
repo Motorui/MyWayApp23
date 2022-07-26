@@ -5,15 +5,9 @@
 
 <PageTitle>Index</PageTitle>
 
-@*<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />*@
-
 <AuthorizeView>
     <Authorized>
-        @*<p>Olá, @context.User.Identity!.Name</p>*@
+
         <MudOverlay Visible="isVisible" DarkBackground="true" ZIndex="9999" AutoClose="false">
 
             <MudText Typo="Typo.h5" Color="Color.Primary"
@@ -101,7 +95,7 @@ Welcome to your new app.
                         <RemoteParkingDemandChart id="Remote-Parking" ChartData="historico" />
                     </MudPaper>
                 </MudItem>
-                
+
                 <MudItem xs="12">
                     <MudPaper Class="pa-5" Elevation="5">
                         <MudText Align="Align.Center">Pré Notification</MudText>
@@ -116,12 +110,24 @@ Welcome to your new app.
                     </MudPaper>
                 </MudItem>
 
-@*                <MudItem xs="4">
+                <MudItem xs="4">
                     <MudPaper Class="pa-5" Elevation="5">
                         <MudText Align="Align.Center">Avg Non Notified</MudText>
                         <AvgNonNotifiedChart Id="Avg-Non-Notified" ChartData="historico" />
                     </MudPaper>
-                </MudItem>*@
+                </MudItem>
+                <MudItem xs="4">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Non Notified Total Profile by Hour</MudText>
+                        <NonNotifiedTotalByHourChart Id="Non-Notified-Total-Profile-by-Hour" ChartData="historico" />
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudPaper Class="pa-5" Elevation="5">
+                        <MudText Align="Align.Center">Non Notified By Weekday</MudText>
+                        <NonNotifiedByWeekdayChart Id="Non-Notified-By-Weekday" ChartData="historico" />
+                    </MudPaper>
+                </MudItem>
             }
         </MudGrid>
     </Authorized>
@@ -144,12 +150,6 @@ Welcome to your new app.
     public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     private List<HistoricoAssistencia> historico { get; set; } = new();
-    //public LineChartConfig PaxDemandConfig { get; set; } = new();
-    //public LineChartConfig DemandsByShiftChartConfig { get; set; } = new();
-    //public LineChartConfig DemandByWeekdayChartConfig { get; set; } = new();
-    //public LineChartConfig RemoteParkingChartConfig { get; set; } = new();
-    //public LineChartConfig PreNotificationChartConfig { get; set; } = new();
-    //public LineChartConfig NonNotifiedVsPaxChartConfig { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -194,11 +194,6 @@ Welcome to your new app.
     {
 
         historico = await service.FilterDataAsync(_year, _uh, _month);
-        //PaxDemandConfig = chartService.GetPaxDemandData(historico);
-        //DemandsByShiftChartConfig = chartService.GetDemandByShiftData(historico);
-        //DemandByWeekdayChartConfig = chartService.GetDemandByWeekdayData(historico);
-        //RemoteParkingChartConfig = chartService.GetRemoteByWeekdayData(historico);
-        //PreNotificationChartConfig = chartService.GetPreNotificationData(historico);
 
         isVisible = false;
         StateHasChanged();

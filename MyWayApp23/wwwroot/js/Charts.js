@@ -561,7 +561,6 @@ window.nonNotifiedVsPaxDemand = (id, chartData) => {
 
     let dias = chartData.map(a => a.dias);
     let total = chartData.map(a => a.total);
-    let nnotif = chartData.map(a => a.nNotif);
     let notif = chartData.map(a => a.notif);
 
     new Chart(ctx, {
@@ -581,33 +580,6 @@ window.nonNotifiedVsPaxDemand = (id, chartData) => {
                 borderWidth: 1,
                 fill: true
             },
-            //{
-            //    label: '%>36h',
-            //    yAxisID: 'B',
-            //    data: nnotif,
-            //    backgroundColor: [
-            //        'rgba(0, 255, 0, 0.25)'
-            //    ],
-            //    borderColor: [
-            //        'rgba(0, 255, 0, 1)'
-            //    ],
-            //    borderWidth: 1,
-            //    fill: false,
-            //    tooltip: {
-            //        callbacks: {
-            //            label: function (context) {
-            //                let label = context.dataset.label;
-            //                let value = context.formattedValue;
-
-            //                if (!label)
-            //                    label = 'Unknown'
-
-            //                let percentage = value + '%';
-            //                return label + ": " + percentage;
-            //            }
-            //        }
-            //    }
-            //},
             {
                 label: '%<36h',
                 yAxisID: 'B',
@@ -664,43 +636,52 @@ window.nonNotifiedVsPaxDemand = (id, chartData) => {
     });
 }
 
-window.avgNonNotifiedChart = (id, chartData) => {
+window.avgNonNotifiedChart = (id, chartLabels, chartData) => {
     const ctx = document.getElementById(id).getContext('2d');
     let chartStatus = Chart.getChart(id);
     if (chartStatus != undefined) {
         chartStatus.destroy();
     }
 
-    let meses = chartData.map(a => a.meses);
-    let average = chartData.map(a => a.average);
-    //let jan = chartData.map(a => a.jan).reduce((a, b) => a + b, 0) / chartData.map(a => a.jan);
-    //let fev = chartData.map(a => a.fev);
-    //let mar = chartData.map(a => a.mar);
-    //let abr = chartData.map(a => a.abr);
-    //let mai = chartData.map(a => a.mai);
-    //let jun = chartData.map(a => a.jun);
-    //let jul = chartData.map(a => a.jul);
-    //let ago = chartData.map(a => a.ago);
-    //let set = chartData.map(a => a.set);
-    //let out = chartData.map(a => a.out);
-    //let nov = chartData.map(a => a.nov);
-    //let dez = chartData.map(a => a.dez);
 
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: meses,
+            labels: chartLabels,
             datasets: [{
-                label: 'Jan',
-                data: jan,
+                axis: 'y',
+                label: '%>36h',
+                data: chartData,
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.25)'
+                    'rgba(255, 99, 132, 0.25)',
+                    'rgba(54, 162, 235, 0.25)',
+                    'rgba(255, 205, 86, 0.25)',
+                    'rgba(204, 0, 0, 0.25)',
+                    'rgba(204, 102, 0, 0.25)',
+                    'rgba(204, 204, 0, 0.25)',
+                    'rgba(102, 204, 0, 0.25)',
+                    'rgba(0, 204, 204, 0.25)',
+                    'rgba(0, 0, 204, 0.25)',
+                    'rgba(102, 0, 204, 0.25)',
+                    'rgba(204, 0, 204, 0.25)',
+                    'rgba(96, 96, 96, 0.25)'
                 ],
                 borderColor: [
-                    'rgba(255, 99, 132, 1)'
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 205, 86, 1)',
+                    'rgba(204, 0, 0, 1)',
+                    'rgba(204, 102, 0, 1)',
+                    'rgba(204, 204, 0, 1)',
+                    'rgba(102, 204, 0, 1)',
+                    'rgba(0, 204, 204, 1)',
+                    'rgba(0, 0, 204, 1)',
+                    'rgba(102, 0, 204, 1)',
+                    'rgba(204, 0, 204, 1)',
+                    'rgba(96, 96, 96, 1)'
                 ],
                 borderWidth: 1,
-                fill: true,
+                fill: false,
                 tooltip: {
                     callbacks: {
                         label: function (context) {
@@ -715,314 +696,384 @@ window.avgNonNotifiedChart = (id, chartData) => {
                         }
                     }
                 }
-            },
-                //{
-                //    label: 'Fev',
-                //    data: fev,
-                //    backgroundColor: [
-                //        'rgba(54, 162, 235, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(54, 162, 235, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    }
-                //},
-                //{
-                //    label: 'Mar',
-                //    data: mar,
-                //    backgroundColor: [
-                //        'rgba(255, 205, 86, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(255, 205, 86, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    },
-                //},
-                //{
-                //    label: 'Abr',
-                //    data: abr,
-                //    backgroundColor: [
-                //        'rgba(204, 0, 0, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(204, 0, 0, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    }
-                //},
-                //{
-                //    label: 'Mai',
-                //    data: mai,
-                //    backgroundColor: [
-                //        'rgba(204, 102, 0, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(204, 102, 0, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    }
-                //},
-                //{
-                //    label: 'Jun',
-                //    data: jun,
-                //    backgroundColor: [
-                //        'rgba(204, 204, 0, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(204, 204, 0, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    }
-                //},
-                //{
-                //    label: 'Jul',
-                //    data: jul,
-                //    backgroundColor: [
-                //        'rgba(102, 204, 0, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(102, 204, 0, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    }
-                //},
-                //{
-                //    label: 'Ago',
-                //    data: ago,
-                //    backgroundColor: [
-                //        'rgba(0, 204, 204, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(0, 204, 204, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    }
-                //},
-                //{
-                //    label: 'Set',
-                //    data: set,
-                //    backgroundColor: [
-                //        'rgba(0, 0, 204, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(0, 0, 204, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    }
-                //},
-                //{
-                //    label: 'Out',
-                //    data: out,
-                //    backgroundColor: [
-                //        'rgba(102, 0, 204, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(102, 0, 204, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    }
-                //},
-                //{
-                //    label: 'Nov',
-                //    data: nov,
-                //    backgroundColor: [
-                //        'rgba(204, 0, 204, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(204, 0, 204, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    }
-                //},
-                //{
-                //    label: 'Dez',
-                //    data: dez,
-                //    backgroundColor: [
-                //        'rgba(96, 96, 96, 0.25)'
-                //    ],
-                //    borderColor: [
-                //        'rgba(96, 96, 96, 1)'
-                //    ],
-                //    borderWidth: 1,
-                //    fill: true,
-                //    tooltip: {
-                //        callbacks: {
-                //            label: function (context) {
-                //                let label = context.dataset.label;
-                //                let value = context.formattedValue;
-
-                //                if (!label)
-                //                    label = 'Unknown'
-
-                //                let percentage = value + '%';
-                //                return label + ": " + percentage;
-                //            }
-                //        }
-                //    }
-                //}
+            }
             ]
         },
         options: {
+            indexAxis: 'y',
             locale: 'pt-PT',
             responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+window.nonNotifiedTotalByHourChart = (id, chartData) => {
+    const ctx = document.getElementById(id).getContext('2d');
+    let chartStatus = Chart.getChart(id);
+    if (chartStatus != undefined) {
+        chartStatus.destroy();
+    }
+
+    let horas = chartData.map(a => a.hora);
+    let jan = chartData.map(a => a.jan);
+    let fev = chartData.map(a => a.fev);
+    let mar = chartData.map(a => a.mar);
+    let abr = chartData.map(a => a.abr);
+    let mai = chartData.map(a => a.mai);
+    let jun = chartData.map(a => a.jun);
+    let jul = chartData.map(a => a.jul);
+    let ago = chartData.map(a => a.ago);
+    let set = chartData.map(a => a.set);
+    let out = chartData.map(a => a.out);
+    let nov = chartData.map(a => a.nov);
+    let dez = chartData.map(a => a.dez);
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: horas,
+            datasets: [{
+                label: 'Jan',
+                data: jan,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Fev',
+                data: fev,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Mar',
+                data: mar,
+                backgroundColor: [
+                    'rgba(255, 205, 86, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(255, 205, 86, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Abr',
+                data: abr,
+                backgroundColor: [
+                    'rgba(204, 0, 0, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(204, 0, 0, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Mai',
+                data: mai,
+                backgroundColor: [
+                    'rgba(204, 102, 0, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(204, 102, 0, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Jun',
+                data: jun,
+                backgroundColor: [
+                    'rgba(204, 204, 0, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(204, 204, 0, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Jul',
+                data: jul,
+                backgroundColor: [
+                    'rgba(102, 204, 0, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(102, 204, 0, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Ago',
+                data: ago,
+                backgroundColor: [
+                    'rgba(0, 204, 204, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(0, 204, 204, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Set',
+                data: set,
+                backgroundColor: [
+                    'rgba(0, 0, 204, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(0, 0, 204, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Out',
+                data: out,
+                backgroundColor: [
+                    'rgba(102, 0, 204, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(102, 0, 204, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Nov',
+                data: nov,
+                backgroundColor: [
+                    'rgba(204, 0, 204, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(204, 0, 204, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Dez',
+                data: dez,
+                backgroundColor: [
+                    'rgba(96, 96, 96, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(96, 96, 96, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            }
+            ]
+        },
+        options: {
+            responsive: true,
             maintainAspectRatio: false,
-            scales: {
-                A: {
-                    type: 'linear',
-                    position: 'right',
-                    ticks: {
-                        beginAtZero: true,
-                        max: 100,
-                        min: 0,
-                        precision: 0,
-                        callback: function (label) {
-                            return label + "%"
-                        }
+            plugins: {
+                legend: {
+                    labels: {
+                        filter: (legendItem, chartData) => (!chartData.datasets[legendItem.datasetIndex].data.every(item => item === 0))
                     }
                 }
+            }
+        }
+    });
+}
+
+window.nonNotifiedByWeekdayChart = (id, chartData) => {
+    const ctx = document.getElementById(id).getContext('2d');
+    let chartStatus = Chart.getChart(id);
+    if (chartStatus != undefined) {
+        chartStatus.destroy();
+    }
+
+    let diaSemana = chartData.map(a => a.diaSemana);
+    let jan = chartData.map(a => a.jan);
+    let fev = chartData.map(a => a.fev);
+    let mar = chartData.map(a => a.mar);
+    let abr = chartData.map(a => a.abr);
+    let mai = chartData.map(a => a.mai);
+    let jun = chartData.map(a => a.jun);
+    let jul = chartData.map(a => a.jul);
+    let ago = chartData.map(a => a.ago);
+    let set = chartData.map(a => a.set);
+    let out = chartData.map(a => a.out);
+    let nov = chartData.map(a => a.nov);
+    let dez = chartData.map(a => a.dez);
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: diaSemana,
+            datasets: [{
+                label: 'Jan',
+                data: jan,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
             },
+            {
+                label: 'Fev',
+                data: fev,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Mar',
+                data: mar,
+                backgroundColor: [
+                    'rgba(255, 205, 86, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(255, 205, 86, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Abr',
+                data: abr,
+                backgroundColor: [
+                    'rgba(204, 0, 0, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(204, 0, 0, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Mai',
+                data: mai,
+                backgroundColor: [
+                    'rgba(204, 102, 0, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(204, 102, 0, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Jun',
+                data: jun,
+                backgroundColor: [
+                    'rgba(204, 204, 0, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(204, 204, 0, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Jul',
+                data: jul,
+                backgroundColor: [
+                    'rgba(102, 204, 0, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(102, 204, 0, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Ago',
+                data: ago,
+                backgroundColor: [
+                    'rgba(0, 204, 204, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(0, 204, 204, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Set',
+                data: set,
+                backgroundColor: [
+                    'rgba(0, 0, 204, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(0, 0, 204, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Out',
+                data: out,
+                backgroundColor: [
+                    'rgba(102, 0, 204, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(102, 0, 204, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Nov',
+                data: nov,
+                backgroundColor: [
+                    'rgba(204, 0, 204, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(204, 0, 204, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            },
+            {
+                label: 'Dez',
+                data: dez,
+                backgroundColor: [
+                    'rgba(96, 96, 96, 0.25)'
+                ],
+                borderColor: [
+                    'rgba(96, 96, 96, 1)'
+                ],
+                borderWidth: 1,
+                fill: false
+            }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        filter: (legendItem, chartData) => (!chartData.datasets[legendItem.datasetIndex].data.every(item => item === 0))
+                    }
+                }
+            }
         }
     });
 }
